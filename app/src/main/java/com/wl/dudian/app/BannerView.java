@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 轮播控件
- *
+ * <p/>
  * Created by yisheng on 16/6/29.
  */
 
@@ -44,15 +44,20 @@ public class BannerView extends FrameLayout {
     public BannerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        inflate(context, R.layout.banner_view, this);
+//        inflate(context, R.layout.banner_view, this);
+//        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, false);
+        mContext = context;
+        mAdapter = new ViewPagerAdapter();
+    }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, true);
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
         mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
-        mContext = context;
-
         mViewPager.setAdapter(mAdapter);
         mIndicator.setViewPager(mViewPager);
-
     }
 
     public void setImages(List<TopStoriesBean> images) {
@@ -60,7 +65,7 @@ public class BannerView extends FrameLayout {
     }
 
 
-    public static class ViewPagerAdapter extends PagerAdapter{
+    public static class ViewPagerAdapter extends PagerAdapter {
 
         private List<TopStoriesBean> mTopStoriesBeanList;
 
@@ -88,6 +93,12 @@ public class BannerView extends FrameLayout {
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
+        }
+
+
+        @Override
+        public int getItemPosition(Object object) {
+            return super.getItemPosition(object);
         }
 
         @Override

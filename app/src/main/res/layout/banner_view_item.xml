@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/banner_view_imageview"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -16,15 +17,15 @@
         android:background="@drawable/header_gray_bg"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/banner_view_textview"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:textSize="18sp"
+        android:layout_marginBottom="30dp"
+        android:textSize="22sp"
         android:textColor="@android:color/white"
         tools:text="阿斯顿放假了阿凡达啊啦"
         android:layout_width="match_parent"

@@ -17,6 +17,7 @@ import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.model.TopStoriesBean;
 import com.wl.dudian.framework.ACache;
 import com.wl.dudian.framework.Constants;
 import com.wl.dudian.framework.HttpUtil;
@@ -51,6 +52,7 @@ public class LatestNewsFragment extends BaseFragment {
     private String mNowDate;
 
     private List<StoriesBean> mStoriesBeanList = new ArrayList<>();
+    private List<TopStoriesBean> mTopStoriesBeen = new ArrayList<>();
     private OnRefreshedListener mOnRefreshedListener;
 
     public static LatestNewsFragment newInstance() {
@@ -60,8 +62,7 @@ public class LatestNewsFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        mItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getContext());
+
 
     }
 
@@ -76,6 +77,7 @@ public class LatestNewsFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated: ");
+
         mNewsItemRecyclerView = (RecyclerView) view.findViewById(R.id.latest_news_fragment_recyclerview);
     }
 
@@ -83,16 +85,12 @@ public class LatestNewsFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated: ");
+        setRetainInstance(true);
+
         mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mNewsItemRecyclerView.setAdapter(mItemAdapter);
         refreshLatestNewsInfo();
         mNewsItemRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
-            @Override
-            public void onItemClick(View view, String newsId) {
-                LatestNewsDetailActivity.launch(getActivity(), newsId);
-            }
-        });
+
 
         mNewsItemRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
@@ -185,7 +183,15 @@ public class LatestNewsFragment extends BaseFragment {
                         mStoriesBeanList.clear();
                         mStoriesBeanList.addAll(latestNews.getStories());
                         mNowDate = latestNews.getDate();
-                        mItemAdapter.setRefresh(mStoriesBeanList);
+//                        mItemAdapter.setRefresh(mStoriesBeanList, latestNews.getTop_stories());
+                        mItemAdapter = new LatestNewsItemAdapter(latestNews.getStories(), latestNews.getTop_stories(), getContext());
+                        mNewsItemRecyclerView.setAdapter(mItemAdapter);
+                        mItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, String newsId) {
+                                LatestNewsDetailActivity.launch(getActivity(), newsId);
+                            }
+                        });
                     }
                 });
     }
