@@ -36,7 +36,6 @@ import com.wl.dudian.framework.Variable;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity11111";
-    private static final String ARGUR = "ARGU";
     private static final String FRAGMENT_INDEX = "FRAGMENT_INDEX";
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -95,59 +94,59 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: MainActiivty");
     }
 
     private void showLatestNews(Bundle savedInstanceState) {
 
         FragmentManager fm = getSupportFragmentManager();
-//        if (null != savedInstanceState) {
-//            index = savedInstanceState.getInt(FRAGMENT_INDEX);
-//            setNavSelection(index);
-//        } else {
+        if (null != savedInstanceState) {
+            index = savedInstanceState.getInt(FRAGMENT_INDEX);
+            setNavSelection(index);
+        } else {
 
-        mLatestNewsFragment = (LatestNewsFragment) fm.findFragmentById(R.id.content_main);
-        if (mLatestNewsFragment == null) {
-            mLatestNewsFragment = LatestNewsFragment.newInstance();
-            fm.beginTransaction().add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName()).
-                    commit();
-            mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                    android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light,
-                    android.R.color.holo_red_light);
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    if (null != mLatestNewsFragment) {
-                        String isRefreshed = ACache.get(MainActivity.this).getAsString(Constants.REFRESH_NETWORK);
-                        if (null == isRefreshed || !isRefreshed.equals(Constants.REFRESH_FLAG)) {
-                            mLatestNewsFragment.refreshLatestNewsInfo();
+            mLatestNewsFragment = (LatestNewsFragment) fm.findFragmentById(R.id.content_main);
+            if (mLatestNewsFragment == null) {
+                mLatestNewsFragment = LatestNewsFragment.newInstance();
+                fm.beginTransaction()
+                  .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
+                  .commit();
+                mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                        android.R.color.holo_green_light,
+                        android.R.color.holo_orange_light,
+                        android.R.color.holo_red_light);
+                mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        if (null != mLatestNewsFragment) {
+                            String isRefreshed = ACache.get(MainActivity.this).getAsString(Constants.REFRESH_NETWORK);
+                            if (null == isRefreshed || !isRefreshed.equals(Constants.REFRESH_FLAG)) {
+                                mLatestNewsFragment.refreshLatestNewsInfo();
+                            } else {
+                                mSwipeRefreshLayout.setRefreshing(false);
+                            }
                         } else {
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
-                    } else {
-                        mSwipeRefreshLayout.setRefreshing(false);
                     }
-                }
-            });
+                });
 
-            mLatestNewsFragment.setOnRefreshedListener(new LatestNewsFragment.OnRefreshedListener() {
-                @Override
-                public void onRefreshed() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    Snackbar.make(mCollapsingToolbarLayout, "刷新数据成功", Snackbar.LENGTH_SHORT).show();
+                mLatestNewsFragment.setOnRefreshedListener(new LatestNewsFragment.OnRefreshedListener() {
+                    @Override
+                    public void onRefreshed() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        Snackbar.make(mCollapsingToolbarLayout, "刷新数据成功", Snackbar.LENGTH_SHORT).show();
 
-                }
+                    }
 
-                @Override
-                public void onRefreshError() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    Snackbar.make(mCollapsingToolbarLayout, "主人, 刷新失败, 咱们有没有连上网啊?", Snackbar.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onRefreshError() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        Snackbar.make(mCollapsingToolbarLayout, "主人, 刷新失败, 咱们有没有连上网啊?", Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
         }
-
-//        }
 
     }
 
@@ -267,11 +266,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Bitmap bitmap = ScreenShotUtils.captureScreen(this);
         ACache.get(this).put("image", bitmap, 1);
         Intent intent = new Intent(this, TestActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        recreate();
-//        finish();
+        finish();
     }
 
     @Override

@@ -36,13 +36,24 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mOnLatestNewsItemClickListener = onLatestNewsItemClickListener;
     }
 
-    private List<StoriesBean> mStoriesBeen = new ArrayList<>();
+    private List<StoriesBean> mStoriesBeen;
     private Context mContext;
     private OnLatestNewsItemClickListener mOnLatestNewsItemClickListener;
 
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
+        mStoriesBeen = new ArrayList<>();
         mStoriesBeen.addAll(storiesBean);
         mContext = context;
+    }
+
+    /**
+     * 刷新数据
+     * @param storiesBeanList
+     */
+    public void setRefresh(List<StoriesBean> storiesBeanList) {
+        mStoriesBeen.clear();
+        mStoriesBeen.addAll(storiesBeanList);
+        notifyDataSetChanged();
     }
 
 

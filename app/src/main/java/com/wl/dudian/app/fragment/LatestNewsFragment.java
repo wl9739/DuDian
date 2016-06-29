@@ -56,12 +56,14 @@ public class LatestNewsFragment extends BaseFragment {
     public static LatestNewsFragment newInstance() {
         return new LatestNewsFragment();
     }
-//
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
-//    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        mItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getContext());
+
+    }
 
     @Nullable
     @Override
@@ -82,7 +84,6 @@ public class LatestNewsFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated: ");
         mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getActivity());
         mNewsItemRecyclerView.setAdapter(mItemAdapter);
         refreshLatestNewsInfo();
         mNewsItemRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -149,6 +150,7 @@ public class LatestNewsFragment extends BaseFragment {
                     public void onNext(BeforeNews beforeNews) {
                         mStoriesBeanList.addAll(beforeNews.getStories());
                         mNowDate = beforeNews.getDate();
+                        mItemAdapter.setRefresh(mStoriesBeanList);
                     }
                 });
     }
@@ -163,7 +165,6 @@ public class LatestNewsFragment extends BaseFragment {
                 .subscribe(new Subscriber<LatestNews>() {
                     @Override
                     public void onCompleted() {
-                        mItemAdapter.notifyDataSetChanged();
                         if (null != mOnRefreshedListener) {
                             mOnRefreshedListener.onRefreshed();
                         }
@@ -184,6 +185,7 @@ public class LatestNewsFragment extends BaseFragment {
                         mStoriesBeanList.clear();
                         mStoriesBeanList.addAll(latestNews.getStories());
                         mNowDate = latestNews.getDate();
+                        mItemAdapter.setRefresh(mStoriesBeanList);
                     }
                 });
     }
