@@ -68,6 +68,7 @@ public class BannerView extends FrameLayout {
     public static class ViewPagerAdapter extends PagerAdapter {
 
         private List<TopStoriesBean> mTopStoriesBeanList;
+        private boolean mNotify;
 
         public ViewPagerAdapter() {
             mTopStoriesBeanList = new ArrayList<>();
@@ -78,7 +79,6 @@ public class BannerView extends FrameLayout {
             mTopStoriesBeanList = images;
             notifyDataSetChanged();
         }
-
 
         @Override
         public int getCount() {
@@ -95,12 +95,6 @@ public class BannerView extends FrameLayout {
             container.removeView((View) object);
         }
 
-
-        @Override
-        public int getItemPosition(Object object) {
-            return super.getItemPosition(object);
-        }
-
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Context context = container.getContext();
@@ -109,6 +103,7 @@ public class BannerView extends FrameLayout {
             TextView textView = (TextView) view.findViewById(R.id.banner_view_textview);
             Glide.with(context).load(mTopStoriesBeanList.get(position).getImage()).into(imageView);
             textView.setText(mTopStoriesBeanList.get(position).getTitle());
+            view.setTag(mTopStoriesBeanList.get(position));
             container.addView(view);
             return view;
         }

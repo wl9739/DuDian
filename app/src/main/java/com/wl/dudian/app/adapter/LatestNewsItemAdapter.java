@@ -77,10 +77,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.latest_news_fragment_header, parent, false);
+            View view = LayoutInflater.from(parent.getContext())
+                                      .inflate(R.layout.latest_news_fragment_header, parent, false);
             return new HeaderViewHolder(view);
         } else if (viewType == TYPE_ITEM) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.latest_news_fragment_item, parent, false);
+            View view =
+                    LayoutInflater.from(parent.getContext()).inflate(R.layout.latest_news_fragment_item, parent, false);
             view.setOnClickListener(this);
             return new ItemViewHolder(view);
         }
@@ -94,10 +96,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             headerViewHolder.mBannerView.setImages(mTopStoriesBeenList);
         } else if (holder instanceof ItemViewHolder) {
-            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
-            itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position).getId());
-            downloadBitmap(mStoriesBeen.get(position).getImages(), ((ItemViewHolder) holder).picImageView);
+            if (position < mStoriesBeen.size()) {
+                ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+                itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
+                itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position).getId());
+                downloadBitmap(mStoriesBeen.get(position).getImages(), ((ItemViewHolder) holder).picImageView);
+            }
         }
     }
 
@@ -140,6 +144,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
         BannerView mBannerView;
+
         public HeaderViewHolder(View view) {
             super(view);
             mBannerView = (BannerView) view.findViewById(R.id.latest_news_fragment_header_banner);
