@@ -20,6 +20,7 @@ import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 import com.wl.dudian.framework.ACache;
 import com.wl.dudian.framework.Constants;
+import com.wl.dudian.framework.DateUtil;
 import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.Variable;
 
@@ -68,7 +69,8 @@ public class LatestNewsFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         return inflater.inflate(R.layout.latest_news_fragment, container, false);
     }
@@ -128,9 +130,7 @@ public class LatestNewsFragment extends BaseFragment {
      * @param nowDate
      */
     private void loadMoreNews(String nowDate) {
-        int oldDay = Integer.parseInt(nowDate) - 1;
-        Log.d(TAG, "loadMoreNews: oldday" + oldDay);
-        HttpUtil.getInstance().getBeforeNews("" + oldDay)
+        HttpUtil.getInstance().getBeforeNews(DateUtil.getLastDay(nowDate))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BeforeNews>() {
@@ -184,14 +184,16 @@ public class LatestNewsFragment extends BaseFragment {
                         mStoriesBeanList.addAll(latestNews.getStories());
                         mNowDate = latestNews.getDate();
 //                        mItemAdapter.setRefresh(mStoriesBeanList, latestNews.getTop_stories());
-                        mItemAdapter = new LatestNewsItemAdapter(latestNews.getStories(), latestNews.getTop_stories(), getContext());
+                        mItemAdapter = new LatestNewsItemAdapter(latestNews.getStories(), latestNews.getTop_stories(),
+                                getContext());
                         mNewsItemRecyclerView.setAdapter(mItemAdapter);
-                        mItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, String newsId) {
-                                LatestNewsDetailActivity.launch(getActivity(), newsId);
-                            }
-                        });
+                        mItemAdapter.setOnLatestNewsItemClickListener(
+                                new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
+                                    @Override
+                                    public void onItemClick(View view, String newsId) {
+                                        LatestNewsDetailActivity.launch(getActivity(), newsId);
+                                    }
+                                });
                     }
                 });
     }
