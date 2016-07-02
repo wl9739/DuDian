@@ -1,9 +1,11 @@
 package com.wl.dudian.framework;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
- *
  * @author zfeiyu
  * @since 0.0.2
  */
@@ -35,5 +37,37 @@ public class DateUtil {
         }
 
         return _year + _month + _day;
+    }
+
+    /**
+     * 根据当前日期字符串,返回星期.
+     *
+     * @param nowDate
+     * @return
+     */
+    public static String getWeekday(String nowDate) {
+        try {
+            if (nowDate.length() != 8) {
+                throw new IllegalStateException("Illegal date");
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+
+            Date date = sdf.parse(nowDate);
+
+            return sdf.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 获取完整的日期字符串(07月01日  星期五)
+     *
+     * @param nowDate
+     * @return
+     */
+    public static String getFullDateFormart(String nowDate) {
+        return nowDate.substring(4, 6) + "月" + nowDate.substring(6, 8) + "日  " + DateUtil.getWeekday(nowDate);
     }
 }
