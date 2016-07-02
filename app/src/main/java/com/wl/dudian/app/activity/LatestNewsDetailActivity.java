@@ -1,12 +1,11 @@
 package com.wl.dudian.app.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,6 +19,8 @@ import com.wl.dudian.R;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.Variable;
+
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,15 +36,17 @@ public class LatestNewsDetailActivity extends BaseActivity {
     private static final String ARGU_TITLE = "ARGU_TITLE";
 
     private String mNewsId;
+    private String mNewsTitle;
     private Toolbar mToolbar;
     private ImageView mBackgourndImg;
     private WebView mWebView;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Handler mHandler = new Handler();
 
-    public static void launch(Activity activity, String newsId) {
+    public static void launch(Context activity, String newsId, String title) {
         Intent intent = new Intent(activity, LatestNewsDetailActivity.class);
         intent.putExtra(ARGU_NEWSID, newsId);
+        intent.putExtra(ARGU_TITLE, title);
         activity.startActivity(intent);
     }
 
@@ -53,6 +56,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
         setContentView(R.layout.latest_news_detail_activity);
 
         mNewsId = getIntent().getStringExtra(ARGU_NEWSID);
+        mNewsTitle = getIntent().getStringExtra(ARGU_TITLE);
         getNewsDetail(mNewsId);
         mToolbar = (Toolbar) findViewById(R.id.latest_news_detail_toolbar);
         mWebView = (WebView) findViewById(R.id.latest_news_detail_webview);
@@ -66,7 +70,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
         mWebView.getSettings().setAppCacheEnabled(true);
 
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.latest_news_detail_collapsingtoolbarlayout);
-        mCollapsingToolbarLayout.setTitle("哈喽Baby");
+        mCollapsingToolbarLayout.setTitle(mNewsTitle);
         mToolbar.setTitleTextColor(0x333333);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

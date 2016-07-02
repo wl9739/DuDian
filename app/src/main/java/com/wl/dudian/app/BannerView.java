@@ -1,6 +1,8 @@
 package com.wl.dudian.app;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -14,10 +16,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
+import com.wl.dudian.app.activity.LatestNewsDetailActivity;
 import com.wl.dudian.app.model.TopStoriesBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 轮播控件
@@ -27,11 +33,50 @@ import java.util.List;
 
 public class BannerView extends FrameLayout {
 
+    /**
+     * viewpager
+     */
     private ViewPager mViewPager;
+
+    /**
+     * viewpager指示器
+     */
     private CirclePageIndicator mIndicator;
+
+    /**
+     * context
+     */
     private Context mContext;
-    private ViewPagerAdapter mAdapter;
-    private List<TopStoriesBean> mImages;
+
+    /**
+     * adapter
+     */
+    private BannerViewPagerAdapter mAdapter;
+    /**
+     * 定时任务
+     */
+    private ScheduledExecutorService mScheduledExecutorService;
+
+    /**
+     * 计数器,当前显示的位置
+     */
+    private int mCurrentItem = 0;
+
+    /**
+     * 处理消息
+     */
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mViewPager.setCurrentItem(mCurrentItem);
+        }
+    };
+
+    /**
+     * 轮播图片的数量
+     */
+    private int mImageSize;
 
     public BannerView(Context context) {
         this(context, null);
@@ -43,11 +88,8 @@ public class BannerView extends FrameLayout {
 
     public BannerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-//        inflate(context, R.layout.banner_view, this);
-//        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, false);
         mContext = context;
-        mAdapter = new ViewPagerAdapter();
+        mAdapter = new BannerViewPagerAdapter();
     }
 
     @Override
@@ -57,20 +99,63 @@ public class BannerView extends FrameLayout {
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
         mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
         mViewPager.setAdapter(mAdapter);
+//        mViewPager.setOnPageChangeListener(new BannerPageChangeListener());
         mIndicator.setViewPager(mViewPager);
+        mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
+            @Override
+            public void onBannerItemClick(String id, String title) {
+                LatestNewsDetailActivity.launch(mContext, id, title);
+            }
+        });
     }
-
-    public void setImages(List<TopStoriesBean> images) {
+    /**
+     * 添加轮播显示的图片
+     *
+     * @param images
+     */
+    public void setImages(List<TopStoriesBean> images, boolean isAutoPlay) {
+        mImageSize = images.size();
         mAdapter.setImages(images);
+        if (isAutoPlay) {
+            startPlay();
+        }
+    }
+
+    /**
+     * 开始启动自动轮播
+     */
+    private void startPlay() {
+        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        mScheduledExecutorService.scheduleAtFixedRate(new SlideShowTask(), 4, 4, TimeUnit.SECONDS);
+    }
+
+    private void stopPlay() {
+        mScheduledExecutorService.shutdown();
     }
 
 
-    public static class ViewPagerAdapter extends PagerAdapter {
+    public static class BannerViewPagerAdapter extends PagerAdapter {
 
+        /**
+         * 点击事件接口
+         */
+        public interface OnBannerItemClickListener {
+            void onBannerItemClick(String id, String title);
+        }
+
+        /**
+         * set点击事件
+         * @param onBannerItemClickListener
+         */
+        public void setOnBannerItemClickListener(BannerViewPagerAdapter.OnBannerItemClickListener onBannerItemClickListener) {
+            mOnBannerItemClickListener = onBannerItemClickListener;
+        }
+
+        private OnBannerItemClickListener mOnBannerItemClickListener;
         private List<TopStoriesBean> mTopStoriesBeanList;
-        private boolean mNotify;
 
-        public ViewPagerAdapter() {
+
+        public BannerViewPagerAdapter() {
             mTopStoriesBeanList = new ArrayList<>();
         }
 
@@ -96,7 +181,7 @@ public class BannerView extends FrameLayout {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, final int position) {
             Context context = container.getContext();
             View view = LayoutInflater.from(context).inflate(R.layout.banner_view_item, container, false);
             ImageView imageView = (ImageView) view.findViewById(R.id.banner_view_imageview);
@@ -105,7 +190,70 @@ public class BannerView extends FrameLayout {
             textView.setText(mTopStoriesBeanList.get(position).getTitle());
             view.setTag(mTopStoriesBeanList.get(position));
             container.addView(view);
+
+            // 设置点击事件
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnBannerItemClickListener.onBannerItemClick("" + mTopStoriesBeanList.get(position).getId(),
+                            mTopStoriesBeanList.get(position).getTitle());
+                }
+            });
             return view;
+        }
+    }
+
+    /**
+     * 定时任务
+     */
+    private class SlideShowTask implements Runnable {
+
+        @Override
+        public void run() {
+            synchronized (mViewPager) {
+                mCurrentItem = (mCurrentItem + 1) % mImageSize;
+                mHandler.obtainMessage().sendToTarget();
+            }
+        }
+    }
+
+    /**
+     * 监听器
+     */
+    private class BannerPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        boolean isAutoPlay = false;
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            switch (state) {
+                case 1: //  手势滑动, 空闲中
+                    isAutoPlay = false;
+                    break;
+                case 2: //  界面切换中
+                    isAutoPlay = true;
+                    break;
+                case 0:  // 滑动结束, 即切换完毕或者加载完毕
+                    // 当前为最后一张, 此时从右向左滑动, 则切换到第一张
+                    if (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1 && !isAutoPlay) {
+                        mViewPager.setCurrentItem(0);
+                    }
+                    // 当前为第一张, 此时从左往右滑动, 则切换到最后一张
+                    else if (mViewPager.getCurrentItem() == 0 && !isAutoPlay) {
+                        mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
+                    }
+                    break;
+            }
         }
     }
 }

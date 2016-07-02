@@ -21,7 +21,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
             android:id="@+id/latest_news_detail_collapsingtoolbarlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,6 +29,7 @@
             app:collapsedTitleTextAppearance="@style/MyToolbarTextStyle"
             app:contentScrim="?attr/colorPrimaryDark"
             app:expandedTitleMarginStart="5dp"
+            app:maxLines="3"
             app:expandedTitleTextAppearance="@style/MyToolbarTextStyle"
             app:layout_scrollFlags="scroll|snap">
 
@@ -41,12 +42,17 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"/>
 
+            <View
+                android:background="@drawable/header_gray_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/latest_news_detail_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"/>
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
