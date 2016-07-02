@@ -38,4 +38,5 @@ dependencies {
     compile 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'net.opacapp:multiline-collapsingtoolbar:1.2.0'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
 }

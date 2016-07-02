@@ -2,15 +2,16 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
     <!--<krelve.app.kuaihu.view.RevealBackgroundView-->
-        <!--android:id="@+id/revealBackgroundView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
+    <!--android:id="@+id/revealBackgroundView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
 
 
     <android.support.design.widget.AppBarLayout
@@ -29,9 +30,9 @@
             app:collapsedTitleTextAppearance="@style/MyToolbarTextStyle"
             app:contentScrim="?attr/colorPrimaryDark"
             app:expandedTitleMarginStart="5dp"
-            app:maxLines="3"
             app:expandedTitleTextAppearance="@style/MyToolbarTextStyle"
-            app:layout_scrollFlags="scroll|snap">
+            app:layout_scrollFlags="scroll|snap"
+            app:maxLines="3">
 
             <ImageView
                 android:id="@+id/latest_news_detail_bg_img"
@@ -43,9 +44,30 @@
                 app:layout_collapseParallaxMultiplier="0.7"/>
 
             <View
-                android:background="@drawable/header_gray_bg"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:background="@drawable/header_gray_bg"/>
+
+            <TextView
+                android:id="@+id/latest_news_detail_title_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="22dp"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:text="Hello, Baby"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"/>
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="bottom|right"-->
+                <!--android:layout_margin="@dimen/activity_horizontal_margin"-->
+                <!--android:text="田中君总是如此慵懒"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="12sp"/>-->
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/latest_news_detail_toolbar"
@@ -61,11 +83,58 @@
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-        <WebView
-            android:id="@+id/latest_news_detail_webview"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></WebView>
+            android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/latest_news_detail_webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"></WebView>
+
+
+        </FrameLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_toLeftOf="@+id/multiple_actions_down"
+        android:layout_toStartOf="@+id/multiple_actions_down"
+        fab:fab_addButtonColorNormal="@color/white"
+        fab:fab_addButtonColorPressed="@color/white_pressed"
+        fab:fab_addButtonPlusIconColor="@color/half_black"
+        fab:fab_addButtonSize="normal"
+        fab:fab_addButtonStrokeVisible="false"
+        fab:fab_expandDirection="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_size="mini"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_size="mini"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </android.support.design.widget.CoordinatorLayout>
 

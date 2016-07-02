@@ -99,7 +99,7 @@ public class BannerView extends FrameLayout {
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
         mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
         mViewPager.setAdapter(mAdapter);
-//        mViewPager.setOnPageChangeListener(new BannerPageChangeListener());
+        mViewPager.setOnPageChangeListener(new BannerPageChangeListener());
         mIndicator.setViewPager(mViewPager);
         mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
             @Override

@@ -2,6 +2,7 @@ package com.wl.dudian.app.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import java.util.List;
 public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements View.OnClickListener {
 
+
+    private static final String TAG = "mStore111";
 
     @Override
     public void onClick(View v) {
@@ -74,6 +77,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void setRefresh(List<StoriesBean> storiesBeanList) {
         mStoriesBeen.clear();
         mStoriesBeen.addAll(storiesBeanList);
+        Log.d(TAG, "LatestNewsItemAdapter:" + mStoriesBeen.get(0).getTitle());
+
         notifyDataSetChanged();
     }
 
@@ -101,9 +106,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart("20160701"));
                     itemViewHolder.dateTv.setVisibility(View.VISIBLE);
                 }
-                itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
-                itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position).getId());
-                downloadBitmap(mStoriesBeen.get(position).getImages(), ((ItemViewHolder) holder).picImageView);
+                // position数需要-1, 因为0是HeaderView
+                itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
+                itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position - 1).getId());
+                downloadBitmap(mStoriesBeen.get(position - 1).getImages(), ((ItemViewHolder) holder).picImageView);
             }
         }
     }
@@ -126,6 +132,9 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
+        if (null != mHeaderView) {
+            return mStoriesBeen.size() + 1;
+        }
         return mStoriesBeen.size();
     }
 

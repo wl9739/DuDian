@@ -12,6 +12,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,6 +40,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
     private String mNewsTitle;
     private Toolbar mToolbar;
     private ImageView mBackgourndImg;
+    private TextView mTitleTv;
     private WebView mWebView;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Handler mHandler = new Handler();
@@ -60,6 +62,8 @@ public class LatestNewsDetailActivity extends BaseActivity {
         getNewsDetail(mNewsId);
         mToolbar = (Toolbar) findViewById(R.id.latest_news_detail_toolbar);
         mWebView = (WebView) findViewById(R.id.latest_news_detail_webview);
+        mTitleTv = (TextView) findViewById(R.id.latest_news_detail_title_tv);
+        mWebView.setVisibility(View.INVISIBLE);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         // 开启DOM storage API 功能
@@ -69,8 +73,10 @@ public class LatestNewsDetailActivity extends BaseActivity {
         // 开启Application Cache功能
         mWebView.getSettings().setAppCacheEnabled(true);
 
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.latest_news_detail_collapsingtoolbarlayout);
-        mCollapsingToolbarLayout.setTitle(mNewsTitle);
+        mCollapsingToolbarLayout =
+                (CollapsingToolbarLayout) findViewById(R.id.latest_news_detail_collapsingtoolbarlayout);
+        mCollapsingToolbarLayout.setTitle(" ");
+        mTitleTv.setText(mNewsTitle);
         mToolbar.setTitleTextColor(0x333333);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -107,8 +113,15 @@ public class LatestNewsDetailActivity extends BaseActivity {
 
                         if (Variable.isNight) {
                             showNightModeNews(newsDetails);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mWebView.setVisibility(View.VISIBLE);
+                                }
+                            }, 500);
                         } else {
                             showDayModeNews(newsDetails);
+                            mWebView.setVisibility(View.VISIBLE);
                         }
                     }
                 });
@@ -117,7 +130,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
     /**
      * 显示夜间模式
      *
-     * @param newsDetails   新闻内容
+     * @param newsDetails 新闻内容
      */
     private void showNightModeNews(NewsDetails newsDetails) {
         String js = "<script src=\"file:///android_asset/js/night.js\"></script>";
@@ -130,7 +143,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
     /**
      * 显示白天模式
      *
-     * @param newsDetails   新闻内容
+     * @param newsDetails 新闻内容
      */
     private void showDayModeNews(NewsDetails newsDetails) {
         String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news.css\" type=\"text/css\">";
