@@ -126,7 +126,7 @@ public class BannerView extends FrameLayout {
      */
     private void startPlay() {
         mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        mScheduledExecutorService.scheduleAtFixedRate(new SlideShowTask(), 4, 4, TimeUnit.SECONDS);
+        mScheduledExecutorService.scheduleAtFixedRate(new SlideShowTask(), 5, 4, TimeUnit.SECONDS);
     }
 
     private void stopPlay() {
