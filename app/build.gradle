@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:design:24.0.0'
@@ -39,4 +39,14 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'net.opacapp:multiline-collapsingtoolbar:1.2.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
+    compile files('libs/MobCommons-2016.0623.1641.jar')
+    compile files('libs/MobTools-2016.0623.1641.jar')
+    compile files('libs/ShareSDK-Core-2.7.3.jar')
+    compile files('libs/ShareSDK-QQ-2.7.3.jar')
+    compile files('libs/ShareSDK-SinaWeibo-2.7.3.jar')
+    compile files('libs/ShareSDK-TencentWeibo-2.7.3.jar')
+    compile files('libs/ShareSDK-Wechat-2.7.3.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.7.3.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.7.3.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.7.3.jar')
 }

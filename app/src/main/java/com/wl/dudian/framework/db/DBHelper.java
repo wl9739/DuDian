@@ -29,7 +29,7 @@ public class DBHelper {
                 context = ctx;
             }
             DaoSession daoSession = AppApplication.getDaoSession(context);
-            instance.newsDetailDao = daoSession.getNewsDetailDao();
+            newsDetailDao = daoSession.getNewsDetailDao();
         }
         return instance;
     }

@@ -25,6 +25,15 @@ public class NewsDetails {
     private String image;
     private String share_url;
     private String ga_prefix;
+
+    public String getShare_url() {
+        return share_url;
+    }
+
+    public void setShare_url(String share_url) {
+        this.share_url = share_url;
+    }
+
     /**
      * thumbnail : http://pic4.zhimg.com/6a1ddebda9e8899811c4c169b92c35b3.jpg
      * id : 1

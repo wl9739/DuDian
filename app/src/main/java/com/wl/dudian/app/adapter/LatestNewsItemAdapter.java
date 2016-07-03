@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.framework.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,10 +101,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (holder instanceof ItemViewHolder) {
             if (position < mStoriesBeen.size()) {
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-                if (position == 0) {
-                    itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart("20160701"));
-                    itemViewHolder.dateTv.setVisibility(View.VISIBLE);
-                }
+//                if (position == 0) {
+//                    itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart("20160701"));
+//                    itemViewHolder.dateTv.setVisibility(View.VISIBLE);
+//                }
                 // position数需要-1, 因为0是HeaderView
                 itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
                 itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position - 1).getId());
@@ -123,6 +122,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    /**
+     * 下载图片
+     *
+     * @param images
+     * @param picImageView
+     */
     private void downloadBitmap(List<String> images, ImageView picImageView) {
         if (null == images || images.size() < 1) {
             return;

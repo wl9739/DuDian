@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.framework.HttpUtil;
@@ -23,6 +25,8 @@ import com.wl.dudian.framework.Variable;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -42,6 +46,9 @@ public class LatestNewsDetailActivity extends BaseActivity {
     private ImageView mBackgourndImg;
     private TextView mTitleTv;
     private WebView mWebView;
+    private NewsDetails mNewsDetails;
+    private FloatingActionButton mShareBtn;
+    private FloatingActionsMenu mMenuBtn;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Handler mHandler = new Handler();
 
@@ -61,6 +68,8 @@ public class LatestNewsDetailActivity extends BaseActivity {
         mNewsTitle = getIntent().getStringExtra(ARGU_TITLE);
         getNewsDetail(mNewsId);
         mToolbar = (Toolbar) findViewById(R.id.latest_news_detail_toolbar);
+        mShareBtn = (FloatingActionButton) findViewById(R.id.latest_news_detail_actiivty_share_button);
+        mMenuBtn = (FloatingActionsMenu) findViewById(R.id.latest_news_detail_activity_menu_btn);
         mWebView = (WebView) findViewById(R.id.latest_news_detail_webview);
         mTitleTv = (TextView) findViewById(R.id.latest_news_detail_title_tv);
         mWebView.setVisibility(View.INVISIBLE);
@@ -88,6 +97,48 @@ public class LatestNewsDetailActivity extends BaseActivity {
         });
 
         mBackgourndImg = (ImageView) findViewById(R.id.latest_news_detail_bg_img);
+
+        // 分享按钮事件监听
+        mShareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handlerShare();
+                mMenuBtn.toggle();
+            }
+        });
+    }
+
+    /**
+     * 使用ShareSDK进行分享
+     */
+    private void handlerShare() {
+        if (null == mNewsDetails) {
+            return;
+        }
+            ShareSDK.initSDK(this);
+            OnekeyShare oks = new OnekeyShare();
+            //关闭sso授权
+            oks.disableSSOWhenAuthorize();
+            // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+            //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+            // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+            oks.setTitle(mNewsTitle);
+            // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+            oks.setTitleUrl(mNewsDetails.getShare_url());
+            // text是分享文本，所有平台都需要这个字段
+            oks.setText("读点日报 -- 闲暇时间, 读点日报");
+            // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+//            oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+            // url仅在微信（包括好友和朋友圈）中使用
+            oks.setUrl(mNewsDetails.getShare_url());
+            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+//            oks.setComment("我是测试评论文本");
+            // site是分享此内容的网站名称，仅在QQ空间使用
+//            oks.setSite(getString(R.string.app_name));
+            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+//            oks.setSiteUrl("http://sharesdk.cn");
+           // 启动分享GUI
+            oks.show(this);
     }
 
     private void getNewsDetail(String newsId) {
@@ -107,6 +158,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
                     @SuppressLint("JavascriptInterface")
                     @Override
                     public void onNext(NewsDetails newsDetails) {
+                        mNewsDetails = newsDetails;
                         String imageUrl = newsDetails.getImage();
                         downloadImage(imageUrl);
 //

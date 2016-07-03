@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.sharesdk.framework.ShareSDK;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -54,6 +55,10 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // init ShareSDK
+        ShareSDK.initSDK(this);
+
         setContentView(R.layout.splash_activity);
         ButterKnife.bind(this);
 
@@ -172,5 +177,12 @@ public class SplashActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // stop ShareSDK
+        ShareSDK.stopSDK(this);
     }
 }
