@@ -102,12 +102,22 @@ public class LatestNewsDetailActivity extends BaseActivity {
         mShareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handlerShare();
+//                handlerShare();
+                share();
                 mMenuBtn.toggle();
             }
         });
     }
 
+    private void share() {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+        intent.putExtra(Intent.EXTRA_TEXT, "来自读点日报的分享" + mNewsDetails.getTitle() + "，http://daily.zhihu.com/story/" + mNewsDetails.getId());
+        startActivity(Intent.createChooser(intent, mNewsDetails.getTitle()));
+    }
     /**
      * 使用ShareSDK进行分享
      */

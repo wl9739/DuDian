@@ -26,6 +26,14 @@ public class NewsDetails {
     private String share_url;
     private String ga_prefix;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getShare_url() {
         return share_url;
     }
