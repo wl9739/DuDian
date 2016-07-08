@@ -31,6 +31,7 @@ import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
@@ -161,6 +162,12 @@ public class LatestNewsFragment extends BaseFragment {
         HttpUtil.getInstance().getBeforeNews(DateUtil.getLastDay(nowDate))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<BeforeNews>() {
+                    @Override
+                    public void call(BeforeNews beforeNews) {
+                        // 保存到数据库
+                    }
+                })
                 .subscribe(new Subscriber<BeforeNews>() {
                     @Override
                     public void onCompleted() {
@@ -188,6 +195,12 @@ public class LatestNewsFragment extends BaseFragment {
         HttpUtil.getInstance().getLatestNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<LatestNews>() {
+                    @Override
+                    public void call(LatestNews latestNews) {
+                        // TODO 保存到数据库中
+                    }
+                })
                 .subscribe(new Subscriber<LatestNews>() {
                     @Override
                     public void onCompleted() {

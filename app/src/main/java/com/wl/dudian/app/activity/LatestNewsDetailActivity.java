@@ -47,11 +47,19 @@ public class LatestNewsDetailActivity extends BaseActivity {
     private TextView mTitleTv;
     private WebView mWebView;
     private NewsDetails mNewsDetails;
+    private FloatingActionButton mCommentBtn;
     private FloatingActionButton mShareBtn;
     private FloatingActionsMenu mMenuBtn;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Handler mHandler = new Handler();
 
+    /**
+     * launch
+     *
+     * @param activity  activity
+     * @param newsId    新闻ID
+     * @param title     新闻标题.
+     */
     public static void launch(Context activity, String newsId, String title) {
         Intent intent = new Intent(activity, LatestNewsDetailActivity.class);
         intent.putExtra(ARGU_NEWSID, newsId);
@@ -70,6 +78,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.latest_news_detail_toolbar);
         mShareBtn = (FloatingActionButton) findViewById(R.id.latest_news_detail_actiivty_share_button);
         mMenuBtn = (FloatingActionsMenu) findViewById(R.id.latest_news_detail_activity_menu_btn);
+        mCommentBtn = (FloatingActionButton) findViewById(R.id.latest_news_detail_actiivty_comment_btn);
         mWebView = (WebView) findViewById(R.id.latest_news_detail_webview);
         mTitleTv = (TextView) findViewById(R.id.latest_news_detail_title_tv);
         mWebView.setVisibility(View.INVISIBLE);
@@ -98,6 +107,12 @@ public class LatestNewsDetailActivity extends BaseActivity {
 
         mBackgourndImg = (ImageView) findViewById(R.id.latest_news_detail_bg_img);
 
+        mCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handlComment();
+            }
+        });
         // 分享按钮事件监听
         mShareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +122,10 @@ public class LatestNewsDetailActivity extends BaseActivity {
                 mMenuBtn.toggle();
             }
         });
+    }
+
+    private void handlComment() {
+
     }
 
     private void share() {
@@ -223,6 +242,9 @@ public class LatestNewsDetailActivity extends BaseActivity {
         if (TextUtils.isEmpty(imageUrl)) {
             return;
         }
-        Glide.with(this).load(imageUrl).diskCacheStrategy(DiskCacheStrategy.RESULT).into(mBackgourndImg);
+        Glide.with(this)
+             .load(imageUrl)
+             .diskCacheStrategy(DiskCacheStrategy.RESULT)
+             .into(mBackgourndImg);
     }
 }

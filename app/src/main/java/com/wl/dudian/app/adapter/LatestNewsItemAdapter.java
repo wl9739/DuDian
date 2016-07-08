@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.StoriesBean;
 
@@ -132,7 +133,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (null == images || images.size() < 1) {
             return;
         }
-        Glide.with(mContext).load(images.get(0)).into(picImageView);
+        Glide.with(mContext).load(images.get(0)).diskCacheStrategy(DiskCacheStrategy.RESULT).into(picImageView);
     }
 
     @Override

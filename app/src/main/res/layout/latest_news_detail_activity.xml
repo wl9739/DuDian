@@ -121,11 +121,12 @@
             fab:fab_title="Click to remove"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_gone"
+            android:id="@+id/latest_news_detail_actiivty_comment_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_title="分享"
+            app:fab_icon="@drawable/ic_comment"
             fab:fab_colorNormal="@color/white"
+            app:fab_title="评论"
             fab:fab_colorPressed="@color/white_pressed"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -135,7 +136,7 @@
             app:fab_icon="@android:drawable/ic_menu_share"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="Set bottom menu enabled/disabled"/>
+            fab:fab_title="分享"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </android.support.design.widget.CoordinatorLayout>
