@@ -17,6 +17,9 @@ import com.wl.dudian.app.model.StoriesBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by yisheng on 16/6/21.
  */
@@ -26,6 +29,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
     private static final String TAG = "mStore111";
+
 
     @Override
     public void onClick(View v) {
@@ -146,12 +150,16 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.latest_news_detail_date_tv)
         TextView dateTv;
+        @BindView(R.id.latest_news_fragment_title)
         TextView titleTv;
+        @BindView(R.id.latest_news_fragment_image)
         ImageView picImageView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             dateTv = (TextView) itemView.findViewById(R.id.latest_news_detail_date_tv);
             titleTv = (TextView) itemView.findViewById(R.id.latest_news_fragment_title);
             picImageView = (ImageView) itemView.findViewById(R.id.latest_news_fragment_image);

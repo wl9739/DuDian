@@ -29,6 +29,8 @@ import com.wl.dudian.framework.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -36,36 +38,61 @@ import rx.schedulers.Schedulers;
 
 
 /**
+ * 新闻展示页面
+ *
  * Created by yisheng on 16/6/21.
  */
 
 public class LatestNewsFragment extends BaseFragment {
 
     public static final String TAG = "LatestNewsFragment11111";
-
-    public interface OnRefreshedListener {
-        void onRefreshed();
-
-        void onRefreshError();
-    }
-
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
-    private RecyclerView mNewsItemRecyclerView;
+    @BindView(R.id.latest_news_fragment_recyclerview)
+    RecyclerView mNewsItemRecyclerView;
+
+    /**
+     * item adapter
+     */
     private LatestNewsItemAdapter mItemAdapter;
+
+    /**
+     * Recycler view 线性布局管理器
+     */
     private LinearLayoutManager mLinearLayoutManager;
+
+    /**
+     * 当前日期
+     */
     private String mNowDate;
 
+    /**
+     * 新闻内容实体累集合
+     */
     private List<StoriesBean> mStoriesBeanList = new ArrayList<>();
+
+    /**
+     * Banner view 显示的新闻实体集合
+     */
     private List<TopStoriesBean> mTopStoriesBeen = new ArrayList<>();
+
+    /**
+     * 刷新监听器
+     */
     private OnRefreshedListener mOnRefreshedListener;
+
+    /**
+     * 轮播广告组件
+     */
     private BannerView mBannerView;
 
+    /**
+     * Recycler view 的 header view
+     */
     private View mHeaderView;
 
     public static LatestNewsFragment newInstance() {
         return new LatestNewsFragment();
     }
-
 
     @Nullable
     @Override
@@ -88,6 +115,7 @@ public class LatestNewsFragment extends BaseFragment {
 
         // set header
         mItemAdapter.setHeaderView(mHeaderView);
+        ButterKnife.bind(this, mNewsItemRecyclerView);
         return mNewsItemRecyclerView;
     }
 
@@ -154,41 +182,6 @@ public class LatestNewsFragment extends BaseFragment {
     }
 
     /**
-     * 加载历史信息
-     *
-     * @param nowDate
-     */
-    private void loadMoreNews(String nowDate) {
-        HttpUtil.getInstance().getBeforeNews(DateUtil.getLastDay(nowDate))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<BeforeNews>() {
-                    @Override
-                    public void call(BeforeNews beforeNews) {
-                        // 保存到数据库
-                    }
-                })
-                .subscribe(new Subscriber<BeforeNews>() {
-                    @Override
-                    public void onCompleted() {
-                        mItemAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(BeforeNews beforeNews) {
-                        mStoriesBeanList.addAll(beforeNews.getStories());
-                        mNowDate = beforeNews.getDate();
-                        mItemAdapter.setRefresh(mStoriesBeanList);
-                    }
-                });
-    }
-
-    /**
      * 获取数据
      */
     public void refreshLatestNewsInfo() {
@@ -251,6 +244,47 @@ public class LatestNewsFragment extends BaseFragment {
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             mNewsItemRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
         }
+    }
+
+    /**
+     * 加载历史信息
+     *
+     * @param nowDate
+     */
+    private void loadMoreNews(String nowDate) {
+        HttpUtil.getInstance().getBeforeNews(DateUtil.getLastDay(nowDate))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<BeforeNews>() {
+                    @Override
+                    public void call(BeforeNews beforeNews) {
+                        // 保存到数据库
+                    }
+                })
+                .subscribe(new Subscriber<BeforeNews>() {
+                    @Override
+                    public void onCompleted() {
+                        mItemAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(BeforeNews beforeNews) {
+                        mStoriesBeanList.addAll(beforeNews.getStories());
+                        mNowDate = beforeNews.getDate();
+                        mItemAdapter.setRefresh(mStoriesBeanList);
+                    }
+                });
+    }
+
+    public interface OnRefreshedListener {
+        void onRefreshed();
+
+        void onRefreshError();
     }
 
 }

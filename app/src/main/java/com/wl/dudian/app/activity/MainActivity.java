@@ -33,16 +33,29 @@ import com.wl.dudian.framework.Constants;
 import com.wl.dudian.framework.ScreenShotUtils;
 import com.wl.dudian.framework.Variable;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity11111";
     private static final String FRAGMENT_INDEX = "FRAGMENT_INDEX";
-    private Toolbar mToolbar;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RelativeLayout mConnectFalseRl;
-    private ImageView mNoNetImage;
-    private CoordinatorLayout mCollapsingToolbarLayout;
-    private FrameLayout mContentFl;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.content_main_wifilogo_img)
+    ImageView mContentMainWifilogoImg;
+    @BindView(R.id.content_main_notconnected_rl)
+    RelativeLayout mContentMainNotconnectedRl;
+    @BindView(R.id.content_main)
+    FrameLayout mContentMain;
+    @BindView(R.id.content_main_swiperefresh)
+    SwipeRefreshLayout mContentMainSwiperefresh;
+    @BindView(R.id.app_bar_main_coordinatorlayout)
+    CoordinatorLayout mAppBarMainCoordinatorlayout;
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
 
     private LatestNewsFragment mLatestNewsFragment;
     private FavoriteFragment mFavoriteFragment;
@@ -56,37 +69,30 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Log.d(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_main_swiperefresh);
-        mConnectFalseRl = (RelativeLayout) findViewById(R.id.content_main_notconnected_rl);
-        mContentFl = (FrameLayout) findViewById(R.id.content_main);
-        mCollapsingToolbarLayout = (CoordinatorLayout) findViewById(R.id.app_bar_main_coordinatorlayout);
-        mNoNetImage = (ImageView) findViewById(R.id.content_main_wifilogo_img);
 
         if (BusinessUtil.isNetConnected(this)) {
-            mContentFl.setVisibility(View.VISIBLE);
-            mConnectFalseRl.setVisibility(View.GONE);
-            mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-            mNoNetImage.setVisibility(View.GONE);
+            mContentMain.setVisibility(View.VISIBLE);
+            mContentMainNotconnectedRl.setVisibility(View.GONE);
+            mContentMainSwiperefresh.setVisibility(View.VISIBLE);
+            mContentMainWifilogoImg.setVisibility(View.GONE);
             showLatestNews(savedInstanceState);
         } else {
-            mConnectFalseRl.setVisibility(View.VISIBLE);
-            mSwipeRefreshLayout.setVisibility(View.GONE);
-            mNoNetImage.setVisibility(View.VISIBLE);
+            mContentMainNotconnectedRl.setVisibility(View.VISIBLE);
+            mContentMainSwiperefresh.setVisibility(View.GONE);
+            mContentMainWifilogoImg.setVisibility(View.VISIBLE);
         }
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("读点日报");
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavView.setNavigationItemSelectedListener(this);
 
 
     }
@@ -110,11 +116,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 fm.beginTransaction()
                   .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
                   .commit();
-                mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                mContentMainSwiperefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
                         android.R.color.holo_green_light,
                         android.R.color.holo_orange_light,
                         android.R.color.holo_red_light);
-                mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         if (null != mLatestNewsFragment) {
@@ -122,10 +128,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             if (null == isRefreshed || !isRefreshed.equals(Constants.REFRESH_FLAG)) {
                                 mLatestNewsFragment.refreshLatestNewsInfo();
                             } else {
-                                mSwipeRefreshLayout.setRefreshing(false);
+                                mContentMainSwiperefresh.setRefreshing(false);
                             }
                         } else {
-                            mSwipeRefreshLayout.setRefreshing(false);
+                            mContentMainSwiperefresh.setRefreshing(false);
                         }
                     }
                 });
@@ -133,15 +139,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 mLatestNewsFragment.setOnRefreshedListener(new LatestNewsFragment.OnRefreshedListener() {
                     @Override
                     public void onRefreshed() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        Snackbar.make(mCollapsingToolbarLayout, "刷新数据成功", Snackbar.LENGTH_SHORT).show();
+                        mContentMainSwiperefresh.setRefreshing(false);
+                        Snackbar.make(mAppBarMainCoordinatorlayout, "刷新数据成功", Snackbar.LENGTH_SHORT).show();
 
                     }
 
                     @Override
                     public void onRefreshError() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        Snackbar.make(mCollapsingToolbarLayout, "主人, 刷新失败, 咱们有没有连上网啊?", Snackbar.LENGTH_SHORT).show();
+                        mContentMainSwiperefresh.setRefreshing(false);
+                        Snackbar.make(mAppBarMainCoordinatorlayout, "主人, 刷新失败, 咱们有没有连上网啊?", Snackbar.LENGTH_SHORT)
+                                .show();
                     }
                 });
             }

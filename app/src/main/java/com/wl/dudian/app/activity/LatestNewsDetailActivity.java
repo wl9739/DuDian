@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,6 +27,8 @@ import com.wl.dudian.framework.Variable;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import rx.Subscriber;
@@ -39,26 +43,40 @@ public class LatestNewsDetailActivity extends BaseActivity {
 
     private static final String ARGU_NEWSID = "ARGU_NEWSID";
     private static final String ARGU_TITLE = "ARGU_TITLE";
+    @BindView(R.id.latest_news_detail_bg_img)
+    ImageView mBackgourndImg;
+    @BindView(R.id.latest_news_detail_title_tv)
+    TextView mTitleTv;
+    @BindView(R.id.latest_news_detail_toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.latest_news_detail_collapsingtoolbarlayout)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.latest_news_detail_webview)
+    WebView mWebView;
+    @BindView(R.id.button_remove)
+    FloatingActionButton mButtonRemove;
+    @BindView(R.id.latest_news_detail_actiivty_comment_btn)
+    FloatingActionButton mCommentBtn;
+    @BindView(R.id.latest_news_detail_actiivty_share_button)
+    FloatingActionButton mShareBtn;
+    @BindView(R.id.latest_news_detail_activity_menu_btn)
+    FloatingActionsMenu mMenuBtn;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout mCoordinatorLayout;
 
     private String mNewsId;
     private String mNewsTitle;
-    private Toolbar mToolbar;
-    private ImageView mBackgourndImg;
-    private TextView mTitleTv;
-    private WebView mWebView;
     private NewsDetails mNewsDetails;
-    private FloatingActionButton mCommentBtn;
-    private FloatingActionButton mShareBtn;
-    private FloatingActionsMenu mMenuBtn;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Handler mHandler = new Handler();
 
     /**
      * launch
      *
-     * @param activity  activity
-     * @param newsId    新闻ID
-     * @param title     新闻标题.
+     * @param activity activity
+     * @param newsId   新闻ID
+     * @param title    新闻标题.
      */
     public static void launch(Context activity, String newsId, String title) {
         Intent intent = new Intent(activity, LatestNewsDetailActivity.class);
@@ -71,28 +89,14 @@ public class LatestNewsDetailActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.latest_news_detail_activity);
+        ButterKnife.bind(this);
 
         mNewsId = getIntent().getStringExtra(ARGU_NEWSID);
         mNewsTitle = getIntent().getStringExtra(ARGU_TITLE);
         getNewsDetail(mNewsId);
-        mToolbar = (Toolbar) findViewById(R.id.latest_news_detail_toolbar);
-        mShareBtn = (FloatingActionButton) findViewById(R.id.latest_news_detail_actiivty_share_button);
-        mMenuBtn = (FloatingActionsMenu) findViewById(R.id.latest_news_detail_activity_menu_btn);
-        mCommentBtn = (FloatingActionButton) findViewById(R.id.latest_news_detail_actiivty_comment_btn);
-        mWebView = (WebView) findViewById(R.id.latest_news_detail_webview);
-        mTitleTv = (TextView) findViewById(R.id.latest_news_detail_title_tv);
-        mWebView.setVisibility(View.INVISIBLE);
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        // 开启DOM storage API 功能
-        mWebView.getSettings().setDomStorageEnabled(true);
-        // 开启database storage API功能
-        mWebView.getSettings().setDatabaseEnabled(true);
-        // 开启Application Cache功能
-        mWebView.getSettings().setAppCacheEnabled(true);
 
-        mCollapsingToolbarLayout =
-                (CollapsingToolbarLayout) findViewById(R.id.latest_news_detail_collapsingtoolbarlayout);
+        initWebView();
+
         mCollapsingToolbarLayout.setTitle(" ");
         mTitleTv.setText(mNewsTitle);
         mToolbar.setTitleTextColor(0x333333);
@@ -105,7 +109,6 @@ public class LatestNewsDetailActivity extends BaseActivity {
             }
         });
 
-        mBackgourndImg = (ImageView) findViewById(R.id.latest_news_detail_bg_img);
 
         mCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,19 +127,35 @@ public class LatestNewsDetailActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 初始化WebView页面
+     */
+    private void initWebView() {
+        mWebView.setVisibility(View.INVISIBLE);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        // 开启DOM storage API 功能
+        mWebView.getSettings().setDomStorageEnabled(true);
+        // 开启database storage API功能
+        mWebView.getSettings().setDatabaseEnabled(true);
+        // 开启Application Cache功能
+        mWebView.getSettings().setAppCacheEnabled(true);
+    }
+
     private void handlComment() {
 
     }
 
     private void share() {
-
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-        intent.putExtra(Intent.EXTRA_TEXT, "来自读点日报的分享" + mNewsDetails.getTitle() + "，http://daily.zhihu.com/story/" + mNewsDetails.getId());
+        intent.putExtra(Intent.EXTRA_TEXT,
+                "来自读点日报的分享" + mNewsDetails.getTitle() + "，http://daily.zhihu.com/story/" + mNewsDetails.getId());
         startActivity(Intent.createChooser(intent, mNewsDetails.getTitle()));
     }
+
     /**
      * 使用ShareSDK进行分享
      */
@@ -144,30 +163,30 @@ public class LatestNewsDetailActivity extends BaseActivity {
         if (null == mNewsDetails) {
             return;
         }
-            ShareSDK.initSDK(this);
-            OnekeyShare oks = new OnekeyShare();
-            //关闭sso授权
-            oks.disableSSOWhenAuthorize();
-            // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
-            //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-            // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-            oks.setTitle(mNewsTitle);
-            // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-            oks.setTitleUrl(mNewsDetails.getShare_url());
-            // text是分享文本，所有平台都需要这个字段
-            oks.setText("读点日报 -- 闲暇时间, 读点日报");
-            // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        ShareSDK.initSDK(this);
+        OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+        oks.setTitle(mNewsTitle);
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl(mNewsDetails.getShare_url());
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText("读点日报 -- 闲暇时间, 读点日报");
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
 //            oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
-            // url仅在微信（包括好友和朋友圈）中使用
-            oks.setUrl(mNewsDetails.getShare_url());
-            // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl(mNewsDetails.getShare_url());
+        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
 //            oks.setComment("我是测试评论文本");
-            // site是分享此内容的网站名称，仅在QQ空间使用
+        // site是分享此内容的网站名称，仅在QQ空间使用
 //            oks.setSite(getString(R.string.app_name));
-            // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
 //            oks.setSiteUrl("http://sharesdk.cn");
-           // 启动分享GUI
-            oks.show(this);
+        // 启动分享GUI
+        oks.show(this);
     }
 
     private void getNewsDetail(String newsId) {

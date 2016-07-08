@@ -38,12 +38,9 @@ public class SplashActivity extends BaseActivity {
      * 启动图片文件路径
      */
     private static final String SPLASH_IMAGE_FILEPATH = "start.jpg";
-
-    /**
-     * 启动页面显示图片
-     */
     @BindView(R.id.splash_activity_img)
-    private ImageView mSplashView;
+    ImageView mSplashView;
+
 
     /**
      * 保存图片的文件
@@ -62,7 +59,6 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.splash_activity);
         ButterKnife.bind(this);
 
-        mSplashView = (ImageView) findViewById(R.id.splash_activity_img);
         initStartImage();
 
         initAnimation();
@@ -162,7 +158,7 @@ public class SplashActivity extends BaseActivity {
     /**
      * 将下载的图片保存到文件里
      *
-     * @param bitmap    下载的图片Bitmap
+     * @param bitmap 下载的图片Bitmap
      */
     private void saveAsFile(Bitmap bitmap) {
         try {
