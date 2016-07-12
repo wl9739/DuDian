@@ -40,7 +40,6 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"/>
 
             <View
@@ -56,7 +55,6 @@
                 android:layout_marginBottom="22dp"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:text="Hello, Baby"
                 android:textColor="@android:color/white"
                 android:textSize="22sp"/>
 
@@ -82,7 +80,6 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -91,53 +88,50 @@
                 android:id="@+id/latest_news_detail_webview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"></WebView>
-
-
+                android:visibility="invisible"/>
         </FrameLayout>
     </android.support.v4.widget.NestedScrollView>
+
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/latest_news_detail_activity_menu_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        fab:fab_addButtonColorNormal="@color/white"
-        fab:fab_addButtonColorPressed="@color/white_pressed"
-        fab:fab_addButtonPlusIconColor="@color/half_black"
-        fab:fab_addButtonSize="normal"
-        fab:fab_expandDirection="down"
-        fab:fab_labelStyle="@style/menu_labels_style">
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_behavior="com.wl.dudian.app.ScrollAwareFABBehavior"
+        fab:fab_addButtonColorNormal="@color/colorAccent"
+        fab:fab_icon="@drawable/ic_add_24dp"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_size="mini"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
             fab:fab_title="Click to remove"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/latest_news_detail_actiivty_comment_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_icon="@drawable/ic_comment"
-            fab:fab_colorNormal="@color/white"
-            app:fab_title="评论"
-            fab:fab_colorPressed="@color/white_pressed"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/latest_news_detail_actiivty_share_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_icon="@android:drawable/ic_menu_share"
+            app:fab_size="mini"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="分享"/>
+            fab:fab_title="Click to remove"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            app:fab_size="mini"
+            app:fab_icon="@drawable/ic_share_black_24dp"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_title="Click to remove"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
 </android.support.design.widget.CoordinatorLayout>
 

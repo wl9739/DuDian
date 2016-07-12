@@ -18,8 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.framework.HttpUtil;
@@ -55,14 +53,14 @@ public class LatestNewsDetailActivity extends BaseActivity {
     AppBarLayout mAppBarLayout;
     @BindView(R.id.latest_news_detail_webview)
     WebView mWebView;
-    @BindView(R.id.button_remove)
-    FloatingActionButton mButtonRemove;
-    @BindView(R.id.latest_news_detail_actiivty_comment_btn)
-    FloatingActionButton mCommentBtn;
-    @BindView(R.id.latest_news_detail_actiivty_share_button)
-    FloatingActionButton mShareBtn;
-    @BindView(R.id.latest_news_detail_activity_menu_btn)
-    FloatingActionsMenu mMenuBtn;
+//    @BindView(R.id.button_remove)
+//    FloatingActionButton mButtonRemove;
+//    @BindView(R.id.latest_news_detail_actiivty_comment_btn)
+//    FloatingActionButton mCommentBtn;
+//    @BindView(R.id.latest_news_detail_actiivty_share_button)
+//    FloatingActionButton mShareBtn;
+//    @BindView(R.id.latest_news_detail_activity_menu_btn)
+//    FloatingActionsMenu mMenuBtn;
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
 
@@ -110,21 +108,21 @@ public class LatestNewsDetailActivity extends BaseActivity {
         });
 
 
-        mCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handlComment();
-            }
-        });
-        // 分享按钮事件监听
-        mShareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                handlerShare();
-                share();
-                mMenuBtn.toggle();
-            }
-        });
+//        mCommentBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                handlComment();
+//            }
+//        });
+//        // 分享按钮事件监听
+//        mShareBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                handlerShare();
+//                share();
+//                mMenuBtn.toggle();
+//            }
+//        });
     }
 
     /**
