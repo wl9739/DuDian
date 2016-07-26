@@ -5,16 +5,18 @@ import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
+import com.wl.dudian.app.model.ThemeDetailModel;
+import com.wl.dudian.app.model.ThemesModel;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;
 
 /**
- * Created by yisheng on 16/6/20.
+ * Api接口类
+ * Created by Qiushui on 16/6/20.
  */
-
-public interface DailyService {
+public interface DailyApi {
 
     /**
      * 启动页面图像
@@ -42,6 +44,26 @@ public interface DailyService {
     @GET("/api/4/news/{newsId}")
     Observable<NewsDetails> getNewsDetails(@Path("newsId") String newsId);
 
+    /**
+     * 获得历史新闻
+     *
+     * @param date
+     * @return
+     */
     @GET("/api/4/news/before/{date}")
     Observable<BeforeNews> getBeforeNews(@Path("date") String date);
+
+    /**
+     * 主题日报列表查看
+     *
+     * @return
+     */
+    @GET("/api/4/themes")
+    Observable<ThemesModel> getThemesModel();
+
+    /**
+     * 主题日报内容查看
+     */
+    @GET("/api/4/theme/{id}")
+    Observable<ThemeDetailModel> getThemeDetail(@Path("id") String id);
 }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -18,7 +17,6 @@ import com.wl.dudian.framework.ACache;
 
 public class TestActivity extends BaseActivity {
 
-    public static final String TAG = "MainActivity11111";
     private ImageView mImageView;
 
     @Override
@@ -37,11 +35,9 @@ public class TestActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: Second Time");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         finish();
-        Log.d(TAG, "onResume: Second finish Time");
     }
 }

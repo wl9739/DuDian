@@ -21,11 +21,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HttpUtil {
 
     private static final long DEFAULT_TIMEOUT = 5;
-    private final long CACHE_SIZE = 10 * 1024 *1024;
     private static final String BASE_URL = "http://news-at.zhihu.com/";
     private static Retrofit mRetrofit;
-    private static DailyService mDailyService;
-
+    private static DailyApi mDailyService;
+    private final long CACHE_SIZE = 10 * 1024 * 1024;
     private Interceptor mInterceptor = new Interceptor() {
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -39,11 +38,15 @@ public class HttpUtil {
             return response.newBuilder().header("Cache-Control", cacheControl).removeHeader("Pragma").build();
         }
     };
-    private HttpUtil() {
 
+    public static DailyApi getInstance() {
+        if (null == mDailyService) {
+            return createService();
+        }
+        return mDailyService;
     }
 
-    private static DailyService createService() {
+    private static DailyApi createService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         //手动创建一个OkHttpClient并设置超时时间
@@ -57,14 +60,11 @@ public class HttpUtil {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(BASE_URL)
                 .build();
-        mDailyService = mRetrofit.create(DailyService.class);
+        mDailyService = mRetrofit.create(DailyApi.class);
         return mDailyService;
     }
 
-    public static DailyService getInstance() {
-        if (null == mDailyService) {
-            return createService();
-        }
-        return mDailyService;
+    private HttpUtil() {
+
     }
 }

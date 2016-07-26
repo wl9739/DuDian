@@ -27,14 +27,19 @@ import com.wl.dudian.app.fragment.ColumnFragment;
 import com.wl.dudian.app.fragment.FavoriteFragment;
 import com.wl.dudian.app.fragment.LatestNewsFragment;
 import com.wl.dudian.app.fragment.SettingsFragment;
+import com.wl.dudian.app.model.ThemesModel;
 import com.wl.dudian.framework.ACache;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.Constants;
+import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.ScreenShotUtils;
 import com.wl.dudian.framework.Variable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -62,7 +67,35 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private ColumnFragment mColumnFragment;
     private SettingsFragment mSettingsFragment;
     private AboutFragment mAboutFragment;
+    private ThemesModel mThemesModel;
     private int index = 0;
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                setNavSelection(0);
+                break;
+            case R.id.nav_column:
+                setNavSelection(1);
+                break;
+            case R.id.nav_favorite:
+                setNavSelection(2);
+                break;
+            case R.id.nav_daynight:
+                changeDayNightModel();
+                break;
+            case R.id.nav_setting:
+                setNavSelection(3);
+                break;
+            case R.id.nav_about:
+                setNavSelection(4);
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +126,60 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         toggle.syncState();
 
         mNavView.setNavigationItemSelectedListener(this);
+        getThemes();
 
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // 当切换DayNight时,保存当前展示Fragment的index
+        outState.putInt(FRAGMENT_INDEX, index);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: ");
+    }
+
+    private void getThemes() {
+        HttpUtil.getInstance().getThemesModel()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ThemesModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ThemesModel themesModel) {
+                        mThemesModel = themesModel;
+                    }
+                });
     }
 
     private void showLatestNews(Bundle savedInstanceState) {
@@ -157,33 +237,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                setNavSelection(0);
-                break;
-            case R.id.nav_column:
-                setNavSelection(1);
-                break;
-            case R.id.nav_favorite:
-                setNavSelection(2);
-                break;
-            case R.id.nav_daynight:
-                changeDayNightModel();
-                break;
-            case R.id.nav_setting:
-                setNavSelection(3);
-                break;
-            case R.id.nav_about:
-                setNavSelection(4);
-                break;
-            default:
-                break;
-        }
-        return false;
-    }
-
     private void setNavSelection(int i) {
         index = i;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -199,7 +252,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case 1:
                 if (null == mColumnFragment) {
-                    mColumnFragment = ColumnFragment.newInstance();
+                    mColumnFragment = ColumnFragment.newInstance(mThemesModel);
                     ft.add(R.id.content_main, mColumnFragment);
                 } else {
                     ft.show(mColumnFragment);
@@ -231,6 +284,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
         }
         ft.commit();
+        // close drawer
+        mDrawerLayout.closeDrawers();
     }
 
     private void hideFragments(FragmentTransaction ft) {
@@ -276,30 +331,5 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         finish();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop: ");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: ");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG, "onRestart: ");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // 当切换DayNight时,保存当前展示Fragment的index
-        outState.putInt(FRAGMENT_INDEX, index);
     }
 }

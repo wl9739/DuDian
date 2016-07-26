@@ -29,23 +29,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
 
     private static final String TAG = "mStore111";
-
-
-    @Override
-    public void onClick(View v) {
-        if (mOnLatestNewsItemClickListener != null) {
-            mOnLatestNewsItemClickListener.onItemClick(v, (String) v.getTag());
-        }
-    }
-
-    public interface OnLatestNewsItemClickListener {
-        void onItemClick(View view, String newsId);
-    }
-
-    public void setOnLatestNewsItemClickListener(OnLatestNewsItemClickListener onLatestNewsItemClickListener) {
-        mOnLatestNewsItemClickListener = onLatestNewsItemClickListener;
-    }
-
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private List<StoriesBean> mStoriesBeen;
@@ -56,11 +39,21 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * headerview
      */
     private View mHeaderView;
-
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
         mStoriesBeen = new ArrayList<>();
         mStoriesBeen.addAll(storiesBean);
         mContext = context;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mOnLatestNewsItemClickListener != null) {
+            mOnLatestNewsItemClickListener.onItemClick(v, (String) v.getTag());
+        }
+    }
+
+    public void setOnLatestNewsItemClickListener(OnLatestNewsItemClickListener onLatestNewsItemClickListener) {
+        mOnLatestNewsItemClickListener = onLatestNewsItemClickListener;
     }
 
     /**
@@ -86,7 +79,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         notifyDataSetChanged();
     }
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
@@ -110,10 +102,16 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //                    itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart("20160701"));
 //                    itemViewHolder.dateTv.setVisibility(View.VISIBLE);
 //                }
-                // position数需要-1, 因为0是HeaderView
-                itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
-                itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position - 1).getId());
-                downloadBitmap(mStoriesBeen.get(position - 1).getImages(), ((ItemViewHolder) holder).picImageView);
+                if (mHeaderView != null) {
+                    // position数需要-1, 因为0是HeaderView
+                    itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
+                    itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position - 1).getId());
+                    downloadBitmap(mStoriesBeen.get(position - 1).getImages(), ((ItemViewHolder) holder).picImageView);
+                } else {
+                    itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
+                    itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position).getId());
+                    downloadBitmap(mStoriesBeen.get(position).getImages(), ((ItemViewHolder) holder).picImageView);
+                }
             }
         }
     }
@@ -125,6 +123,14 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else {
             return TYPE_ITEM;
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        if (null != mHeaderView) {
+            return mStoriesBeen.size() + 1;
+        }
+        return mStoriesBeen.size();
     }
 
     /**
@@ -140,12 +146,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Glide.with(mContext).load(images.get(0)).diskCacheStrategy(DiskCacheStrategy.RESULT).into(picImageView);
     }
 
-    @Override
-    public int getItemCount() {
-        if (null != mHeaderView) {
-            return mStoriesBeen.size() + 1;
-        }
-        return mStoriesBeen.size();
+    public interface OnLatestNewsItemClickListener {
+        void onItemClick(View view, String newsId);
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
