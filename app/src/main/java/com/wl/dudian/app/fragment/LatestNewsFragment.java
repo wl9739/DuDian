@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,6 @@ import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
 import com.wl.dudian.framework.ACache;
 import com.wl.dudian.framework.Constants;
 import com.wl.dudian.framework.DateUtil;
@@ -39,7 +39,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * 新闻展示页面
- *
+ * <p/>
  * Created by yisheng on 16/6/21.
  */
 
@@ -47,8 +47,11 @@ public class LatestNewsFragment extends BaseFragment {
 
     public static final String TAG = "LatestNewsFragment11111";
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
+
     @BindView(R.id.latest_news_fragment_recyclerview)
     RecyclerView mNewsItemRecyclerView;
+    @BindView(R.id.latest_news_sr)
+    SwipeRefreshLayout mContentMainSwiperefresh;
 
     /**
      * item adapter
@@ -71,16 +74,6 @@ public class LatestNewsFragment extends BaseFragment {
     private List<StoriesBean> mStoriesBeanList = new ArrayList<>();
 
     /**
-     * Banner view 显示的新闻实体集合
-     */
-    private List<TopStoriesBean> mTopStoriesBeen = new ArrayList<>();
-
-    /**
-     * 刷新监听器
-     */
-    private OnRefreshedListener mOnRefreshedListener;
-
-    /**
      * 轮播广告组件
      */
     private BannerView mBannerView;
@@ -98,8 +91,21 @@ public class LatestNewsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        // init recyclerview
-        mNewsItemRecyclerView = (RecyclerView) inflater.inflate(R.layout.latest_news_fragment, container, false);
+
+        // init
+        mContentMainSwiperefresh =
+                (SwipeRefreshLayout) inflater.inflate(R.layout.latest_news_fragment, container, false);
+
+        ButterKnife.bind(this, mContentMainSwiperefresh);
+        // init headerview
+        mHeaderView = inflater.inflate(R.layout.latest_news_fragment_header, mContentMainSwiperefresh, false);
+        mBannerView = (BannerView) mHeaderView.findViewById(R.id.latest_news_fragment_header_banner);
+        return mContentMainSwiperefresh;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mNewsItemRecyclerView.setLayoutManager(mLinearLayoutManager);
         mNewsItemRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -109,27 +115,26 @@ public class LatestNewsFragment extends BaseFragment {
         // set adapter
         mNewsItemRecyclerView.setAdapter(mItemAdapter);
 
-        // init headerview
-        mHeaderView = inflater.inflate(R.layout.latest_news_fragment_header, mNewsItemRecyclerView, false);
-        mBannerView = (BannerView) mHeaderView.findViewById(R.id.latest_news_fragment_header_banner);
 
         // set header
         mItemAdapter.setHeaderView(mHeaderView);
-        ButterKnife.bind(this, mNewsItemRecyclerView);
-        return mNewsItemRecyclerView;
-    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: ");
-
+        // init swiprefresh
+        mContentMainSwiperefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLatestNewsInfo();
+            }
+        });
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated: ");
         setRetainInstance(true);
         refreshLatestNewsInfo();
 
@@ -166,12 +171,6 @@ public class LatestNewsFragment extends BaseFragment {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
-
     /**
      * 获取数据
      */
@@ -188,9 +187,7 @@ public class LatestNewsFragment extends BaseFragment {
                 .subscribe(new Subscriber<LatestNews>() {
                     @Override
                     public void onCompleted() {
-                        if (null != mOnRefreshedListener) {
-                            mOnRefreshedListener.onRefreshed();
-                        }
+                        stopRefresh();
                         Variable.isRefresh = !Variable.isRefresh;
                         ACache.get(getActivity()).put(Constants.REFRESH_NETWORK, Constants.REFRESH_FLAG, 60);
                     }
@@ -198,9 +195,7 @@ public class LatestNewsFragment extends BaseFragment {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (null != mOnRefreshedListener) {
-                            mOnRefreshedListener.onRefreshError();
-                        }
+                        stopRefresh();
                     }
 
                     @Override
@@ -215,10 +210,6 @@ public class LatestNewsFragment extends BaseFragment {
 
                     }
                 });
-    }
-
-    public void setOnRefreshedListener(OnRefreshedListener onRefreshedListener) {
-        mOnRefreshedListener = onRefreshedListener;
     }
 
     @Override
@@ -236,6 +227,15 @@ public class LatestNewsFragment extends BaseFragment {
         if (savedInstanceState != null) {
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             mNewsItemRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+    /**
+     * 停止下拉刷新
+     */
+    private void stopRefresh() {
+        if (mContentMainSwiperefresh.isRefreshing()) {
+            mContentMainSwiperefresh.setRefreshing(false);
         }
     }
 
@@ -272,12 +272,6 @@ public class LatestNewsFragment extends BaseFragment {
                         mItemAdapter.setRefresh(mStoriesBeanList);
                     }
                 });
-    }
-
-    public interface OnRefreshedListener {
-        void onRefreshed();
-
-        void onRefreshError();
     }
 
 }

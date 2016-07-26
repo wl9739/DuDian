@@ -32,17 +32,10 @@
             android:textSize="18sp"/>
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/content_main_swiperefresh"
+    <FrameLayout
+        android:id="@+id/content_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/content_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"/>
 
 
 </FrameLayout>

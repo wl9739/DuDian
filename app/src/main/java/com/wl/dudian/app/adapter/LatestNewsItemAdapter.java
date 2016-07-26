@@ -111,6 +111,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 } else {
                     itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
                     itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
+                    // 如果mei
+                    if (null == mStoriesBeen.get(position) || null == mStoriesBeen.get(position).getImages()) {
+                        return;
+                    }
                     BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
                             ((ItemViewHolder) holder).picImageView);
                 }

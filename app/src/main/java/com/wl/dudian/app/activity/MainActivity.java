@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +28,6 @@ import com.wl.dudian.app.fragment.SettingsFragment;
 import com.wl.dudian.app.model.ThemesModel;
 import com.wl.dudian.framework.ACache;
 import com.wl.dudian.framework.BusinessUtil;
-import com.wl.dudian.framework.Constants;
 import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.ScreenShotUtils;
 import com.wl.dudian.framework.Variable;
@@ -53,8 +50,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RelativeLayout mContentMainNotconnectedRl;
     @BindView(R.id.content_main)
     FrameLayout mContentMain;
-    @BindView(R.id.content_main_swiperefresh)
-    SwipeRefreshLayout mContentMainSwiperefresh;
     @BindView(R.id.app_bar_main_coordinatorlayout)
     CoordinatorLayout mAppBarMainCoordinatorlayout;
     @BindView(R.id.nav_view)
@@ -104,21 +99,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
         if (BusinessUtil.isNetConnected(this)) {
             mContentMain.setVisibility(View.VISIBLE);
             mContentMainNotconnectedRl.setVisibility(View.GONE);
-            mContentMainSwiperefresh.setVisibility(View.VISIBLE);
             mContentMainWifilogoImg.setVisibility(View.GONE);
             showLatestNews(savedInstanceState);
         } else {
             mContentMainNotconnectedRl.setVisibility(View.VISIBLE);
-            mContentMainSwiperefresh.setVisibility(View.GONE);
             mContentMainWifilogoImg.setVisibility(View.VISIBLE);
         }
 
         mToolbar.setTitle("读点日报");
-
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -128,18 +119,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNavView.setNavigationItemSelectedListener(this);
         getThemes();
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: ");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop: ");
     }
 
     @Override
@@ -189,48 +168,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             index = savedInstanceState.getInt(FRAGMENT_INDEX);
             setNavSelection(index);
         } else {
-
             mLatestNewsFragment = (LatestNewsFragment) fm.findFragmentById(R.id.content_main);
             if (mLatestNewsFragment == null) {
                 mLatestNewsFragment = LatestNewsFragment.newInstance();
                 fm.beginTransaction()
                   .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
                   .commit();
-                mContentMainSwiperefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
-                        android.R.color.holo_green_light,
-                        android.R.color.holo_orange_light,
-                        android.R.color.holo_red_light);
-                mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        if (null != mLatestNewsFragment) {
-                            String isRefreshed = ACache.get(MainActivity.this).getAsString(Constants.REFRESH_NETWORK);
-                            if (null == isRefreshed || !isRefreshed.equals(Constants.REFRESH_FLAG)) {
-                                mLatestNewsFragment.refreshLatestNewsInfo();
-                            } else {
-                                mContentMainSwiperefresh.setRefreshing(false);
-                            }
-                        } else {
-                            mContentMainSwiperefresh.setRefreshing(false);
-                        }
-                    }
-                });
-
-                mLatestNewsFragment.setOnRefreshedListener(new LatestNewsFragment.OnRefreshedListener() {
-                    @Override
-                    public void onRefreshed() {
-                        mContentMainSwiperefresh.setRefreshing(false);
-                        Snackbar.make(mAppBarMainCoordinatorlayout, "刷新数据成功", Snackbar.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onRefreshError() {
-                        mContentMainSwiperefresh.setRefreshing(false);
-                        Snackbar.make(mAppBarMainCoordinatorlayout, "主人, 刷新失败, 咱们有没有连上网啊?", Snackbar.LENGTH_SHORT)
-                                .show();
-                    }
-                });
             }
 
         }
@@ -263,6 +206,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     mFavoriteFragment = FavoriteFragment.newInstance();
                     ft.add(R.id.content_main, mFavoriteFragment);
                 } else {
+                    // 主动刷新数据
+                    mFavoriteFragment.updateFavoriteItem();
                     ft.show(mFavoriteFragment);
                 }
                 break;

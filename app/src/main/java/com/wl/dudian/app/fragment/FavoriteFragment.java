@@ -32,6 +32,7 @@ public class FavoriteFragment extends BaseFragment {
 
     private LatestNewsItemAdapter mAdapter;
     private List<StoriesBean> mStoriesBeanList;
+    private LatestNewsDetailActivity.AddFavoriteListener mAddFavoriteListener;
 
 
     public static FavoriteFragment newInstance() {
@@ -50,13 +51,27 @@ public class FavoriteFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mStoriesBeanList = DataSupport.findAll(StoriesBean.class);
+        updateFavoriteItem();
+    }
 
+    public void updateFavoriteItem() {
+        mStoriesBeanList = DataSupport.findAll(StoriesBean.class);
         if (mStoriesBeanList.size() < 1) {
             // TODO 没有收藏记录
         } else {
             showFavoriteNews();
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mAddFavoriteListener = new LatestNewsDetailActivity.AddFavoriteListener() {
+            @Override
+            public void addFavoriteItem() {
+                updateFavoriteItem();
+            }
+        };
     }
 
     private void showFavoriteNews() {

@@ -46,7 +46,6 @@ import rx.schedulers.Schedulers;
 public class LatestNewsDetailActivity extends BaseActivity {
 
     private static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
-
     @BindView(R.id.latest_news_detail_bg_img)
     ImageView mBackgourndImg;
     @BindView(R.id.latest_news_detail_title_tv)
@@ -59,14 +58,12 @@ public class LatestNewsDetailActivity extends BaseActivity {
     AppBarLayout mAppBarLayout;
     @BindView(R.id.latest_news_detail_webview)
     WebView mWebView;
-
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.latest_news_detail_activity_favorite_btn)
     FloatingActionButton mFavoriteBtn;
     @BindView(R.id.latest_news_detail_activity_menu_btn)
-    FloatingActionsMenu mLatestNewsDetailActivityMenuBtn;
-
+    FloatingActionsMenu mMenuBtn;
     private NewsDetails mNewsDetails;
     private StoriesBean mStoriesBean;
     private Handler mHandler = new Handler();
@@ -112,11 +109,9 @@ public class LatestNewsDetailActivity extends BaseActivity {
             public void onClick(View view) {
                 // 保存到数据库
                 saveToDatabase();
-
+                mMenuBtn.toggle();
             }
         });
-
-
 
     }
 
@@ -268,5 +263,9 @@ public class LatestNewsDetailActivity extends BaseActivity {
      */
     private void downloadImage(String imageUrl) {
 
+    }
+
+    public interface AddFavoriteListener {
+        void addFavoriteItem();
     }
 }
