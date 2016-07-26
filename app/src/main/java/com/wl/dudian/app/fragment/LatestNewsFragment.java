@@ -136,17 +136,8 @@ public class LatestNewsFragment extends BaseFragment {
         mItemAdapter.setOnLatestNewsItemClickListener(
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
-                    public void onItemClick(View view, String newsId) {
-                        String title = "";
-                        for (int i = 0; i < mStoriesBeanList.size(); i++) {
-                            String id = String.valueOf(mStoriesBeanList.get(i).getId());
-                            if (id.equals(newsId)) {
-//                                                StoriesBean storiesBean = mStoriesBeanList.get(i);
-                                title = mStoriesBeanList.get(i).getTitle();
-//                                                DBHelper.addDetailNewsItem()
-                            }
-                        }
-                        LatestNewsDetailActivity.launch(getActivity(), newsId, title);
+                    public void onItemClick(View view, StoriesBean storiesBean) {
+                        LatestNewsDetailActivity.launch(getActivity(), storiesBean);
                     }
                 });
 
@@ -214,6 +205,8 @@ public class LatestNewsFragment extends BaseFragment {
 
                     @Override
                     public void onNext(LatestNews latestNews) {
+                        // 保存到数据库中
+                        latestNews.save();
                         mStoriesBeanList.clear();
                         mStoriesBeanList.addAll(latestNews.getStories());
                         mNowDate = latestNews.getDate();

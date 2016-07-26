@@ -8,22 +8,28 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.NewsDetails;
+import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.Variable;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,8 +45,8 @@ import rx.schedulers.Schedulers;
 
 public class LatestNewsDetailActivity extends BaseActivity {
 
-    private static final String ARGU_NEWSID = "ARGU_NEWSID";
-    private static final String ARGU_TITLE = "ARGU_TITLE";
+    private static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
+
     @BindView(R.id.latest_news_detail_bg_img)
     ImageView mBackgourndImg;
     @BindView(R.id.latest_news_detail_title_tv)
@@ -53,33 +59,24 @@ public class LatestNewsDetailActivity extends BaseActivity {
     AppBarLayout mAppBarLayout;
     @BindView(R.id.latest_news_detail_webview)
     WebView mWebView;
-//    @BindView(R.id.button_remove)
-//    FloatingActionButton mButtonRemove;
-//    @BindView(R.id.latest_news_detail_actiivty_comment_btn)
-//    FloatingActionButton mCommentBtn;
-//    @BindView(R.id.latest_news_detail_actiivty_share_button)
-//    FloatingActionButton mShareBtn;
-//    @BindView(R.id.latest_news_detail_activity_menu_btn)
-//    FloatingActionsMenu mMenuBtn;
+
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.latest_news_detail_activity_favorite_btn)
+    FloatingActionButton mFavoriteBtn;
+    @BindView(R.id.latest_news_detail_activity_menu_btn)
+    FloatingActionsMenu mLatestNewsDetailActivityMenuBtn;
 
-    private String mNewsId;
-    private String mNewsTitle;
     private NewsDetails mNewsDetails;
+    private StoriesBean mStoriesBean;
     private Handler mHandler = new Handler();
 
     /**
      * launch
-     *
-     * @param activity activity
-     * @param newsId   新闻ID
-     * @param title    新闻标题.
      */
-    public static void launch(Context activity, String newsId, String title) {
+    public static void launch(Context activity, StoriesBean storiesBean) {
         Intent intent = new Intent(activity, LatestNewsDetailActivity.class);
-        intent.putExtra(ARGU_NEWSID, newsId);
-        intent.putExtra(ARGU_TITLE, title);
+        intent.putExtra(ARGU_STORIES_BEAN, storiesBean);
         activity.startActivity(intent);
     }
 
@@ -89,14 +86,17 @@ public class LatestNewsDetailActivity extends BaseActivity {
         setContentView(R.layout.latest_news_detail_activity);
         ButterKnife.bind(this);
 
-        mNewsId = getIntent().getStringExtra(ARGU_NEWSID);
-        mNewsTitle = getIntent().getStringExtra(ARGU_TITLE);
-        getNewsDetail(mNewsId);
+        mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
+        if (null == mStoriesBean) {
+            return;
+        }
+
+        getNewsDetail(String.valueOf(mStoriesBean.getId()));
 
         initWebView();
 
         mCollapsingToolbarLayout.setTitle(" ");
-        mTitleTv.setText(mNewsTitle);
+        mTitleTv.setText(mStoriesBean.getTitle());
         mToolbar.setTitleTextColor(0x333333);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -107,22 +107,34 @@ public class LatestNewsDetailActivity extends BaseActivity {
             }
         });
 
+        mFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 保存到数据库
+                saveToDatabase();
 
-//        mCommentBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                handlComment();
-//            }
-//        });
-//        // 分享按钮事件监听
-//        mShareBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                handlerShare();
-//                share();
-//                mMenuBtn.toggle();
-//            }
-//        });
+            }
+        });
+
+
+
+    }
+
+    /**
+     * 保存到数据库
+     */
+    private void saveToDatabase() {
+        // 保存到数据库
+        if (mNewsDetails != null && mStoriesBean != null) {
+            List<NewsDetails> newsDetailsList = DataSupport.where("id=" + mNewsDetails.getId()).find(NewsDetails.class);
+            if (newsDetailsList != null && newsDetailsList.size() > 0) {
+                Snackbar.make(mCollapsingToolbarLayout, "已收藏", Snackbar.LENGTH_SHORT).show();
+            } else if (!mNewsDetails.save() || !mStoriesBean.save()) {
+                Snackbar.make(mCollapsingToolbarLayout, "收藏失败", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(mCollapsingToolbarLayout, "收藏成功", Snackbar.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
@@ -168,7 +180,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
         // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
         //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
         // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-        oks.setTitle(mNewsTitle);
+        oks.setTitle(mStoriesBean.getTitle());
         // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
         oks.setTitleUrl(mNewsDetails.getShare_url());
         // text是分享文本，所有平台都需要这个字段
@@ -206,8 +218,7 @@ public class LatestNewsDetailActivity extends BaseActivity {
                     public void onNext(NewsDetails newsDetails) {
                         mNewsDetails = newsDetails;
                         String imageUrl = newsDetails.getImage();
-                        downloadImage(imageUrl);
-//
+                        BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
 
                         if (Variable.isNight) {
                             showNightModeNews(newsDetails);
@@ -256,12 +267,6 @@ public class LatestNewsDetailActivity extends BaseActivity {
      * @param imageUrl
      */
     private void downloadImage(String imageUrl) {
-        if (TextUtils.isEmpty(imageUrl)) {
-            return;
-        }
-        Glide.with(this)
-             .load(imageUrl)
-             .diskCacheStrategy(DiskCacheStrategy.RESULT)
-             .into(mBackgourndImg);
+
     }
 }

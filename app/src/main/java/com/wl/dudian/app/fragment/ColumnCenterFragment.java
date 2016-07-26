@@ -73,22 +73,18 @@ public class ColumnCenterFragment extends BaseFragment {
 
         mNewsItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override
-            public void onItemClick(View view, String newsId) {
-                String title = "";
-                for (int i = 0; i < mStoriesBeanList.size(); i++) {
-                    String id = String.valueOf(mStoriesBeanList.get(i).getId());
-                    if (id.equals(newsId)) {
-//                                                StoriesBean storiesBean = mStoriesBeanList.get(i);
-                        title = mStoriesBeanList.get(i).getTitle();
-//                                                DBHelper.addDetailNewsItem()
-                    }
-                }
-                LatestNewsDetailActivity.launch(getActivity(), newsId, title);
+            public void onItemClick(View view, StoriesBean storiesBean) {
+                LatestNewsDetailActivity.launch(getActivity(), storiesBean);
             }
         });
 
     }
 
+    /**
+     * 获取主题日报栏目详情
+     *
+     * @param columnId 主题ID
+     */
     private void getThemeDetails(String columnId) {
         HttpUtil.getInstance()
                 .getThemeDetail(columnId)

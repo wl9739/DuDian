@@ -9,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +33,11 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<StoriesBean> mStoriesBeen;
     private Context mContext;
     private OnLatestNewsItemClickListener mOnLatestNewsItemClickListener;
-    private String mDateStr;
     /**
      * headerview
      */
     private View mHeaderView;
+
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
         mStoriesBeen = new ArrayList<>();
         mStoriesBeen.addAll(storiesBean);
@@ -48,7 +47,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onClick(View v) {
         if (mOnLatestNewsItemClickListener != null) {
-            mOnLatestNewsItemClickListener.onItemClick(v, (String) v.getTag());
+            mOnLatestNewsItemClickListener.onItemClick(v, (StoriesBean) v.getTag());
         }
     }
 
@@ -102,15 +101,18 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //                    itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart("20160701"));
 //                    itemViewHolder.dateTv.setVisibility(View.VISIBLE);
 //                }
+                // 如果有Header
                 if (mHeaderView != null) {
                     // position数需要-1, 因为0是HeaderView
                     itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
-                    itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position - 1).getId());
-                    downloadBitmap(mStoriesBeen.get(position - 1).getImages(), ((ItemViewHolder) holder).picImageView);
+                    itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
+                    BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
+                            ((ItemViewHolder) holder).picImageView);
                 } else {
                     itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
-                    itemViewHolder.itemView.setTag("" + mStoriesBeen.get(position).getId());
-                    downloadBitmap(mStoriesBeen.get(position).getImages(), ((ItemViewHolder) holder).picImageView);
+                    itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
+                    BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
+                            ((ItemViewHolder) holder).picImageView);
                 }
             }
         }
@@ -133,21 +135,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return mStoriesBeen.size();
     }
 
-    /**
-     * 下载图片
-     *
-     * @param images
-     * @param picImageView
-     */
-    private void downloadBitmap(List<String> images, ImageView picImageView) {
-        if (null == images || images.size() < 1) {
-            return;
-        }
-        Glide.with(mContext).load(images.get(0)).diskCacheStrategy(DiskCacheStrategy.RESULT).into(picImageView);
-    }
-
     public interface OnLatestNewsItemClickListener {
-        void onItemClick(View view, String newsId);
+        void onItemClick(View view, StoriesBean storiesBean);
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

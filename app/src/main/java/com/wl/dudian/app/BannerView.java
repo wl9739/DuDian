@@ -17,9 +17,11 @@ import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
 import com.wl.dudian.app.activity.LatestNewsDetailActivity;
+import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -78,6 +80,22 @@ public class BannerView extends FrameLayout {
      */
     private int mImageSize;
 
+    /**
+     * 将TopStoriesBean转化为StoriesBean
+     *
+     * @param topStoriesBean
+     * @return
+     */
+    private static StoriesBean topStoriesBeanToStoriesBean(TopStoriesBean topStoriesBean) {
+        StoriesBean storiesBean = new StoriesBean();
+        storiesBean.setId(topStoriesBean.getId());
+        storiesBean.setImages(Arrays.asList(topStoriesBean.getImage()));
+        storiesBean.setTitle(topStoriesBean.getTitle());
+        storiesBean.setType(topStoriesBean.getType());
+        storiesBean.setGa_prefix(topStoriesBean.getGa_prefix());
+        return storiesBean;
+    }
+
     public BannerView(Context context) {
         this(context, null);
     }
@@ -92,22 +110,6 @@ public class BannerView extends FrameLayout {
         mAdapter = new BannerViewPagerAdapter();
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, true);
-        mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
-        mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setOnPageChangeListener(new BannerPageChangeListener());
-        mIndicator.setViewPager(mViewPager);
-        mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
-            @Override
-            public void onBannerItemClick(String id, String title) {
-                LatestNewsDetailActivity.launch(mContext, id, title);
-            }
-        });
-    }
     /**
      * 添加轮播显示的图片
      *
@@ -119,6 +121,23 @@ public class BannerView extends FrameLayout {
         if (isAutoPlay) {
             startPlay();
         }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, true);
+        mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
+        mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOnPageChangeListener(new BannerPageChangeListener());
+        mIndicator.setViewPager(mViewPager);
+        mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
+            @Override
+            public void onBannerItemClick(StoriesBean storiesBean) {
+                LatestNewsDetailActivity.launch(mContext, storiesBean);
+            }
+        });
     }
 
     /**
@@ -133,14 +152,13 @@ public class BannerView extends FrameLayout {
         mScheduledExecutorService.shutdown();
     }
 
-
     public static class BannerViewPagerAdapter extends PagerAdapter {
 
-        /**
-         * 点击事件接口
-         */
-        public interface OnBannerItemClickListener {
-            void onBannerItemClick(String id, String title);
+        private OnBannerItemClickListener mOnBannerItemClickListener;
+        private List<TopStoriesBean> mTopStoriesBeanList;
+
+        public BannerViewPagerAdapter() {
+            mTopStoriesBeanList = new ArrayList<>();
         }
 
         /**
@@ -149,14 +167,6 @@ public class BannerView extends FrameLayout {
          */
         public void setOnBannerItemClickListener(BannerViewPagerAdapter.OnBannerItemClickListener onBannerItemClickListener) {
             mOnBannerItemClickListener = onBannerItemClickListener;
-        }
-
-        private OnBannerItemClickListener mOnBannerItemClickListener;
-        private List<TopStoriesBean> mTopStoriesBeanList;
-
-
-        public BannerViewPagerAdapter() {
-            mTopStoriesBeanList = new ArrayList<>();
         }
 
         public void setImages(List<TopStoriesBean> images) {
@@ -195,11 +205,18 @@ public class BannerView extends FrameLayout {
             view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mOnBannerItemClickListener.onBannerItemClick("" + mTopStoriesBeanList.get(position).getId(),
-                            mTopStoriesBeanList.get(position).getTitle());
+                    mOnBannerItemClickListener.onBannerItemClick(
+                            topStoriesBeanToStoriesBean(mTopStoriesBeanList.get(position)));
                 }
             });
             return view;
+        }
+
+        /**
+         * 点击事件接口
+         */
+        public interface OnBannerItemClickListener {
+            void onBannerItemClick(StoriesBean storiesBean);
         }
     }
 
