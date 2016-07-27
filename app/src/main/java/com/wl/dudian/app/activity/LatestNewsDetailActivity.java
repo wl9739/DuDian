@@ -255,17 +255,4 @@ public class LatestNewsDetailActivity extends BaseActivity {
         html = html.replace("<div class=\"img-place-holder\">", "");
         mWebView.loadDataWithBaseURL("x-data://base", html, "text/html", "UTF-8", null);
     }
-
-    /**
-     * 下载背景图片并填充到imageview中
-     *
-     * @param imageUrl
-     */
-    private void downloadImage(String imageUrl) {
-
-    }
-
-    public interface AddFavoriteListener {
-        void addFavoriteItem();
-    }
 }

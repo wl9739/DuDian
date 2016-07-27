@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -64,6 +66,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private AboutFragment mAboutFragment;
     private ThemesModel mThemesModel;
     private int index = 0;
+    private boolean isExit = false;
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -89,6 +93,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             default:
                 break;
         }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitBy2Click();
+        }
+        // 不执行退出事件
         return false;
     }
 
@@ -133,12 +146,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         outState.putInt(FRAGMENT_INDEX, index);
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG, "onRestart: ");
-    }
-
     private void getThemes() {
         HttpUtil.getInstance().getThemesModel()
                 .subscribeOn(Schedulers.io())
@@ -151,7 +158,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -233,6 +240,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerLayout.closeDrawers();
     }
 
+    /**
+     * 隐藏Fragment
+     *
+     * @param ft FragmentTransaction
+     */
     private void hideFragments(FragmentTransaction ft) {
         if (null != mLatestNewsFragment) {
             ft.hide(mLatestNewsFragment);
@@ -251,12 +263,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+    /**
+     * 夜间模式切换
+     */
     private void changeDayNightModel() {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 beforeChangeMode();
-                Log.d(TAG, "onNavigationItemSelected: end time");
                 if (!Variable.isNight) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     Variable.isNight = true;
@@ -276,5 +290,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         startActivity(intent);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         finish();
+    }
+
+    /**
+     * 双击退出程序
+     */
+    private void exitBy2Click() {
+        if (!isExit) {
+            isExit = true;
+            Snackbar.make(mContentMain, "再按一次退出程序", Snackbar.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isExit = false;
+                }
+            }, 2000);
+        } else {
+            finish();
+        }
     }
 }

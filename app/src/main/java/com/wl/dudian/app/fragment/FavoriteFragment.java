@@ -32,7 +32,6 @@ public class FavoriteFragment extends BaseFragment {
 
     private LatestNewsItemAdapter mAdapter;
     private List<StoriesBean> mStoriesBeanList;
-    private LatestNewsDetailActivity.AddFavoriteListener mAddFavoriteListener;
 
 
     public static FavoriteFragment newInstance() {
@@ -61,17 +60,6 @@ public class FavoriteFragment extends BaseFragment {
         } else {
             showFavoriteNews();
         }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mAddFavoriteListener = new LatestNewsDetailActivity.AddFavoriteListener() {
-            @Override
-            public void addFavoriteItem() {
-                updateFavoriteItem();
-            }
-        };
     }
 
     private void showFavoriteNews() {
