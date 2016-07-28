@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/id_comment_iv_avatar"
         android:padding="8dp"
-        android:textColor="@color/color_unread"
+        android:textColor="@color/textColorPrimary"
         android:textSize="16sp"
         android:textStyle="bold"/>
 
@@ -41,24 +41,27 @@
         android:layout_below="@+id/id_comment_tv_name"
         android:layout_marginLeft="38dp"
         android:padding="4dp"
-        android:textColor="@color/color_unread"
-        android:textSize="14sp"/>
+        android:textColor="@color/textColorSecond"
+        android:textSize="15sp"/>
 
     <TextView
         android:id="@+id/id_comment_tv_time"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/id_comment_tv_content"
-        android:layout_marginLeft="56dp"
         android:layout_marginTop="8dp"
+        android:text="sdfsdfdsfs"
+        android:gravity="right"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/textColorSecond"
         android:textSize="10sp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/id_comment_tv_time"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
         android:layout_toRightOf="@+id/id_comment_iv_avatar"
-        android:background="#33000000"/>
+        android:background="@color/lineColor"/>
 </RelativeLayout>

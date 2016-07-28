@@ -8,13 +8,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <!--<krelve.app.kuaihu.view.RevealBackgroundView-->
-    <!--android:id="@+id/revealBackgroundView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"/>-->
-
-
     <android.support.design.widget.AppBarLayout
+        android:visibility="gone"
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="230dp"
@@ -57,15 +52,6 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:textColor="@android:color/white"
                 android:textSize="22sp"/>
-
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom|right"-->
-            <!--android:layout_margin="@dimen/activity_horizontal_margin"-->
-            <!--android:text="田中君总是如此慵懒"-->
-            <!--android:textColor="@android:color/white"-->
-            <!--android:textSize="12sp"/>-->
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/latest_news_detail_toolbar"

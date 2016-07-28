@@ -16,4 +16,10 @@
     <color name="color_read">#9E9E9E</color>
     <color name="color_unread">#000000</color>
     <color name="color_source">#A1FFFFFF</color>
+
+    <color name="textColorDiscussShow">@android:color/holo_red_light</color>
+    <color name="textColorDiscussHide">@color/textColorPrimary</color>
+    <color name="discussBackground">#ffffff</color>
+
+    <color name="lineColor">#33000000</color>
 </resources>

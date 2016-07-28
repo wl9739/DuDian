@@ -10,9 +10,13 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +50,8 @@ import rx.schedulers.Schedulers;
 public class LatestNewsDetailActivity extends BaseActivity {
 
     private static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
+    private static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
+    private static final String TAG = "11111111";
     @BindView(R.id.latest_news_detail_bg_img)
     ImageView mBackgourndImg;
     @BindView(R.id.latest_news_detail_title_tv)
@@ -76,6 +82,11 @@ public class LatestNewsDetailActivity extends BaseActivity {
     public static void launch(Context activity, StoriesBean storiesBean) {
         Intent intent = new Intent(activity, LatestNewsDetailActivity.class);
         intent.putExtra(ARGU_STORIES_BEAN, storiesBean);
+        if (storiesBean.getImages() == null || storiesBean.getImages().size() < 1) {
+            intent.putExtra(ARGU_IS_NOHEADER, true);
+        } else {
+            intent.putExtra(ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0)));
+        }
         activity.startActivity(intent);
     }
 
@@ -86,6 +97,14 @@ public class LatestNewsDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
+        boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
+        if (isNoHeader) {
+            ViewGroup.LayoutParams params = mAppBarLayout.getLayoutParams();
+            params.height = 0;
+            mAppBarLayout.setLayoutParams(params);
+        } else {
+            mAppBarLayout.setVisibility(View.VISIBLE);
+        }
         if (null == mStoriesBean) {
             return;
         }
@@ -155,10 +174,13 @@ public class LatestNewsDetailActivity extends BaseActivity {
         mWebView.getSettings().setDatabaseEnabled(true);
         // 开启Application Cache功能
         mWebView.getSettings().setAppCacheEnabled(true);
-    }
 
-    private void handlComment() {
-
+        mWebView.setWebViewClient(new WebViewClient() {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
     }
 
     private void share() {
@@ -222,20 +244,36 @@ public class LatestNewsDetailActivity extends BaseActivity {
                     @Override
                     public void onNext(NewsDetails newsDetails) {
                         mNewsDetails = newsDetails;
-                        String imageUrl = newsDetails.getImage();
-                        BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
-
-                        if (Variable.isNight) {
-                            showNightModeNews(newsDetails);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mWebView.setVisibility(View.VISIBLE);
-                                }
-                            }, 500);
-                        } else {
-                            showDayModeNews(newsDetails);
+                        if (null == newsDetails.getBody()) {
+                            String imageUrl;
+                            if (!TextUtils.isEmpty(newsDetails.getImage())) {
+                                imageUrl = newsDetails.getImage();
+                                BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
+                            } else if (!TextUtils.isEmpty(newsDetails.getImages().get(0))) {
+                                imageUrl = newsDetails.getImages().get(0);
+                                BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
+                            }
+                            String shareUrl = newsDetails.getShare_url();
+                            mWebView.loadUrl(shareUrl);
                             mWebView.setVisibility(View.VISIBLE);
+                        } else {
+                            String body = newsDetails.getBody();
+                            Log.d(TAG, "onNext: body" + body);
+                            String imageUrl = newsDetails.getImage();
+                            BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
+
+                            if (Variable.isNight) {
+                                showNightModeNews(newsDetails);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mWebView.setVisibility(View.VISIBLE);
+                                    }
+                                }, 500);
+                            } else {
+                                showDayModeNews(newsDetails);
+                                mWebView.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 });

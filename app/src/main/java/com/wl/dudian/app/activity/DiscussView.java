@@ -1,7 +1,6 @@
 package com.wl.dudian.app.activity;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -147,14 +146,14 @@ public class DiscussView {
     }
 
     private void setShortClick() {
-        mShortTv.setTextColor(Color.RED);
-        mLongTv.setTextColor(Color.BLACK);
+        mShortTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussShow));
+        mLongTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussHide));
         loadDiscussData(mId, true);
     }
 
     private void setLongClick() {
-        mShortTv.setTextColor(Color.BLACK);
-        mLongTv.setTextColor(Color.RED);
+        mShortTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussHide));
+        mLongTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussShow));
         loadDiscussData(mId, false);
     }
 }

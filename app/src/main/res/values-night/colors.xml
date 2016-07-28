@@ -7,4 +7,10 @@
 
     <color name="textColorPrimary">#cccccc</color>
     <color name="textColorSecond">#616161</color>
+
+    <color name="textColorDiscussShow">@color/textColorPrimary</color>
+    <color name="textColorDiscussHide">@color/textColorSecond</color>
+    <color name="discussBackground">#212121</color>
+
+    <color name="lineColor">#424242</color>
 </resources>

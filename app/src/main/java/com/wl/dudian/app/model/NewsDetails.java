@@ -2,6 +2,8 @@ package com.wl.dudian.app.model;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.List;
+
 /**
  * Created by yisheng on 16/6/22.
  */
@@ -21,6 +23,56 @@ public class NewsDetails extends DataSupport {
     private String image;
     private String share_url;
     private String ga_prefix;
+    private List<String> images;
+
+    public String getGa_prefix() {
+        return ga_prefix;
+    }
+
+    public void setGa_prefix(String ga_prefix) {
+        this.ga_prefix = ga_prefix;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public SectionBean getSection() {
+        return section;
+    }
+
+    public void setSection(SectionBean section) {
+        this.section = section;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public List<RecommendersBean> getRecommenders() {
+        return recommenders;
+    }
+
+    public void setRecommenders(List<RecommendersBean> recommenders) {
+        this.recommenders = recommenders;
+    }
+
+    public List<String> getCss() {
+        return css;
+    }
+
+    public void setCss(List<String> css) {
+        this.css = css;
+    }
+
     /**
      * thumbnail : http://pic4.zhimg.com/6a1ddebda9e8899811c4c169b92c35b3.jpg id : 1 name : 深夜惊奇
      */
