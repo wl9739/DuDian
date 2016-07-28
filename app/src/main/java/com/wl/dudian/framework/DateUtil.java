@@ -70,4 +70,16 @@ public class DateUtil {
     public static String getFullDateFormart(String nowDate) {
         return nowDate.substring(4, 6) + "月" + nowDate.substring(6, 8) + "日  " + DateUtil.getWeekday(nowDate);
     }
+
+    /**
+     * 获取评论时间
+     * @param millionSecond
+     * @return
+     */
+    public static String getDate(long millionSecond) {
+
+        Date date = new Date(millionSecond);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+        return simpleDateFormat.format(date);
+    }
 }

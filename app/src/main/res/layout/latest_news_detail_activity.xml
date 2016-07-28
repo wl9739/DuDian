@@ -106,7 +106,7 @@
         fab:fab_labelsPosition="left">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_remove"
+            android:id="@+id/latest_news_detail_activity_discuss_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_size="mini"

@@ -13,4 +13,7 @@
     <color name="text">#FFFFFF</color>
 
     <color name="white">#ffffff</color>
+    <color name="color_read">#9E9E9E</color>
+    <color name="color_unread">#000000</color>
+    <color name="color_source">#A1FFFFFF</color>
 </resources>

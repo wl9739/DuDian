@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.wl.dudian.R;
-import com.wl.dudian.framework.ACache;
 
 
 /**
@@ -23,11 +22,10 @@ public class TestActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.text_activity);
 
+        Bitmap bitmap = getIntent().getParcelableExtra("IMAGE");
         mImageView = (ImageView) findViewById(R.id.test_img_view);
-        Bitmap bitmap = ACache.get(this).getAsBitmap("image");
         mImageView.setImageBitmap(bitmap);
 
     }

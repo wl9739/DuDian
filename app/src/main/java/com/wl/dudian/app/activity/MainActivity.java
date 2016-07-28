@@ -2,6 +2,7 @@ package com.wl.dudian.app.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -28,7 +29,6 @@ import com.wl.dudian.app.fragment.FavoriteFragment;
 import com.wl.dudian.app.fragment.LatestNewsFragment;
 import com.wl.dudian.app.fragment.SettingsFragment;
 import com.wl.dudian.app.model.ThemesModel;
-import com.wl.dudian.framework.ACache;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.ScreenShotUtils;
@@ -285,10 +285,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void beforeChangeMode() {
         Bitmap bitmap = ScreenShotUtils.captureScreen(this);
-        ACache.get(this).put("image", bitmap, 1);
+        bitmap = zoomBitmap(bitmap, bitmap.getWidth() / 5, bitmap.getHeight() / 5);
         Intent intent = new Intent(this, TestActivity.class);
+        intent.putExtra("IMAGE", bitmap);
         startActivity(intent);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         finish();
     }
 
@@ -308,5 +308,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         } else {
             finish();
         }
+    }
+
+    /**
+     * 缩小图片规格
+     *
+     * @return
+     */
+    public static Bitmap zoomBitmap(Bitmap bitmap, int width, int height) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Matrix matrix = new Matrix();
+        float scaleWidth = ((float) width / w);
+        float scaleHeight = ((float) height / h);
+        matrix.postScale(scaleWidth, scaleHeight); // 不改变原来图像大小
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
     }
 }

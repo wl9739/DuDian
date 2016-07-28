@@ -2,6 +2,8 @@ package com.wl.dudian.framework;
 
 
 import com.wl.dudian.app.model.BeforeNews;
+import com.wl.dudian.app.model.DiscussDataModel;
+import com.wl.dudian.app.model.DiscussExtraModel;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
@@ -66,4 +68,28 @@ public interface DailyApi {
      */
     @GET("/api/4/theme/{id}")
     Observable<ThemeDetailModel> getThemeDetail(@Path("id") String id);
+
+    /**
+     * 新闻评论额外信息
+     * @param id
+     * @return
+     */
+    @GET("/api/4/story-extra/{id}")
+    Observable<DiscussExtraModel> getDiscussExtra(@Path("id") String id);
+
+    /**
+     * 获取新闻长评
+     * @param id
+     * @return
+     */
+    @GET("/api/4/story/{id}/long-comments")
+    Observable<DiscussDataModel> getDiscussLong(@Path("id") String id);
+
+    /**
+     * 获取新闻短评
+     * @param id
+     * @return
+     */
+    @GET("/api/4/story/{id}/short-comments")
+    Observable<DiscussDataModel> getDiscussShort(@Path("id") String id);
 }

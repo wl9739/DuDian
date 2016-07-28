@@ -64,6 +64,8 @@ public class LatestNewsDetailActivity extends BaseActivity {
     FloatingActionButton mFavoriteBtn;
     @BindView(R.id.latest_news_detail_activity_menu_btn)
     FloatingActionsMenu mMenuBtn;
+    @BindView(R.id.latest_news_detail_activity_discuss_btn)
+    FloatingActionButton mDiscussBtn;
     private NewsDetails mNewsDetails;
     private StoriesBean mStoriesBean;
     private Handler mHandler = new Handler();
@@ -107,9 +109,17 @@ public class LatestNewsDetailActivity extends BaseActivity {
         mFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mMenuBtn.toggle();
                 // 保存到数据库
                 saveToDatabase();
+            }
+        });
+
+        mDiscussBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 mMenuBtn.toggle();
+                new DiscussView(LatestNewsDetailActivity.this, mStoriesBean.getId());
             }
         });
 

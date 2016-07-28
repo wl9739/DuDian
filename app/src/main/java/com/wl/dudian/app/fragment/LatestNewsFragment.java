@@ -31,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -175,6 +176,40 @@ public class LatestNewsFragment extends BaseFragment {
      * 获取数据
      */
     public void refreshLatestNewsInfo() {
+        Observable<LatestNews> memory = Observable.create(new Observable.OnSubscribe<LatestNews>() {
+            @Override
+            public void call(Subscriber<? super LatestNews> subscriber) {
+
+            }
+        });
+        Observable<LatestNews> disk = Observable.create(new Observable.OnSubscribe<LatestNews>() {
+            @Override
+            public void call(Subscriber<? super LatestNews> subscriber) {
+
+            }
+        });
+        Observable<LatestNews> network = Observable.create(new Observable.OnSubscribe<LatestNews>() {
+            @Override
+            public void call(Subscriber<? super LatestNews> subscriber) {
+
+            }
+        });
+
+        Observable<LatestNews> source = Observable.concat(memory, disk, network).first();
+
+        Observable<LatestNews> networkWithSave = network.doOnNext(new Action1<LatestNews>() {
+            @Override
+            public void call(LatestNews latestNews) {
+
+            }
+        });
+
+        Observable<LatestNews> diskWithCache = disk.doOnNext(new Action1<LatestNews>() {
+            @Override
+            public void call(LatestNews latestNews) {
+
+            }
+        });
         HttpUtil.getInstance().getLatestNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
