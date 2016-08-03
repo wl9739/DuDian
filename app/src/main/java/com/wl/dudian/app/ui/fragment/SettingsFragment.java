@@ -1,4 +1,4 @@
-package com.wl.dudian.app.fragment;
+package com.wl.dudian.app.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

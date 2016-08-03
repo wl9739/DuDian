@@ -1,4 +1,4 @@
-package com.wl.dudian.app.fragment;
+package com.wl.dudian.app.ui.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
-import com.wl.dudian.app.activity.LatestNewsDetailActivity;
+import com.wl.dudian.app.ui.activity.LatestNewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;

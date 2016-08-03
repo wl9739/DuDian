@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'realm-android'
+apply plugin: 'com.fernandocejas.frodo'
 
 android {
     compileSdkVersion 24
@@ -13,6 +14,15 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    dataBinding {
+        enabled = true
+    }
+
+    frodo {
+        enabled = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -43,6 +53,9 @@ dependencies {
     compile 'net.opacapp:multiline-collapsingtoolbar:1.2.0'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.umeng.analytics:analytics:latest.integration'
+
+    compile 'com.facebook.stetho:stetho:1.3.1'
+    compile 'com.uphyca:stetho_realm:0.9.0'
 
     compile files('libs/MobCommons-2016.0623.1641.jar')
     compile files('libs/MobTools-2016.0623.1641.jar')

@@ -1,4 +1,4 @@
-package com.wl.dudian.app.activity;
+package com.wl.dudian.app.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,11 +23,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.fragment.AboutFragment;
-import com.wl.dudian.app.fragment.ColumnFragment;
-import com.wl.dudian.app.fragment.FavoriteFragment;
-import com.wl.dudian.app.fragment.LatestNewsFragment;
-import com.wl.dudian.app.fragment.SettingsFragment;
+import com.wl.dudian.app.ui.fragment.AboutFragment;
+import com.wl.dudian.app.ui.fragment.ColumnFragment;
+import com.wl.dudian.app.ui.fragment.FavoriteFragment;
+import com.wl.dudian.app.ui.fragment.LatestNewsFragment;
+import com.wl.dudian.app.ui.fragment.SettingsFragment;
 import com.wl.dudian.app.model.ThemesModel;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.HttpUtil;

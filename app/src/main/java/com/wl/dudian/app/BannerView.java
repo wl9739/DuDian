@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
-import com.wl.dudian.app.activity.LatestNewsDetailActivity;
+import com.wl.dudian.app.ui.activity.LatestNewsDetailActivity;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 

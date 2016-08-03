@@ -1,5 +1,7 @@
 package com.wl.dudian.app.model;
 
+import io.realm.RealmObject;
+
 /**
  * 启动图片model
  *
@@ -7,17 +9,18 @@ package com.wl.dudian.app.model;
  */
 
 
-public class StartImage {
+public class StartImage extends RealmObject{
 
+    private long time;
     private String text;
     private String img;
 
-    public StartImage(String text, String img) {
-        this.text = text;
-        this.img = img;
+    public long getTime() {
+        return time;
     }
 
-    public StartImage() {
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String getText() {

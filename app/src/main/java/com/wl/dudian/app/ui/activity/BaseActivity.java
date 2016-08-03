@@ -1,4 +1,4 @@
-package com.wl.dudian.app.activity;
+package com.wl.dudian.app.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 

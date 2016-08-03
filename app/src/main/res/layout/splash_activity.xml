@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+<layout>
+    <data>
+        <variable
+            name="splash"
+            type="com.wl.dudian.app.viewmodel.StartImageVM"/>
+    </data>
 
-    <ImageView
-        android:id="@+id/splash_activity_img"
-        android:scaleType="centerCrop"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/splash_activity_img"
+            android:src="@{splash.img}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+
+    </FrameLayout>
+</layout>
