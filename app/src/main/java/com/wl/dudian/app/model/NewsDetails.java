@@ -1,13 +1,11 @@
 package com.wl.dudian.app.model;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.List;
 
 /**
  * Created by yisheng on 16/6/22.
  */
-public class NewsDetails extends DataSupport {
+public class NewsDetails {
     /**
      * body : dfsad image_source : Yestone.com 版权图片库 title : 深夜惊奇 · 朋友圈错觉 image : http://pic3.zhimg.com/2d41a1d1ebf37fb699795e78db76b5c2.jpg
      * share_url : http://daily.zhihu.com/story/4772126 js : [] recommenders : [{"avatar":"http:
@@ -135,7 +133,7 @@ public class NewsDetails extends DataSupport {
         this.image = image;
     }
 
-    public static class SectionBean extends DataSupport {
+    public static class SectionBean {
         private String thumbnail;
         private int id;
         private String name;
@@ -165,7 +163,7 @@ public class NewsDetails extends DataSupport {
         }
     }
 
-    public static class RecommendersBean extends DataSupport {
+    public static class RecommendersBean {
         private String avatar;
 
         public String getAvatar() {

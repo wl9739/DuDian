@@ -6,10 +6,19 @@ package com.wl.dudian.app.model;
  * Created by yisheng on 16/6/20.
  */
 
+
 public class StartImage {
 
     private String text;
     private String img;
+
+    public StartImage(String text, String img) {
+        this.text = text;
+        this.img = img;
+    }
+
+    public StartImage() {
+    }
 
     public String getText() {
         return text;

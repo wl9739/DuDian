@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,10 +29,6 @@ import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.Variable;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
-
-import org.litepal.crud.DataSupport;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -148,17 +143,17 @@ public class LatestNewsDetailActivity extends BaseActivity {
      * 保存到数据库
      */
     private void saveToDatabase() {
-        // 保存到数据库
-        if (mNewsDetails != null && mStoriesBean != null) {
-            List<NewsDetails> newsDetailsList = DataSupport.where("id=" + mNewsDetails.getId()).find(NewsDetails.class);
-            if (newsDetailsList != null && newsDetailsList.size() > 0) {
-                Snackbar.make(mCollapsingToolbarLayout, "已收藏", Snackbar.LENGTH_SHORT).show();
-            } else if (!mNewsDetails.save() || !mStoriesBean.save()) {
-                Snackbar.make(mCollapsingToolbarLayout, "收藏失败", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(mCollapsingToolbarLayout, "收藏成功", Snackbar.LENGTH_SHORT).show();
-            }
-        }
+//        // 保存到数据库
+//        if (mNewsDetails != null && mStoriesBean != null) {
+//            List<NewsDetails> newsDetailsList = DataSupport.where("id=" + mNewsDetails.getId()).find(NewsDetails.class);
+//            if (newsDetailsList != null && newsDetailsList.size() > 0) {
+//                Snackbar.make(mCollapsingToolbarLayout, "已收藏", Snackbar.LENGTH_SHORT).show();
+//            } else if (!mNewsDetails.save() || !mStoriesBean.save()) {
+//                Snackbar.make(mCollapsingToolbarLayout, "收藏失败", Snackbar.LENGTH_SHORT).show();
+//            } else {
+//                Snackbar.make(mCollapsingToolbarLayout, "收藏成功", Snackbar.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     /**
@@ -245,38 +240,54 @@ public class LatestNewsDetailActivity extends BaseActivity {
                     public void onNext(NewsDetails newsDetails) {
                         mNewsDetails = newsDetails;
                         if (null == newsDetails.getBody()) {
-                            String imageUrl;
-                            if (!TextUtils.isEmpty(newsDetails.getImage())) {
-                                imageUrl = newsDetails.getImage();
-                                BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
-                            } else if (!TextUtils.isEmpty(newsDetails.getImages().get(0))) {
-                                imageUrl = newsDetails.getImages().get(0);
-                                BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
-                            }
-                            String shareUrl = newsDetails.getShare_url();
-                            mWebView.loadUrl(shareUrl);
-                            mWebView.setVisibility(View.VISIBLE);
+                            setNoBodyInfo(newsDetails);
                         } else {
-                            String body = newsDetails.getBody();
-                            Log.d(TAG, "onNext: body" + body);
-                            String imageUrl = newsDetails.getImage();
-                            BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
-
-                            if (Variable.isNight) {
-                                showNightModeNews(newsDetails);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mWebView.setVisibility(View.VISIBLE);
-                                    }
-                                }, 500);
-                            } else {
-                                showDayModeNews(newsDetails);
-                                mWebView.setVisibility(View.VISIBLE);
-                            }
+                            setNormalWebviewInfo(newsDetails);
                         }
                     }
                 });
+    }
+
+    /**
+     * 特殊的日报,没有body属性,无法设置夜间模式
+     * @param newsDetails
+     */
+    private void setNoBodyInfo(NewsDetails newsDetails) {
+        String imageUrl;
+        if (!TextUtils.isEmpty(newsDetails.getImage())) {
+            imageUrl = newsDetails.getImage();
+            BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
+        } else if (!TextUtils.isEmpty(newsDetails.getImages().get(0))) {
+            imageUrl = newsDetails.getImages().get(0);
+            BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
+        }
+        String shareUrl = newsDetails.getShare_url();
+        mWebView.loadUrl(shareUrl);
+        mWebView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 常规的日报,可以设置夜间模式
+     * @param newsDetails
+     */
+    private void setNormalWebviewInfo(NewsDetails newsDetails) {
+        String body = newsDetails.getBody();
+        Log.d(TAG, "onNext: body" + body);
+        String imageUrl = newsDetails.getImage();
+        BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBackgourndImg);
+
+        if (Variable.isNight) {
+            showNightModeNews(newsDetails);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.setVisibility(View.VISIBLE);
+                }
+            }, 500);
+        } else {
+            showDayModeNews(newsDetails);
+            mWebView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**

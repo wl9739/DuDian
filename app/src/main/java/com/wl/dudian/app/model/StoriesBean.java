@@ -1,15 +1,14 @@
 package com.wl.dudian.app.model;
 
-import org.litepal.crud.DataSupport;
-
 import java.io.Serializable;
 import java.util.List;
+
 
 /**
  * Created by yisheng on 16/6/21.
  */
 
-public class StoriesBean extends DataSupport implements Serializable {
+public class StoriesBean implements Serializable {
     private int type;
     private int id;
     private String ga_prefix;

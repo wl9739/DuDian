@@ -236,7 +236,7 @@ public class LatestNewsFragment extends BaseFragment {
                     @Override
                     public void onNext(LatestNews latestNews) {
                         // 保存到数据库中
-                        latestNews.save();
+//                        latestNews.save();
                         mStoriesBeanList.clear();
                         mStoriesBeanList.addAll(latestNews.getStories());
                         mNowDate = latestNews.getDate();

@@ -13,8 +13,6 @@ import com.wl.dudian.app.activity.LatestNewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -54,7 +52,7 @@ public class FavoriteFragment extends BaseFragment {
     }
 
     public void updateFavoriteItem() {
-        mStoriesBeanList = DataSupport.findAll(StoriesBean.class);
+//        mStoriesBeanList = DataSupport.findAll(StoriesBean.class);
         if (mStoriesBeanList.size() < 1) {
             // TODO 没有收藏记录
         } else {
