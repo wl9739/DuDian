@@ -9,7 +9,7 @@ import rx.schedulers.Timestamped;
 /**
  * Created by Qiushui on 16/8/3.
  */
-public class StartImageMapping implements Func1<Timestamped<StartImage>, Timestamped<StartImageVM>>{
+public class StartImageMapping implements Func1<Timestamped<StartImage>, StartImageVM>{
 
     private static StartImageMapping instance;
 
@@ -21,9 +21,8 @@ public class StartImageMapping implements Func1<Timestamped<StartImage>, Timesta
     }
 
     @Override
-    public Timestamped<StartImageVM> call(Timestamped<StartImage> startImageTimestamped) {
+    public StartImageVM call(Timestamped<StartImage> startImageTimestamped) {
         StartImage startImage = startImageTimestamped.getValue();
-        StartImageVM startImageVM = new StartImageVM(startImage.getText(), startImage.getImg());
-        return new Timestamped<>(startImageTimestamped.getTimestampMillis(), startImageVM);
+        return new StartImageVM(startImage.getText(), startImage.getImg());
     }
 }

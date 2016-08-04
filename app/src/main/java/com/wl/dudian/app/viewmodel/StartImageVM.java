@@ -1,5 +1,6 @@
 package com.wl.dudian.app.viewmodel;
 
+import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
 import android.widget.ImageView;
 
@@ -11,7 +12,7 @@ import com.bumptech.glide.Glide;
  * Created by Qiushui on 16/8/3.
  */
 
-public class StartImageVM {
+public class StartImageVM extends BaseObservable {
 
     private String text;
     private String img;

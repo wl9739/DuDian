@@ -23,7 +23,7 @@ public class DomainService {
         netWorkRepository = new NetWorkRepository();
     }
 
-    public Observable<Timestamped<StartImageVM>> getStartImage(ITimestampedView timestampedView) {
+    public Observable<StartImageVM> getStartImage(ITimestampedView timestampedView) {
         return getMergedStartImage()
                 .onErrorReturn(new Func1<Throwable, Timestamped<StartImage>>() {
                     @Override
@@ -54,8 +54,7 @@ public class DomainService {
                     public void call(Timestamped<StartImage> startImageTimestamped) {
                         diskRepository.saveStartImage(startImageTimestamped);
                     }
-                })
-                        .subscribeOn(Schedulers.io())
+                }).subscribeOn(Schedulers.io())
         );
     }
 }

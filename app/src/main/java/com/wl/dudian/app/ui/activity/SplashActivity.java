@@ -3,6 +3,7 @@ package com.wl.dudian.app.ui.activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,7 +21,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.schedulers.Timestamped;
 
 /**
  * @author zfeiyu
@@ -31,6 +31,7 @@ public class SplashActivity extends BaseActivity implements ITimestampedView {
     private static final String TAG = SplashActivity.class.getCanonicalName();
     private DomainService domainService;
     private Subscription startImageSubscription;
+    private SplashActivityBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,8 @@ public class SplashActivity extends BaseActivity implements ITimestampedView {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // init ShareSDK
         ShareSDK.initSDK(this);
-        SplashActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.splash_activity);
+        binding = DataBindingUtil.setContentView(this, R.layout.splash_activity);
+
 
         domainService = new DomainService();
         fetchStartImage();
@@ -47,7 +49,7 @@ public class SplashActivity extends BaseActivity implements ITimestampedView {
 
     private void fetchStartImage() {
         unsubscribe();
-        Observable<Timestamped<StartImageVM>> getRecentStartImage = domainService
+        Observable<StartImageVM> getRecentStartImage = domainService
                 .getStartImage(this)
                 .observeOn(AndroidSchedulers.mainThread());
         startImageSubscription = getRecentStartImage.subscribe(startImageOnNext, startImageOnError, startImageOnComplete);
@@ -60,10 +62,10 @@ public class SplashActivity extends BaseActivity implements ITimestampedView {
         }
     }
 
-    private final Action1<Timestamped<StartImageVM>> startImageOnNext = new Action1<Timestamped<StartImageVM>>() {
+    private final Action1<StartImageVM> startImageOnNext = new Action1<StartImageVM>() {
         @Override
-        public void call(Timestamped<StartImageVM> startImageTimestamped) {
-
+        public void call(StartImageVM startImageVM) {
+            binding.setSplash(startImageVM);
         }
     };
 
@@ -78,7 +80,13 @@ public class SplashActivity extends BaseActivity implements ITimestampedView {
     private final Action0 startImageOnComplete = new Action0() {
         @Override
         public void call() {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
+                }
+            }, 2000);
         }
     };
 

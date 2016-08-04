@@ -8,7 +8,6 @@ import io.realm.RealmObject;
  * Created by yisheng on 16/6/20.
  */
 
-
 public class StartImage extends RealmObject{
 
     private long time;

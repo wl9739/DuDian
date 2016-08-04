@@ -19,10 +19,12 @@ public class DiskRepository {
     /**
      * Save StartImage, Delete the origin if exist.
      *
-     * @param startImage    startimage
+     * @param startImage startimage
      */
-    public void saveStartImage(Timestamped<StartImage> startImage) {
+    public void saveStartImage(final Timestamped<StartImage> startImage) {
+        long timestamp = startImage.getTimestampMillis();
         Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         final RealmResults<StartImage> results = realm.where(StartImage.class).findAll();
         // delete the origin
         if (results.size() > 0) {
@@ -34,9 +36,8 @@ public class DiskRepository {
             });
         }
         // save
-        realm.beginTransaction();
         StartImage image = realm.copyToRealm(startImage.getValue());
-        image.setTime(startImage.getTimestampMillis());
+        image.setTime(timestamp);
         realm.commitTransaction();
     }
 
