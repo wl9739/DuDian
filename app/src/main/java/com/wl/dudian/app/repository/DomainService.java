@@ -47,7 +47,7 @@ public class DomainService {
     }
 
     private Observable<Timestamped<StartImage>> getMergedStartImage() {
-        return Observable.merge(
+        return Observable.mergeDelayError(
                 diskRepository.getStartImage().subscribeOn(Schedulers.io()),
                 netWorkRepository.getStartImage().timestamp().doOnNext(new Action1<Timestamped<StartImage>>() {
                     @Override
