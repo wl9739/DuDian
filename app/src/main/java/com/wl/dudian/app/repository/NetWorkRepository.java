@@ -54,6 +54,6 @@ public class NetWorkRepository {
 
     @RxLogObservable
     public Observable<StartImage> getStartImage() {
-        return dailyApi.getStartImage(START_IMAGE);
+        return dailyApi.getStartImage();
     }
 }

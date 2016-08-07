@@ -1,13 +1,15 @@
 package com.wl.dudian.app.repository;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+
 import com.wl.dudian.app.model.StartImage;
-import com.wl.dudian.app.viewmodel.StartImageVM;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.schedulers.Timestamped;
 
 /**
  * Created by Qiushui on 16/8/3.
@@ -18,43 +20,46 @@ public class DomainService {
     private final DiskRepository diskRepository;
     private final NetWorkRepository netWorkRepository;
 
-    public DomainService() {
-        diskRepository = new DiskRepository();
+    public DomainService(Context context) {
+        diskRepository = new DiskRepository(context);
         netWorkRepository = new NetWorkRepository();
     }
 
-    public Observable<StartImageVM> getStartImage(ITimestampedView timestampedView) {
-        return getMergedStartImage()
-                .onErrorReturn(new Func1<Throwable, Timestamped<StartImage>>() {
+    /**
+     * 从本地文件中获取起始页图片, 并从网络下载图片并更新本地文件
+     *
+     * @return  图片对象
+     */
+    public Observable<Bitmap> getStartImage() {
+        //
+        getAndSaveImageFromNet();
+        return diskRepository.getStartImage();
+    }
+
+    /**
+     * 下载并保存图片
+     */
+    private void getAndSaveImageFromNet() {
+        netWorkRepository.getStartImage()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn(new Func1<Throwable, StartImage>() {
                     @Override
-                    public Timestamped<StartImage> call(Throwable throwable) {
+                    public StartImage call(Throwable throwable) {
                         return null;
                     }
                 })
-                .filter(getStartImageFilter(timestampedView))
-                .map(StartImageMapping.instance());
-    }
-
-    private Func1<? super Timestamped<StartImage>, Boolean> getStartImageFilter(final ITimestampedView timestampedView) {
-        return new Func1<Timestamped<StartImage>, Boolean>() {
-            @Override
-            public Boolean call(Timestamped<StartImage> startImageTimestamped) {
-                return startImageTimestamped != null
-                        && startImageTimestamped.getValue() != null
-                        && startImageTimestamped.getTimestampMillis() > timestampedView.getViewDataTimestampMillis();
-            }
-        };
-    }
-
-    private Observable<Timestamped<StartImage>> getMergedStartImage() {
-        return Observable.mergeDelayError(
-                diskRepository.getStartImage().subscribeOn(Schedulers.io()),
-                netWorkRepository.getStartImage().timestamp().doOnNext(new Action1<Timestamped<StartImage>>() {
+                .filter(new Func1<StartImage, Boolean>() {
                     @Override
-                    public void call(Timestamped<StartImage> startImageTimestamped) {
-                        diskRepository.saveStartImage(startImageTimestamped);
+                    public Boolean call(StartImage startImage) {
+                        return null != startImage;
                     }
-                }).subscribeOn(Schedulers.io())
-        );
+                })
+                .subscribe(new Action1<StartImage>() {
+                    @Override
+                    public void call(StartImage startImage) {
+                        diskRepository.saveStartImage(startImage);
+                    }
+                });
     }
 }

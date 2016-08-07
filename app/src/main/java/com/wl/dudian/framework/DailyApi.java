@@ -23,11 +23,10 @@ public interface DailyApi {
     /**
      * 启动页面图像
      *
-     * @param image 图像分辨率大小:320*432    480*728    720*1184    1080*1776
      * @return
      */
-    @GET("/api/4/start-image/{image}")
-    Observable<StartImage> getStartImage(@Path("image") String image);
+    @GET("api/7/prefetch-launch-images/1080*1668")
+    Observable<StartImage> getStartImage();
 
     /**
      * 获取最近的新闻

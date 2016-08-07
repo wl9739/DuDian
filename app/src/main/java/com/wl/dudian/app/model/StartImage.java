@@ -1,6 +1,6 @@
 package com.wl.dudian.app.model;
 
-import io.realm.RealmObject;
+import java.util.List;
 
 /**
  * 启动图片model
@@ -8,33 +8,63 @@ import io.realm.RealmObject;
  * Created by yisheng on 16/6/20.
  */
 
-public class StartImage extends RealmObject{
+public class StartImage {
 
-    private long time;
-    private String text;
-    private String img;
+    private List<CreativesBean> creatives;
 
-    public long getTime() {
-        return time;
+    public List<CreativesBean> getCreatives() {
+        return creatives;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setCreatives(List<CreativesBean> creatives) {
+        this.creatives = creatives;
     }
 
-    public String getText() {
-        return text;
-    }
+    public static class CreativesBean {
+        private String url;
+        private int start_time;
+        private int type;
+        private String id;
+        private List<String> impression_tracks;
 
-    public void setText(String text) {
-        this.text = text;
-    }
+        public String getUrl() {
+            return url;
+        }
 
-    public String getImg() {
-        return img;
-    }
+        public void setUrl(String url) {
+            this.url = url;
+        }
 
-    public void setImg(String img) {
-        this.img = img;
+        public int getStart_time() {
+            return start_time;
+        }
+
+        public void setStart_time(int start_time) {
+            this.start_time = start_time;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public List<String> getImpression_tracks() {
+            return impression_tracks;
+        }
+
+        public void setImpression_tracks(List<String> impression_tracks) {
+            this.impression_tracks = impression_tracks;
+        }
     }
 }
