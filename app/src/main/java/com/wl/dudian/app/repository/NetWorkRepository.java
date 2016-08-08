@@ -1,6 +1,8 @@
 package com.wl.dudian.app.repository;
 
 import com.fernandocejas.frodo.annotation.RxLogObservable;
+import com.wl.dudian.app.model.LatestNews;
+import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
 import com.wl.dudian.framework.DailyApi;
 
@@ -20,11 +22,6 @@ import rx.Observable;
 public class NetWorkRepository {
 
     private DailyApi dailyApi;
-
-    /**
-     * Default image size
-     */
-    private static final String START_IMAGE = "720*1184";
     /**
      * BaseURL
      */
@@ -55,5 +52,15 @@ public class NetWorkRepository {
     @RxLogObservable
     public Observable<StartImage> getStartImage() {
         return dailyApi.getStartImage();
+    }
+
+    @RxLogObservable
+    public Observable<LatestNews> getLatestNews() {
+        return dailyApi.getLatestNews();
+    }
+
+    @RxLogObservable
+    public Observable<NewsDetails> getNewsDetails(String id) {
+        return dailyApi.getNewsDetails(id);
     }
 }

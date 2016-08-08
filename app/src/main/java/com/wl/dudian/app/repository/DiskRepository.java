@@ -57,17 +57,20 @@ public class DiskRepository {
     }
 
     private void loadImage(StartImage startImage) {
-        Glide.with(context).load(startImage.getCreatives().get(0).getUrl()).asBitmap().into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                Schedulers.io().createWorker().schedule(new Action0() {
+        Glide.with(context)
+                .load(startImage.getCreatives().get(0).getUrl())
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void call() {
-                        saveAsFile(resource);
+                    public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        Schedulers.io().createWorker().schedule(new Action0() {
+                            @Override
+                            public void call() {
+                                saveAsFile(resource);
+                            }
+                        });
                     }
                 });
-            }
-        });
     }
 
     @RxLogObservable
