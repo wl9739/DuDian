@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.MainActivity;
 import com.wl.dudian.databinding.SplashActivityBinding;
@@ -37,8 +36,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View{
         new SplashPresenter(this, this);
         // init databinding
         binding = DataBindingUtil.setContentView(this, R.layout.splash_activity);
-        // init service
-        DomainService domainService = new DomainService(this);
         // require startImage.
         presenter.getStartImage();
     }

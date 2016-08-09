@@ -6,6 +6,8 @@ import com.wl.dudian.app.BasePresenter;
 import com.wl.dudian.app.BaseView;
 
 /**
+ * This specifies the contract between the view and the presenter.
+ *
  * Created by Qiushui on 16/8/8.
  */
 
@@ -19,7 +21,7 @@ public interface SplashContract {
     }
 
     interface Presenter extends BasePresenter {
-        
+
         void getStartImage();
 
         void unLanchSubscription();

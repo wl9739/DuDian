@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
-import com.wl.dudian.app.ui.activity.LatestNewsDetailActivity;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 
@@ -135,7 +135,7 @@ public class BannerView extends FrameLayout {
         mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
             @Override
             public void onBannerItemClick(StoriesBean storiesBean) {
-                LatestNewsDetailActivity.launch(mContext, storiesBean);
+                NewsDetailActivity.launch(mContext, storiesBean);
             }
         });
     }

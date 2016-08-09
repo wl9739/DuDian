@@ -9,6 +9,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.wl.dudian.R;
+import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
 
 import java.io.BufferedOutputStream;
@@ -106,5 +107,20 @@ public class DiskRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public NewsDetails getNewsDetail(String newsId) {
+        // TODO 从数据库中获取新闻详情
+        return null;
+    }
+
+
+
+    /**
+     * 将下载的文件保存到数据库中
+     * @param newsDetails
+     */
+    public void saveNewsDetail(NewsDetails newsDetails) {
+        // TODO 保存到数据库中
     }
 }

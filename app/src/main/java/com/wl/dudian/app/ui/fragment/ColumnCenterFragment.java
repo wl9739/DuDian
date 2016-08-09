@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.ui.activity.LatestNewsDetailActivity;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.ThemeDetailModel;
@@ -74,10 +74,9 @@ public class ColumnCenterFragment extends BaseFragment {
         mNewsItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override
             public void onItemClick(View view, StoriesBean storiesBean) {
-                LatestNewsDetailActivity.launch(getActivity(), storiesBean);
+                NewsDetailActivity.launch(getActivity(), storiesBean);
             }
         });
-
     }
 
     /**
@@ -94,8 +93,6 @@ public class ColumnCenterFragment extends BaseFragment {
                     @Override
                     public void onCompleted() {
                         mNewsItemAdapter.setRefresh(mStoriesBeanList);
-
-
                     }
 
                     @Override

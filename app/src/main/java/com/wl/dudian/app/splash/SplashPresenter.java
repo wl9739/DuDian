@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,12 +14,15 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 /**
+ * Listens to user actions from the UI , retrieves the data and updates
+ * the UI as required.
+ *
  * Created by Qiushui on 16/8/8.
  */
 
 public class SplashPresenter implements SplashContract.Presenter {
 
-    private SplashContract.View splashView;
+    private final SplashContract.View splashView;
 
     private final DomainService domainService;
 
@@ -26,7 +30,7 @@ public class SplashPresenter implements SplashContract.Presenter {
     private Subscription launchSubscription;
 
     public SplashPresenter(Context context, SplashContract.View splashView) {
-        domainService = new DomainService(context);
+        domainService = DomainService.getInstance(context);
         this.splashView = splashView;
 
         splashView.setPresenter(this);
@@ -48,10 +52,7 @@ public class SplashPresenter implements SplashContract.Presenter {
 
     @Override
     public void unLanchSubscription() {
-        if (launchSubscription != null) {
-            launchSubscription.unsubscribe();
-            launchSubscription = null;
-        }
+        BusinessUtil.unsubscribe(launchSubscription);
     }
 
     @Override
@@ -68,9 +69,6 @@ public class SplashPresenter implements SplashContract.Presenter {
     @Override
     public void unsubscribe() {
         unLanchSubscription();
-        if (startImageSubscription != null) {
-            startImageSubscription.unsubscribe();
-            startImageSubscription = null;
-        }
+        BusinessUtil.unsubscribe(startImageSubscription);
     }
 }

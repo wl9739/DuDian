@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
-import com.wl.dudian.app.ui.activity.LatestNewsDetailActivity;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
@@ -143,7 +143,7 @@ public class LatestNewsFragment extends BaseFragment {
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
                     public void onItemClick(View view, StoriesBean storiesBean) {
-                        LatestNewsDetailActivity.launch(getActivity(), storiesBean);
+                        NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
                 });
 

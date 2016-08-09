@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import rx.Subscription;
+
 /**
  * Created by yisheng on 16/6/22.
  */
@@ -62,5 +64,11 @@ public class BusinessUtil {
             throw new NullPointerException();
         }
         return reference;
+    }
+
+    public static void unsubscribe(Subscription subscription) {
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 }

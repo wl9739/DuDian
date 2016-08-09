@@ -1,0 +1,161 @@
+package com.wl.dudian.app.newsdetail;
+
+import android.content.Context;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.wl.dudian.R;
+import com.wl.dudian.app.model.NewsDetails;
+import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.ui.activity.BaseActivity;
+import com.wl.dudian.app.ui.activity.DiscussView;
+import com.wl.dudian.databinding.NewsDetailActivityBinding;
+import com.wl.dudian.framework.BusinessUtil;
+
+/**
+ * 新闻详情界面
+ *
+ * Created by Qiushui on 16/6/22.
+ */
+
+public class NewsDetailActivity extends BaseActivity implements NewsDetailContract.View {
+
+    private static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
+    private static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
+
+    private StoriesBean mStoriesBean;
+
+    private NewsDetailContract.Presenter presenter;
+
+    private NewsDetailActivityBinding binding;
+
+    /**
+     * launch
+     */
+    public static void launch(Context activity, StoriesBean storiesBean) {
+        Intent intent = new Intent(activity, NewsDetailActivity.class);
+        intent.putExtra(ARGU_STORIES_BEAN, storiesBean);
+        if (storiesBean.getImages() == null || storiesBean.getImages().size() < 1) {
+            intent.putExtra(ARGU_IS_NOHEADER, true);
+        } else {
+            intent.putExtra(ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0)));
+        }
+        activity.startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
+
+        new NewsDetailPresenter(this, this);
+
+        mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
+        boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
+        if (isNoHeader) {
+            ViewGroup.LayoutParams params = binding.appBarLayout.getLayoutParams();
+            params.height = 0;
+            binding.appBarLayout.setLayoutParams(params);
+        } else {
+            binding.appBarLayout.setVisibility(View.VISIBLE);
+        }
+        if (null == mStoriesBean) {
+            return;
+        }
+
+        binding.collapsingtoolbarlayout.setTitle(" ");
+        binding.titleTv.setText(mStoriesBean.getTitle());
+        binding.toolbar.setTitleTextColor(0x333333);
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        binding.favoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.menuBtn.toggle();
+                // 保存到数据库
+                presenter.favorite();
+            }
+        });
+
+        binding.discussBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.menuBtn.toggle();
+                new DiscussView(NewsDetailActivity.this, mStoriesBean.getId());
+            }
+        });
+
+        presenter.loadData(String.valueOf(mStoriesBean.getId()));
+        initWebView();
+    }
+
+    /**
+     * 初始化WebView页面
+     */
+    private void initWebView() {
+        binding.webview.setVisibility(View.INVISIBLE);
+        binding.webview.getSettings().setJavaScriptEnabled(true);
+        binding.webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        // 开启DOM storage API 功能
+        binding.webview.getSettings().setDomStorageEnabled(true);
+        // 开启database storage API功能
+        binding.webview.getSettings().setDatabaseEnabled(true);
+        // 开启Application Cache功能
+        binding.webview.getSettings().setAppCacheEnabled(true);
+
+        binding.webview.setWebViewClient(new WebViewClient() {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void share(NewsDetails newsDetails) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+        intent.putExtra(Intent.EXTRA_TEXT,
+                "来自读点日报的分享" + newsDetails.getTitle() + "，http://daily.zhihu.com/story/" + newsDetails.getId());
+        startActivity(Intent.createChooser(intent, newsDetails.getTitle()));
+    }
+
+    @Override
+    public void showHeaderImage(String imageUrl) {
+        BusinessUtil.loadImage(this, imageUrl, binding.headerImage);
+    }
+
+    @Override
+    public void setPresenter(NewsDetailContract.Presenter presenter) {
+        this.presenter = BusinessUtil.checkNotNull(presenter);
+    }
+
+    @Override
+    public void showNormalData(String newsDetails) {
+        binding.webview.loadDataWithBaseURL("x-data://base", newsDetails, "text/html", "UTF-8", null);
+        binding.webview.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showNobodyData(String shareUrl) {
+        binding.webview.loadUrl(shareUrl);
+        binding.webview.setVisibility(View.VISIBLE);
+    }
+}

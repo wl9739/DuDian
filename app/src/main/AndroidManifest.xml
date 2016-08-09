@@ -41,7 +41,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".app.ui.activity.LatestNewsDetailActivity"
+            android:name=".app.newsdetail.NewsDetailActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".app.ui.activity.TestActivity"/>
 
