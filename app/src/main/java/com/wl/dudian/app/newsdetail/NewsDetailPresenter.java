@@ -14,6 +14,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -63,7 +64,8 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                 domainService.getNewsDetailFromDb(newsId),
                 domainService.getNewsDetailsFromNet(newsId))
                 .first()
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
 
         dataSubscription = getNewsDetail.subscribe(new Action1<NewsDetails>() {
@@ -118,7 +120,12 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         }
     }
 
+    /**
+     * 显示白天样式
+     * @param newsDetails
+     */
     private void showDayModel(NewsDetails newsDetails) {
+        newsDetailView.showHeaderImage(newsDetails.getImage());
         showDataSubscription = Observable.just(newsDetails).subscribe(new Action1<NewsDetails>() {
             @Override
             public void call(NewsDetails newsDetails) {
@@ -130,7 +137,12 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         });
     }
 
+    /**
+     * 显示夜间样式
+     * @param newsDetails
+     */
     private void showNightModel(final NewsDetails newsDetails) {
+        newsDetailView.showHeaderImage(newsDetails.getImage());
         showDataSubscription = Observable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
             @Override
             public void call(Long aLong) {

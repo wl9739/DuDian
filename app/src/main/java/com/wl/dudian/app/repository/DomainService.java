@@ -31,7 +31,8 @@ public class DomainService {
 
     public static DomainService getInstance(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = new DomainService(context);
+            // 使用context.getApplicationContext(), 防止内存溢出, 以及activity的context为null的bug
+            INSTANCE = new DomainService(context.getApplicationContext());
         }
         return INSTANCE;
     }
@@ -73,22 +74,18 @@ public class DomainService {
      * @return
      */
     public Observable<NewsDetails> getNewsDetailsFromNet(final String newsId) {
-        return Observable.create(new Observable.OnSubscribe<NewsDetails>() {
-            @Override
-            public void call(Subscriber<? super NewsDetails> subscriber) {
-                netWorkRepository.getNewsDetails(newsId);
-            }
-        }).doOnNext(new Action1<NewsDetails>() {
-            @Override
-            public void call(NewsDetails newsDetails) {
-                diskRepository.saveNewsDetail(newsDetails);
-            }
-        }).onErrorReturn(new Func1<Throwable, NewsDetails>() {
-            @Override
-            public NewsDetails call(Throwable throwable) {
-                return null;
-            }
-        }).observeOn(Schedulers.io());
+        return netWorkRepository.getNewsDetails(newsId)
+                .doOnNext(new Action1<NewsDetails>() {
+                    @Override
+                    public void call(NewsDetails newsDetails) {
+                        diskRepository.saveNewsDetail(newsDetails);
+                    }
+                }).onErrorReturn(new Func1<Throwable, NewsDetails>() {
+                    @Override
+                    public NewsDetails call(Throwable throwable) {
+                        return null;
+                    }
+                });
     }
 
     /**
@@ -120,6 +117,7 @@ public class DomainService {
 
     /**
      * 将点赞的新闻内容在数据库中更新标记
+     *
      * @param newsDetails
      */
     public void saveToFavoriteDb(NewsDetails newsDetails) {

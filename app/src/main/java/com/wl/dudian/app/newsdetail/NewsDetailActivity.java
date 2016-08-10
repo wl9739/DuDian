@@ -100,8 +100,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             }
         });
 
-        presenter.loadData(String.valueOf(mStoriesBean.getId()));
         initWebView();
+        presenter.loadData(String.valueOf(mStoriesBean.getId()));
     }
 
     /**
