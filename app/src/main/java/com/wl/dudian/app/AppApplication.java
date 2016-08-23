@@ -27,7 +27,7 @@ public class AppApplication extends Application {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .name("dudian.realm")
                 .deleteRealmIfMigrationNeeded()
-                .schemaVersion(1)
+                .schemaVersion(2)
                 .build();
         Realm.setDefaultConfiguration(config);
     }

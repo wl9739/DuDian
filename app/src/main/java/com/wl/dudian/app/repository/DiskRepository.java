@@ -132,7 +132,10 @@ public class DiskRepository {
         RealmResults<NewsDetailDB> query;
         NewsDetails newsDetails = null;
         try {
-            query = realm.where(NewsDetailDB.class).equalTo("id", newsId).findAll();
+            query = realm.where(NewsDetailDB.class).equalTo("id", Integer.parseInt(newsId)).findAll();
+            if (query.size() < 1) {
+                return null;
+            }
             newsDetails = new NewsDetails();
             newsDetails.setTitle(query.get(0).getTitle());
             newsDetails.setType(query.get(0).getType());
@@ -164,7 +167,7 @@ public class DiskRepository {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    NewsDetailDB newsDetailDB = new NewsDetailDB();
+                    NewsDetailDB newsDetailDB = realm.createObject(NewsDetailDB.class);
                     newsDetailDB.setImage(newsDetails.getImage());
                     newsDetailDB.setGa_prefix(newsDetails.getGa_prefix());
                     newsDetailDB.setTitle(newsDetails.getTitle());
@@ -197,12 +200,12 @@ public class DiskRepository {
                 try {
                     result = realm.where(LatestNewsDB.class).findAll();
                     latestNews = LatestNewsMapper.getLatestNews(result);
+                    return new Timestamped<>(result.get(0).getTime(), latestNews);
                 } finally {
                     if (realm != null) {
                         realm.close();
                     }
                 }
-                return new Timestamped<>(result.get(0).getTime(), latestNews);
             }
         });
     }
@@ -223,7 +226,7 @@ public class DiskRepository {
                     // delete
                     latestNewsDBRealmResults.deleteAllFromRealm();
                     // save
-                    LatestNewsMapper.getLatestNewsDB(latestNews);
+                    LatestNewsMapper.getLatestNewsDB(realm, latestNews);
                 }
             });
         } finally {
@@ -235,6 +238,7 @@ public class DiskRepository {
 
     /**
      * 保存往日新闻
+     *
      * @param beforeNews
      */
     public void saveBeforeNews(final BeforeNews beforeNews) {
@@ -248,7 +252,7 @@ public class DiskRepository {
                     beforeNewsDB.setDate(beforeNews.getDate());
                     RealmList<StoriesBeanDB> storiesBeanRealmList = new RealmList<>();
                     for (int i = 0; i < beforeNews.getStories().size(); i++) {
-                        StoriesBeanDB storiesBeanDB = new StoriesBeanDB();
+                        StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
                         storiesBeanDB.setId(beforeNews.getStories().get(i).getId());
                         storiesBeanDB.setGa_prefix(beforeNews.getStories().get(i).getGa_prefix());
                         storiesBeanDB.setType(beforeNews.getStories().get(i).getType());
@@ -278,7 +282,9 @@ public class DiskRepository {
             realm = Realm.getDefaultInstance();
             RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class)
                     .equalTo("date", date).findAll();
-
+            if (query.size() < 1) {
+                return null;
+            }
             beforeNews = new BeforeNews();
             beforeNews.setDate(query.get(0).getDate());
             List<StoriesBean> storiesBeenList = new ArrayList<>();

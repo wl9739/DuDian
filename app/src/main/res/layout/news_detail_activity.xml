@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:fab="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -10,8 +10,6 @@
 
     <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:fab="http://schemas.android.com/tools"
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,20 +21,20 @@
             android:layout_height="230dp"
             android:fitsSystemWindows="true"
             android:visibility="gone"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingtoolbarlayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                app:collapsedTitleTextAppearance="@style/MyToolbarTextStyle"
-                app:contentScrim="?attr/colorPrimaryDark"
-                app:expandedTitleMarginStart="5dp"
-                app:expandedTitleTextAppearance="@style/MyToolbarTextStyle"
-                app:layout_scrollFlags="scroll|snap"
-                app:maxLines="3">
+                fab:collapsedTitleTextAppearance="@style/MyToolbarTextStyle"
+                fab:contentScrim="?attr/colorPrimaryDark"
+                fab:expandedTitleMarginStart="5dp"
+                fab:expandedTitleTextAppearance="@style/MyToolbarTextStyle"
+                fab:layout_scrollFlags="scroll|snap"
+                fab:maxLines="3">
 
                 <ImageView
                     android:id="@+id/header_image"
@@ -44,7 +42,7 @@
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
-                    app:layout_collapseParallaxMultiplier="0.7"/>
+                    fab:layout_collapseParallaxMultiplier="0.7"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -66,7 +64,7 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"/>
+                    fab:layout_collapseMode="pin"/>
             </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
@@ -74,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            fab:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -95,40 +93,40 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:layout_behavior="com.wl.dudian.app.ScrollAwareFABBehavior"
+            fab:layout_behavior="com.wl.dudian.app.ScrollAwareFABBehavior"
             fab:fab_addButtonColorNormal="@color/colorAccent"
-            fab:fab_icon="@drawable/ic_add_24dp"
+            fab:fab_addButtonColorPressed="@color/colorAccent"
+            fab:fab_addButtonPlusIconColor="@color/white"
+            fab:fab_addButtonSize="normal"
             fab:fab_labelStyle="@style/menu_labels_style"
             fab:fab_labelsPosition="left">
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/discuss_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_size="mini"
-                fab:fab_colorNormal="@color/white"
-                fab:fab_colorPressed="@color/white_pressed"
-                fab:fab_title="Click to remove"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/favorite_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_icon="@drawable/ic_favorite_black_24dp"
-                app:fab_size="mini"
-                fab:fab_colorNormal="@color/white"
-                fab:fab_colorPressed="@color/white_pressed"
-                fab:fab_title="Click to remove"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/share_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fab_icon="@drawable/ic_share_black_24dp"
-                app:fab_size="mini"
-                fab:fab_colorNormal="@color/white"
-                fab:fab_colorPressed="@color/white_pressed"
-                fab:fab_title="Click to remove"/>
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/colorAccent"
+                fab:fabSize="mini"
+                fab:fab_title="分享"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/favorite_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/colorAccent"
+                fab:fabSize="mini"
+                fab:fab_title="收藏"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/discuss_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_colorPressed="@color/colorAccent"
+                fab:fabSize="mini"
+                fab:fab_title="评论"/>
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

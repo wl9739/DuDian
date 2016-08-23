@@ -2,8 +2,10 @@ package com.wl.dudian.app.latestnews;
 
 import com.wl.dudian.app.BasePresenter;
 import com.wl.dudian.app.BaseView;
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.LatestNews;
+import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.model.TopStoriesBean;
+
+import java.util.List;
 
 /**
  * Created by wanglin on 16/8/16.
@@ -13,9 +15,11 @@ public interface LatestNewsContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showLatestNews(LatestNews latestNews, long timestampMillis);
+        void showHeaderView(List<TopStoriesBean> topStoriesBeen);
 
-        void loadBeforNews(BeforeNews beforeNews);
+        void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis);
+
+        void loadBeforNews(List<StoriesBean> storiesBeanList);
     }
 
     interface Presenter extends BasePresenter{

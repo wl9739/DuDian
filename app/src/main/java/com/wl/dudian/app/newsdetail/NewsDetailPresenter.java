@@ -71,6 +71,9 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         dataSubscription = getNewsDetail.subscribe(new Action1<NewsDetails>() {
             @Override
             public void call(NewsDetails newsDetails) {
+                if (null == newsDetails) {
+                    return;
+                }
                 NewsDetailPresenter.this.newsDetails = newsDetails;
                 if (null == newsDetails.getBody()) {
                     setNoBodyInfo(newsDetails);

@@ -23,15 +23,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.latestnews.LatestNewsPresenter;
+import com.wl.dudian.app.latestnews.LatestNewsFragment;
 import com.wl.dudian.app.model.ThemesModel;
-import com.wl.dudian.app.splash.SplashPresenter;
 import com.wl.dudian.app.ui.fragment.AboutFragment;
 import com.wl.dudian.app.ui.fragment.ColumnFragment;
 import com.wl.dudian.app.ui.fragment.FavoriteFragment;
-import com.wl.dudian.app.latestnews.LatestNewsFragment;
 import com.wl.dudian.app.ui.fragment.SettingsFragment;
-import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.ScreenShotUtils;
 import com.wl.dudian.framework.Variable;
@@ -114,15 +111,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if (BusinessUtil.isNetConnected(this)) {
+
+//        if (BusinessUtil.isNetConnected(this)) {
             mContentMain.setVisibility(View.VISIBLE);
             mContentMainNotconnectedRl.setVisibility(View.GONE);
             mContentMainWifilogoImg.setVisibility(View.GONE);
             showLatestNews(savedInstanceState);
-        } else {
-            mContentMainNotconnectedRl.setVisibility(View.VISIBLE);
-            mContentMainWifilogoImg.setVisibility(View.VISIBLE);
-        }
+//        } else {
+//            mContentMainNotconnectedRl.setVisibility(View.VISIBLE);
+//            mContentMainWifilogoImg.setVisibility(View.VISIBLE);
+//        }
 
         mToolbar.setTitle("读点日报");
 

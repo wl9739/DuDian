@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import rx.schedulers.Timestamped;
@@ -51,14 +52,15 @@ public class LatestNewsMapper {
         return latestNews;
     }
 
-    public static void getLatestNewsDB(Timestamped<LatestNews> latestNewsTimestamped) {
-        LatestNewsDB latestNewsDB = new LatestNewsDB();
+    public static void getLatestNewsDB(Realm realm, Timestamped<LatestNews> latestNewsTimestamped) {
+        LatestNewsDB latestNewsDB = realm.createObject(LatestNewsDB.class);
         LatestNews latestNews = latestNewsTimestamped.getValue();
+        latestNewsDB.setTime(latestNewsTimestamped.getTimestampMillis());
         latestNewsDB.setDate(latestNews.getDate());
         RealmList<StoriesBeanDB> storiesBeanDBRealmList = new RealmList<>();
         RealmList<TopStoriesBeanDB> topStoriesBeanDBRealmList = new RealmList<>();
         for (int i = 0; i < latestNews.getStories().size(); i++) {
-            StoriesBeanDB storiesBeanDB = new StoriesBeanDB();
+            StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
             storiesBeanDB.setGa_prefix(latestNews.getStories().get(i).getGa_prefix());
             storiesBeanDB.setId(latestNews.getStories().get(i).getId());
             storiesBeanDB.setTitle(latestNews.getStories().get(i).getTitle());
@@ -67,7 +69,7 @@ public class LatestNewsMapper {
             storiesBeanDBRealmList.add(storiesBeanDB);
         }
         for (int i = 0; i < latestNews.getTop_stories().size(); i++) {
-            TopStoriesBeanDB topStoriesBeanDB = new TopStoriesBeanDB();
+            TopStoriesBeanDB topStoriesBeanDB = realm.createObject(TopStoriesBeanDB.class);
             topStoriesBeanDB.setType(latestNews.getTop_stories().get(i).getType());
             topStoriesBeanDB.setTitle(latestNews.getTop_stories().get(i).getTitle());
             topStoriesBeanDB.setId(latestNews.getTop_stories().get(i).getId());

@@ -16,9 +16,8 @@ import android.view.ViewGroup;
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.model.TopStoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.repository.ITimestampedView;
@@ -87,6 +86,12 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         return new LatestNewsFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new LatestNewsPresenter(getContext(), this, this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -152,6 +157,12 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                     }
                 });
 
+        mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.loadLatestNews();
+            }
+        });
 
         mNewsItemRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
@@ -163,7 +174,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-//                            loadMoreNews(mNowDate);
                             presenter.loadMoreNews();
                         }
                     });
@@ -177,49 +187,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
             }
         });
     }
-
-    /**
-     * 获取数据
-     */
-//    public void refreshLatestNewsInfo() {
-//
-//
-//        HttpUtil.getInstance().getLatestNews()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnNext(new Action1<LatestNews>() {
-//                    @Override
-//                    public void call(LatestNews latestNews) {
-//                        // TODO 保存到数据库中
-//                    }
-//                })
-//                .subscribe(new Subscriber<LatestNews>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        stopRefresh();
-//                        Variable.isRefresh = !Variable.isRefresh;
-//                        ACache.get(getActivity()).put(Constants.REFRESH_NETWORK, Constants.REFRESH_FLAG, 60);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        stopRefresh();
-//                    }
-//
-//                    @Override
-//                    public void onNext(LatestNews latestNews) {
-//                        // 保存到数据库中
-////                        latestNews.save();
-//                        mStoriesBeanList.clear();
-//                        mStoriesBeanList.addAll(latestNews.getStories());
-//                        mNowDate = latestNews.getDate();
-//                        mBannerView.setImages(latestNews.getTop_stories(), true);
-//                        mItemAdapter.setRefresh(mStoriesBeanList);
-//
-//                    }
-//                });
-//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -254,18 +221,25 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     }
 
     @Override
-    public void showLatestNews(LatestNews latestNews, long timestampMillis) {
-        mBannerView.setImages(latestNews.getTop_stories(), true);
-        mNewsItemRecyclerView.swapAdapter(new LatestNewsItemAdapter(latestNews.getStories(), getContext()), false);
-    }
-
-    @Override
-    public void loadBeforNews(BeforeNews beforeNews) {
-        mNewsItemRecyclerView.swapAdapter(new LatestNewsItemAdapter(beforeNews.getStories(), getContext()), false);
-    }
-
-    @Override
     public long getViewDataTimestampMillis() {
         return mItemAdapter == null ? 0 : mItemAdapter.getTimestampMillis();
+    }
+
+    @Override
+    public void showHeaderView(List<TopStoriesBean> topStoriesBeen) {
+        stopRefresh();
+        mBannerView.setImages(topStoriesBeen, true);
+    }
+
+    @Override
+    public void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis) {
+        stopRefresh();
+        mItemAdapter.setRefresh(storiesBeanList);
+    }
+
+    @Override
+    public void loadBeforNews(List<StoriesBean> storiesBeanList) {
+        stopRefresh();
+        mItemAdapter.setRefresh(storiesBeanList);
     }
 }

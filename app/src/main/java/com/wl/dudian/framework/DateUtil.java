@@ -1,5 +1,7 @@
 package com.wl.dudian.framework;
 
+import android.text.TextUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,6 +20,9 @@ public class DateUtil {
      * @return
      */
     public static String getLastDay(String nowDate) {
+        if (nowDate == null || TextUtils.isEmpty(nowDate)) {
+            return "";
+        }
         int theYear = Integer.parseInt(nowDate.substring(0, 4));
         int theMonth = Integer.parseInt(nowDate.substring(4, 6)) - 1;
         int theDay = Integer.parseInt(nowDate.substring(6, 8));

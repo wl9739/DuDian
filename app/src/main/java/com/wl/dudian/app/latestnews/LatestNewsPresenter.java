@@ -4,8 +4,13 @@ import android.content.Context;
 
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
+import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.repository.ITimestampedView;
+import com.wl.dudian.framework.DateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -25,7 +30,10 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     private DomainService domainService;
     private Subscription latestNewsSubscription;
     private Subscription beforeNewsSubscription;
-    private String nowDate;
+    private String currentData;
+
+    private List<StoriesBean> storiesBeanList = new ArrayList<>();
+    private List<StoriesBean> commonStoriesBeanList = new ArrayList<>();
 
     public LatestNewsPresenter(Context context, LatestNewsContract.View view, ITimestampedView timestampedView) {
         this.view = view;
@@ -33,6 +41,7 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
         domainService = DomainService.getInstance(context);
 
     }
+
     @Override
     public void loadLatestNews() {
         Observable<Timestamped<LatestNews>> latestNewsObservable = domainService.getLatestNews(timestampedView)
@@ -41,8 +50,13 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
         latestNewsSubscription = latestNewsObservable.subscribe(new Action1<Timestamped<LatestNews>>() {
             @Override
             public void call(Timestamped<LatestNews> latestNewsTimestamped) {
-                nowDate = latestNewsTimestamped.getValue().getDate();
-                view.showLatestNews(latestNewsTimestamped.getValue(), latestNewsTimestamped.getTimestampMillis());
+                currentData = latestNewsTimestamped.getValue().getDate();
+
+                storiesBeanList.clear();
+                storiesBeanList.addAll(latestNewsTimestamped.getValue().getStories());
+
+                view.showHeaderView(latestNewsTimestamped.getValue().getTop_stories());
+                view.showLatestNews(storiesBeanList, latestNewsTimestamped.getTimestampMillis());
             }
         });
     }
@@ -50,21 +64,25 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     @Override
     public void loadMoreNews() {
         Observable<BeforeNews> beforeNewsObservable = Observable.mergeDelayError(
-                domainService.getBeforeNewsFromNet(nowDate),
-                domainService.getBeforeNewsFromDB(nowDate))
+                domainService.getBeforeNewsFromNet(DateUtil.getLastDay(currentData)),
+                domainService.getBeforeNewsFromDB(DateUtil.getLastDay(currentData)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         beforeNewsSubscription = beforeNewsObservable.subscribe(new Action1<BeforeNews>() {
             @Override
             public void call(BeforeNews beforeNews) {
-                view.loadBeforNews(beforeNews);
+                if (beforeNews == null) {
+                    return;
+                }
+                currentData = beforeNews.getDate();
+                storiesBeanList.addAll(beforeNews.getStories());
+                view.loadBeforNews(storiesBeanList);
             }
         });
     }
 
     @Override
     public void saveLatestNews() {
-
     }
 
     @Override
