@@ -139,6 +139,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return mStoriesBeen.size();
     }
 
+    public long getTimestampMillis() {
+        return 0;
+    }
+
     public interface OnLatestNewsItemClickListener {
         void onItemClick(View view, StoriesBean storiesBean);
     }

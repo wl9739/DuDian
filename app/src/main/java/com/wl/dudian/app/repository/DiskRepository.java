@@ -9,18 +9,32 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.wl.dudian.R;
+import com.wl.dudian.app.db.BeforeNewsDB;
+import com.wl.dudian.app.db.LatestNewsDB;
+import com.wl.dudian.app.db.NewsDetailDB;
+import com.wl.dudian.app.db.StoriesBeanDB;
+import com.wl.dudian.app.db.mapper.LatestNewsMapper;
+import com.wl.dudian.app.model.BeforeNews;
+import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
+import com.wl.dudian.app.model.StoriesBean;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+import rx.schedulers.Timestamped;
 
 /**
  * Created by Qiushui on 16/8/3.
@@ -49,31 +63,29 @@ public class DiskRepository {
      * @param startImage startimage
      */
     public void saveStartImage(final StartImage startImage) {
-        AndroidSchedulers.mainThread().createWorker().schedule(new Action0() {
-            @Override
-            public void call() {
-                loadImage(startImage);
-            }
-        });
-    }
-
-    private void loadImage(StartImage startImage) {
         Glide.with(context)
                 .load(startImage.getCreatives().get(0).getUrl())
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Schedulers.io().createWorker().schedule(new Action0() {
-                            @Override
-                            public void call() {
-                                saveAsFile(resource);
-                            }
-                        });
-                    }
-                });
+                          @Override
+                          public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                              Schedulers.io().createWorker().schedule(new Action0() {
+                                  @Override
+                                  public void call() {
+                                      saveAsFile(resource);
+                                  }
+                              });
+                          }
+                      }
+
+                );
     }
 
+    /**
+     * 获取启动页图片
+     *
+     * @return
+     */
     @RxLogObservable
     public Observable<Bitmap> getStartImage() {
         return Observable.fromCallable(new Callable<Bitmap>() {
@@ -109,18 +121,181 @@ public class DiskRepository {
         }
     }
 
+    /**
+     * 获取新闻详情
+     *
+     * @param newsId 新闻详情ID
+     * @return
+     */
     public NewsDetails getNewsDetail(String newsId) {
-        // TODO 从数据库中获取新闻详情
-        return null;
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<NewsDetailDB> query;
+        NewsDetails newsDetails = null;
+        try {
+            query = realm.where(NewsDetailDB.class).equalTo("id", newsId).findAll();
+            newsDetails = new NewsDetails();
+            newsDetails.setTitle(query.get(0).getTitle());
+            newsDetails.setType(query.get(0).getType());
+            newsDetails.setId(query.get(0).getId());
+            newsDetails.setImage(query.get(0).getImage());
+            newsDetails.setBody(query.get(0).getBody());
+            newsDetails.setShare_url(query.get(0).getShare_url());
+            newsDetails.setImage_source(query.get(0).getImage_source());
+            newsDetails.setGa_prefix(query.get(0).getGa_prefix());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+
+        return newsDetails;
     }
 
 
-
     /**
-     * 将下载的文件保存到数据库中
+     * 将下载的新闻详情保存到数据库中
+     *
      * @param newsDetails
      */
-    public void saveNewsDetail(NewsDetails newsDetails) {
-        // TODO 保存到数据库中
+    public void saveNewsDetail(final NewsDetails newsDetails) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    NewsDetailDB newsDetailDB = new NewsDetailDB();
+                    newsDetailDB.setImage(newsDetails.getImage());
+                    newsDetailDB.setGa_prefix(newsDetails.getGa_prefix());
+                    newsDetailDB.setTitle(newsDetails.getTitle());
+                    newsDetailDB.setBody(newsDetails.getBody());
+                    newsDetailDB.setImage_source(newsDetails.getImage_source());
+                    newsDetailDB.setShare_url(newsDetails.getShare_url());
+                    newsDetailDB.setId(newsDetails.getId());
+                    newsDetailDB.setType(newsDetails.getType());
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }
+
+    /**
+     * 获取在本地保存的最新新闻
+     *
+     * @return
+     */
+    public Observable<Timestamped<LatestNews>> getLatestNews() {
+        return Observable.fromCallable(new Callable<Timestamped<LatestNews>>() {
+            @Override
+            public Timestamped<LatestNews> call() throws Exception {
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<LatestNewsDB> result;
+                LatestNews latestNews = null;
+                try {
+                    result = realm.where(LatestNewsDB.class).findAll();
+                    latestNews = LatestNewsMapper.getLatestNews(result);
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                }
+                return new Timestamped<>(result.get(0).getTime(), latestNews);
+            }
+        });
+    }
+
+    /**
+     * 将下载的新闻标题内容保存到数据库中
+     *
+     * @param latestNews
+     */
+    public void saveLatestNews(final Timestamped<LatestNews> latestNews) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            final RealmResults<LatestNewsDB> latestNewsDBRealmResults = realm.where(LatestNewsDB.class).findAll();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    // delete
+                    latestNewsDBRealmResults.deleteAllFromRealm();
+                    // save
+                    LatestNewsMapper.getLatestNewsDB(latestNews);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }
+
+    /**
+     * 保存往日新闻
+     * @param beforeNews
+     */
+    public void saveBeforeNews(final BeforeNews beforeNews) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    BeforeNewsDB beforeNewsDB = new BeforeNewsDB();
+                    beforeNewsDB.setDate(beforeNews.getDate());
+                    RealmList<StoriesBeanDB> storiesBeanRealmList = new RealmList<>();
+                    for (int i = 0; i < beforeNews.getStories().size(); i++) {
+                        StoriesBeanDB storiesBeanDB = new StoriesBeanDB();
+                        storiesBeanDB.setId(beforeNews.getStories().get(i).getId());
+                        storiesBeanDB.setGa_prefix(beforeNews.getStories().get(i).getGa_prefix());
+                        storiesBeanDB.setType(beforeNews.getStories().get(i).getType());
+                        storiesBeanDB.setImages(beforeNews.getStories().get(i).getImages().get(0));
+                        storiesBeanRealmList.add(storiesBeanDB);
+                    }
+                    beforeNewsDB.setStories(storiesBeanRealmList);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }
+
+    /**
+     * 获取本地保存的往日新闻。
+     *
+     * @param date 新闻日期
+     * @return
+     */
+    public BeforeNews getBeforeNews(String date) {
+        Realm realm = null;
+        BeforeNews beforeNews = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class)
+                    .equalTo("date", date).findAll();
+
+            beforeNews = new BeforeNews();
+            beforeNews.setDate(query.get(0).getDate());
+            List<StoriesBean> storiesBeenList = new ArrayList<>();
+            for (int i = 0; i < query.get(0).getStories().size(); i++) {
+                StoriesBean storiesBean = new StoriesBean();
+                storiesBean.setType(query.get(0).getStories().get(i).getType());
+                storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
+                storiesBean.setImages(Arrays.asList(query.get(0).getStories().get(i).getImages()));
+                storiesBean.setId(query.get(0).getStories().get(i).getId());
+                storiesBeenList.add(storiesBean);
+            }
+            beforeNews.setStories(storiesBeenList);
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return beforeNews;
     }
 }

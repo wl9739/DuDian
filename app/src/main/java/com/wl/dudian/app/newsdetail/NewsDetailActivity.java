@@ -56,6 +56,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
 
+
         new NewsDetailPresenter(this, this);
 
         mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);

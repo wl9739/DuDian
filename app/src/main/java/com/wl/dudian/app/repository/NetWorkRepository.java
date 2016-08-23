@@ -1,6 +1,7 @@
 package com.wl.dudian.app.repository;
 
 import com.fernandocejas.frodo.annotation.RxLogObservable;
+import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
@@ -62,5 +63,10 @@ public class NetWorkRepository {
     @RxLogObservable
     public Observable<NewsDetails> getNewsDetails(String id) {
         return dailyApi.getNewsDetails(id);
+    }
+
+    @RxLogObservable
+    public Observable<BeforeNews> getBeforeNews(String date) {
+        return dailyApi.getBeforeNews(date);
     }
 }

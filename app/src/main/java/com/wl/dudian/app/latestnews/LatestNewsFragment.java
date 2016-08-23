@@ -1,4 +1,4 @@
-package com.wl.dudian.app.ui.fragment;
+package com.wl.dudian.app.latestnews;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,27 +15,22 @@ import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
-import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.framework.ACache;
-import com.wl.dudian.framework.Constants;
-import com.wl.dudian.framework.DateUtil;
-import com.wl.dudian.framework.HttpUtil;
-import com.wl.dudian.framework.Variable;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
+import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.app.repository.ITimestampedView;
+import com.wl.dudian.app.ui.fragment.BaseFragment;
+import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 
 /**
@@ -44,10 +39,12 @@ import rx.schedulers.Schedulers;
  * Created by yisheng on 16/6/21.
  */
 
-public class LatestNewsFragment extends BaseFragment {
+public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View, ITimestampedView{
 
     public static final String TAG = "LatestNewsFragment11111";
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
+
+    private DomainService domainService;
 
     @BindView(R.id.latest_news_fragment_recyclerview)
     RecyclerView mNewsItemRecyclerView;
@@ -83,6 +80,8 @@ public class LatestNewsFragment extends BaseFragment {
      * Recycler view 的 header view
      */
     private View mHeaderView;
+
+    private LatestNewsContract.Presenter presenter;
 
     public static LatestNewsFragment newInstance() {
         return new LatestNewsFragment();
@@ -128,16 +127,22 @@ public class LatestNewsFragment extends BaseFragment {
         mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshLatestNewsInfo();
+                presenter.loadMoreNews();
             }
         });
+
+        domainService = DomainService.getInstance(getContext());
+
+        mNewsItemRecyclerView.setAdapter(mItemAdapter = new LatestNewsItemAdapter(Collections.<StoriesBean>emptyList(), getContext()));
+
+        new LatestNewsPresenter(getContext(), this, this);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        refreshLatestNewsInfo();
+        presenter.loadLatestNews();
 
         mItemAdapter.setOnLatestNewsItemClickListener(
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
@@ -158,7 +163,8 @@ public class LatestNewsFragment extends BaseFragment {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-                            loadMoreNews(mNowDate);
+//                            loadMoreNews(mNowDate);
+                            presenter.loadMoreNews();
                         }
                     });
                 }
@@ -175,77 +181,45 @@ public class LatestNewsFragment extends BaseFragment {
     /**
      * 获取数据
      */
-    public void refreshLatestNewsInfo() {
-        Observable<LatestNews> memory = Observable.create(new Observable.OnSubscribe<LatestNews>() {
-            @Override
-            public void call(Subscriber<? super LatestNews> subscriber) {
-
-            }
-        });
-        Observable<LatestNews> disk = Observable.create(new Observable.OnSubscribe<LatestNews>() {
-            @Override
-            public void call(Subscriber<? super LatestNews> subscriber) {
-
-            }
-        });
-        Observable<LatestNews> network = Observable.create(new Observable.OnSubscribe<LatestNews>() {
-            @Override
-            public void call(Subscriber<? super LatestNews> subscriber) {
-
-            }
-        });
-
-        Observable<LatestNews> source = Observable.concat(memory, disk, network).first();
-
-        Observable<LatestNews> networkWithSave = network.doOnNext(new Action1<LatestNews>() {
-            @Override
-            public void call(LatestNews latestNews) {
-
-            }
-        });
-
-        Observable<LatestNews> diskWithCache = disk.doOnNext(new Action1<LatestNews>() {
-            @Override
-            public void call(LatestNews latestNews) {
-
-            }
-        });
-        HttpUtil.getInstance().getLatestNews()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<LatestNews>() {
-                    @Override
-                    public void call(LatestNews latestNews) {
-                        // TODO 保存到数据库中
-                    }
-                })
-                .subscribe(new Subscriber<LatestNews>() {
-                    @Override
-                    public void onCompleted() {
-                        stopRefresh();
-                        Variable.isRefresh = !Variable.isRefresh;
-                        ACache.get(getActivity()).put(Constants.REFRESH_NETWORK, Constants.REFRESH_FLAG, 60);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        stopRefresh();
-                    }
-
-                    @Override
-                    public void onNext(LatestNews latestNews) {
-                        // 保存到数据库中
-//                        latestNews.save();
-                        mStoriesBeanList.clear();
-                        mStoriesBeanList.addAll(latestNews.getStories());
-                        mNowDate = latestNews.getDate();
-                        mBannerView.setImages(latestNews.getTop_stories(), true);
-                        mItemAdapter.setRefresh(mStoriesBeanList);
-
-                    }
-                });
-    }
+//    public void refreshLatestNewsInfo() {
+//
+//
+//        HttpUtil.getInstance().getLatestNews()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnNext(new Action1<LatestNews>() {
+//                    @Override
+//                    public void call(LatestNews latestNews) {
+//                        // TODO 保存到数据库中
+//                    }
+//                })
+//                .subscribe(new Subscriber<LatestNews>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        stopRefresh();
+//                        Variable.isRefresh = !Variable.isRefresh;
+//                        ACache.get(getActivity()).put(Constants.REFRESH_NETWORK, Constants.REFRESH_FLAG, 60);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                        stopRefresh();
+//                    }
+//
+//                    @Override
+//                    public void onNext(LatestNews latestNews) {
+//                        // 保存到数据库中
+////                        latestNews.save();
+//                        mStoriesBeanList.clear();
+//                        mStoriesBeanList.addAll(latestNews.getStories());
+//                        mNowDate = latestNews.getDate();
+//                        mBannerView.setImages(latestNews.getTop_stories(), true);
+//                        mItemAdapter.setRefresh(mStoriesBeanList);
+//
+//                    }
+//                });
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -274,39 +248,24 @@ public class LatestNewsFragment extends BaseFragment {
         }
     }
 
-    /**
-     * 加载历史信息
-     *
-     * @param nowDate
-     */
-    private void loadMoreNews(String nowDate) {
-        HttpUtil.getInstance().getBeforeNews(DateUtil.getLastDay(nowDate))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<BeforeNews>() {
-                    @Override
-                    public void call(BeforeNews beforeNews) {
-                        // 保存到数据库
-                    }
-                })
-                .subscribe(new Subscriber<BeforeNews>() {
-                    @Override
-                    public void onCompleted() {
-                        mItemAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(BeforeNews beforeNews) {
-                        mStoriesBeanList.addAll(beforeNews.getStories());
-                        mNowDate = beforeNews.getDate();
-                        mItemAdapter.setRefresh(mStoriesBeanList);
-                    }
-                });
+    @Override
+    public void setPresenter(LatestNewsContract.Presenter presenter) {
+        this.presenter = BusinessUtil.checkNotNull(presenter);
     }
 
+    @Override
+    public void showLatestNews(LatestNews latestNews, long timestampMillis) {
+        mBannerView.setImages(latestNews.getTop_stories(), true);
+        mNewsItemRecyclerView.swapAdapter(new LatestNewsItemAdapter(latestNews.getStories(), getContext()), false);
+    }
+
+    @Override
+    public void loadBeforNews(BeforeNews beforeNews) {
+        mNewsItemRecyclerView.swapAdapter(new LatestNewsItemAdapter(beforeNews.getStories(), getContext()), false);
+    }
+
+    @Override
+    public long getViewDataTimestampMillis() {
+        return mItemAdapter == null ? 0 : mItemAdapter.getTimestampMillis();
+    }
 }

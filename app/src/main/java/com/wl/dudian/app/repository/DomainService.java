@@ -2,7 +2,11 @@ package com.wl.dudian.app.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.wl.dudian.app.model.BeforeNews;
+import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
 
@@ -12,6 +16,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.schedulers.Timestamped;
 
 /**
  * Created by Qiushui on 16/8/3.
@@ -110,6 +115,7 @@ public class DomainService {
                 .subscribe(new Action1<StartImage>() {
                     @Override
                     public void call(StartImage startImage) {
+                        Log.d("000000", "call: getAndSaveImageFromNet() " + Thread.currentThread());
                         diskRepository.saveStartImage(startImage);
                     }
                 });
@@ -122,5 +128,101 @@ public class DomainService {
      */
     public void saveToFavoriteDb(NewsDetails newsDetails) {
         // TODO 保存到数据库
+    }
+//
+//    public Observable<LatestNews> getLatestNewsFromDB() {
+//        final LatestNews latestNews = diskRepository.getLatestNews();
+//        return Observable.create(new Observable.OnSubscribe<LatestNews>() {
+//            @Override
+//            public void call(Subscriber<? super LatestNews> subscriber) {
+//                if (latestNews != null) {
+//                    subscriber.onNext(latestNews);
+//                } else {
+//                    subscriber.onCompleted();
+//                }
+//            }
+//        });
+//    }
+//
+//    public Observable<LatestNews> getLatestNewsFromNet() {
+//        return netWorkRepository.getLatestNews().doOnNext(new Action1<LatestNews>() {
+//            @Override
+//            public void call(LatestNews latestNews) {
+//                diskRepository.saveLatestNews(latestNews);
+//            }
+//        }).onErrorReturn(new Func1<Throwable, LatestNews>() {
+//            @Override
+//            public LatestNews call(Throwable throwable) {
+//                return null;
+//            }
+//        });
+//    }
+
+    /**
+     * 从网络下载往日新闻
+     *
+     * @param date
+     * @return
+     */
+    public Observable<BeforeNews> getBeforeNewsFromNet(String date) {
+
+        return netWorkRepository.getBeforeNews(date).doOnNext(new Action1<BeforeNews>() {
+            @Override
+            public void call(BeforeNews beforeNews) {
+                diskRepository.saveBeforeNews(beforeNews);
+            }
+        }).onErrorReturn(new Func1<Throwable, BeforeNews>() {
+            @Override
+            public BeforeNews call(Throwable throwable) {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * @param date
+     * @return
+     */
+    public Observable<BeforeNews> getBeforeNewsFromDB(final String date) {
+        return Observable.create(new Observable.OnSubscribe<BeforeNews>() {
+            @Override
+            public void call(Subscriber<? super BeforeNews> subscriber) {
+                diskRepository.getBeforeNews(date);
+            }
+        });
+    }
+
+    public Observable<Timestamped<LatestNews>> getLatestNews(final ITimestampedView timestampedView) {
+        return getMergedNews()
+                .onErrorReturn(new Func1<Throwable, Timestamped<LatestNews>>() {
+                    @Override
+                    public Timestamped<LatestNews> call(Throwable throwable) {
+                        return null;
+                    }
+                })
+                .filter(getLatestNewsFilter(timestampedView));
+
+    }
+
+    @NonNull
+    private Func1<Timestamped<LatestNews>, Boolean> getLatestNewsFilter(final ITimestampedView timestampedView) {
+        return new Func1<Timestamped<LatestNews>, Boolean>() {
+            @Override
+            public Boolean call(Timestamped<LatestNews> latestNewsTimestamped) {
+                return latestNewsTimestamped != null
+                        && latestNewsTimestamped.getValue() != null
+                        && latestNewsTimestamped.getTimestampMillis() > timestampedView.getViewDataTimestampMillis();
+            }
+        };
+    }
+
+    private Observable<Timestamped<LatestNews>> getMergedNews() {
+        return Observable.mergeDelayError(diskRepository.getLatestNews().subscribeOn(Schedulers.io()),
+                netWorkRepository.getLatestNews().timestamp().doOnNext(new Action1<Timestamped<LatestNews>>() {
+                    @Override
+                    public void call(Timestamped<LatestNews> latestNewsTimestamped) {
+                        diskRepository.saveLatestNews(latestNewsTimestamped);
+                    }
+                }).subscribeOn(Schedulers.io()));
     }
 }
