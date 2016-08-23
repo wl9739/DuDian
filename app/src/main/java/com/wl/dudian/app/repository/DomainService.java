@@ -129,34 +129,6 @@ public class DomainService {
     public void saveToFavoriteDb(NewsDetails newsDetails) {
         // TODO 保存到数据库
     }
-//
-//    public Observable<LatestNews> getLatestNewsFromDB() {
-//        final LatestNews latestNews = diskRepository.getLatestNews();
-//        return Observable.create(new Observable.OnSubscribe<LatestNews>() {
-//            @Override
-//            public void call(Subscriber<? super LatestNews> subscriber) {
-//                if (latestNews != null) {
-//                    subscriber.onNext(latestNews);
-//                } else {
-//                    subscriber.onCompleted();
-//                }
-//            }
-//        });
-//    }
-//
-//    public Observable<LatestNews> getLatestNewsFromNet() {
-//        return netWorkRepository.getLatestNews().doOnNext(new Action1<LatestNews>() {
-//            @Override
-//            public void call(LatestNews latestNews) {
-//                diskRepository.saveLatestNews(latestNews);
-//            }
-//        }).onErrorReturn(new Func1<Throwable, LatestNews>() {
-//            @Override
-//            public LatestNews call(Throwable throwable) {
-//                return null;
-//            }
-//        });
-//    }
 
     /**
      * 从网络下载往日新闻
@@ -184,10 +156,15 @@ public class DomainService {
      * @return
      */
     public Observable<BeforeNews> getBeforeNewsFromDB(final String date) {
+        final BeforeNews beforeNews = diskRepository.getBeforeNews(date);
         return Observable.create(new Observable.OnSubscribe<BeforeNews>() {
             @Override
             public void call(Subscriber<? super BeforeNews> subscriber) {
-                diskRepository.getBeforeNews(date);
+                if (beforeNews != null) {
+                    subscriber.onNext(beforeNews);
+                } else {
+                    subscriber.onCompleted();
+                }
             }
         });
     }
@@ -224,5 +201,9 @@ public class DomainService {
                         diskRepository.saveLatestNews(latestNewsTimestamped);
                     }
                 }).subscribeOn(Schedulers.io()));
+    }
+
+    public void updateRead(int id) {
+        diskRepository.updateRead(id);
     }
 }

@@ -248,12 +248,19 @@ public class DiskRepository {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    BeforeNewsDB beforeNewsDB = new BeforeNewsDB();
+                    RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class).equalTo("date", beforeNews.getDate()).findAll();
+                    // 如果已经保存了, 则不再重复保存
+                    if (query.size() > 0) {
+                        return;
+                    }
+                    // 如果之前没有保存,则保存到数据库
+                    BeforeNewsDB beforeNewsDB = realm.createObject(BeforeNewsDB.class);
                     beforeNewsDB.setDate(beforeNews.getDate());
                     RealmList<StoriesBeanDB> storiesBeanRealmList = new RealmList<>();
                     for (int i = 0; i < beforeNews.getStories().size(); i++) {
                         StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
                         storiesBeanDB.setId(beforeNews.getStories().get(i).getId());
+                        storiesBeanDB.setTitle(beforeNews.getStories().get(i).getTitle());
                         storiesBeanDB.setGa_prefix(beforeNews.getStories().get(i).getGa_prefix());
                         storiesBeanDB.setType(beforeNews.getStories().get(i).getType());
                         storiesBeanDB.setImages(beforeNews.getStories().get(i).getImages().get(0));
@@ -277,7 +284,7 @@ public class DiskRepository {
      */
     public BeforeNews getBeforeNews(String date) {
         Realm realm = null;
-        BeforeNews beforeNews = null;
+        BeforeNews beforeNews;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class)
@@ -294,14 +301,37 @@ public class DiskRepository {
                 storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
                 storiesBean.setImages(Arrays.asList(query.get(0).getStories().get(i).getImages()));
                 storiesBean.setId(query.get(0).getStories().get(i).getId());
+                storiesBean.setTitle(query.get(0).getStories().get(i).getTitle());
+                storiesBean.setRead(query.get(0).getStories().get(i).isRead());
                 storiesBeenList.add(storiesBean);
             }
             beforeNews.setStories(storiesBeenList);
+            return beforeNews;
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
-        return beforeNews;
+    }
+
+    public void updateRead(final int id) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("id", id).findAll();
+                    if (query.size() < 1) {
+                        return;
+                    }
+                    query.get(0).setRead(true);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 }

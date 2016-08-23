@@ -74,6 +74,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                 if (null == newsDetails) {
                     return;
                 }
+                updateRead(newsDetails.getId());
                 NewsDetailPresenter.this.newsDetails = newsDetails;
                 if (null == newsDetails.getBody()) {
                     setNoBodyInfo(newsDetails);
@@ -184,5 +185,10 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         // oks.setSiteUrl("http://sharesdk.cn");
         // 启动分享GUI
         oks.show(context);
+    }
+
+    @Override
+    public void updateRead(final int id) {
+        domainService.updateRead(id);
     }
 }

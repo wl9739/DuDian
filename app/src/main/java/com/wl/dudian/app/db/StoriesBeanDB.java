@@ -13,6 +13,7 @@ public class StoriesBeanDB extends RealmObject{
     private String ga_prefix;
     private String title;
     private String images;
+    private boolean read;
 
     public int getType() {
         return type;
@@ -52,5 +53,13 @@ public class StoriesBeanDB extends RealmObject{
 
     public void setImages(String images) {
         this.images = images;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

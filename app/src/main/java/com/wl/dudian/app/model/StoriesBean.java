@@ -13,6 +13,7 @@ public class StoriesBean implements Serializable {
     private int id;
     private String ga_prefix;
     private String title;
+    private boolean read;
     private List<String> images;
 
     public int getType() {
@@ -53,5 +54,13 @@ public class StoriesBean implements Serializable {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

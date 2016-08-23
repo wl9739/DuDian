@@ -105,10 +105,21 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 if (mHeaderView != null) {
                     // position数需要-1, 因为0是HeaderView
                     itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
+                    if (mStoriesBeen.get(position - 1).isRead()) {
+                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
+                    } else {
+                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
+                    }
                     itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
                     BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
                             ((ItemViewHolder) holder).picImageView);
                 } else {
+                    Log.d(TAG, "onBindViewHolder: id: " + position + " title : " + mStoriesBeen.get(position).getTitle() + "  isRead : " + mStoriesBeen.get(position).isRead());
+                    if (mStoriesBeen.get(position).isRead()) {
+                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
+                    } else {
+                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
+                    }
                     itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
                     itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
                     // 如果mei

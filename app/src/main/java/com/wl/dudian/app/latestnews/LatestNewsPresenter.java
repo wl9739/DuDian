@@ -33,7 +33,6 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     private String currentData;
 
     private List<StoriesBean> storiesBeanList = new ArrayList<>();
-    private List<StoriesBean> commonStoriesBeanList = new ArrayList<>();
 
     public LatestNewsPresenter(Context context, LatestNewsContract.View view, ITimestampedView timestampedView) {
         this.view = view;
@@ -63,9 +62,10 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     @Override
     public void loadMoreNews() {
-        Observable<BeforeNews> beforeNewsObservable = Observable.mergeDelayError(
-                domainService.getBeforeNewsFromNet(DateUtil.getLastDay(currentData)),
-                domainService.getBeforeNewsFromDB(DateUtil.getLastDay(currentData)))
+        Observable<BeforeNews> beforeNewsObservable = Observable.concat(
+                domainService.getBeforeNewsFromDB(DateUtil.getLastDay(currentData)),
+                domainService.getBeforeNewsFromNet(currentData))
+                .first()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         beforeNewsSubscription = beforeNewsObservable.subscribe(new Action1<BeforeNews>() {
