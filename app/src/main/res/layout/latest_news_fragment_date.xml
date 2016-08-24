@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="24dp"
+    android:id="@+id/latest_news_fragment_date_tv"
+    android:text="100000"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+</TextView>

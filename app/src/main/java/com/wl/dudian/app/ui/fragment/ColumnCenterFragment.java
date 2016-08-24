@@ -92,7 +92,7 @@ public class ColumnCenterFragment extends BaseFragment {
                 .subscribe(new Subscriber<ThemeDetailModel>() {
                     @Override
                     public void onCompleted() {
-                        mNewsItemAdapter.setRefresh(mStoriesBeanList);
+//                        mNewsItemAdapter.setRefresh(mStoriesBeanList, "", i);
                     }
 
                     @Override

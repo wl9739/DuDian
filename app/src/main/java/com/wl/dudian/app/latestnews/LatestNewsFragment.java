@@ -17,7 +17,6 @@ import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
-import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.repository.ITimestampedView;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.framework.BusinessUtil;
@@ -38,9 +37,6 @@ import butterknife.ButterKnife;
 public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View, ITimestampedView{
 
     public static final String TAG = "LatestNewsFragment11111";
-    private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
-
-    private DomainService domainService;
 
     @BindView(R.id.latest_news_fragment_recyclerview)
     RecyclerView mNewsItemRecyclerView;
@@ -78,6 +74,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     private View mHeaderView;
 
     private LatestNewsContract.Presenter presenter;
+    private int datePosition = 1;
 
     public static LatestNewsFragment newInstance() {
         return new LatestNewsFragment();
@@ -117,7 +114,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         // set adapter
         mNewsItemRecyclerView.setAdapter(mItemAdapter);
 
-
         // set header
         mItemAdapter.setHeaderView(mHeaderView);
 
@@ -132,8 +128,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                 presenter.loadMoreNews();
             }
         });
-
-        domainService = DomainService.getInstance(getContext());
 
         mNewsItemRecyclerView.setAdapter(mItemAdapter);
 
@@ -150,7 +144,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
                     public void onItemClick(View view, StoriesBean storiesBean) {
-                        mItemAdapter.changeTitleColor(storiesBean);
                         presenter.updateRead(storiesBean);
                         NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
@@ -173,12 +166,12 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
+                            datePosition = lastVisibleItem + 1;
                             presenter.loadMoreNews();
                         }
                     });
                 }
             }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -216,11 +209,14 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     public void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis) {
         stopRefresh();
         mItemAdapter.setRefresh(storiesBeanList);
+        mItemAdapter.changeDateTitle(1, "今日热文");
     }
 
     @Override
-    public void loadBeforNews(List<StoriesBean> storiesBeanList) {
+    public void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData) {
         stopRefresh();
         mItemAdapter.setRefresh(storiesBeanList);
+        mItemAdapter.changeDateTitle(datePosition, currentData);
     }
+
 }

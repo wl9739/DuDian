@@ -2,7 +2,6 @@ package com.wl.dudian.framework;
 
 import android.text.TextUtils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,19 +50,14 @@ public class DateUtil {
      * @return
      */
     public static String getWeekday(String nowDate) {
-        try {
-            if (nowDate.length() != 8) {
-                throw new IllegalStateException("Illegal date");
-            }
-            SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
-
-            Date date = sdf.parse(nowDate);
-
-            return sdf.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+        if (nowDate.length() != 8) {
+            throw new IllegalStateException("Illegal date");
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(nowDate.substring(0, 4)), Integer.parseInt(nowDate.substring(4, 6)), Integer.parseInt(nowDate.substring(6, 8)));
+        Date date = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("E");
+        return sdf.format(date);
     }
 
     /**

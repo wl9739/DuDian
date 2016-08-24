@@ -19,7 +19,7 @@ public interface LatestNewsContract {
 
         void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis);
 
-        void loadBeforNews(List<StoriesBean> storiesBeanList);
+        void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData);
     }
 
     interface Presenter extends BasePresenter{
@@ -27,8 +27,6 @@ public interface LatestNewsContract {
         void loadLatestNews();
 
         void loadMoreNews();
-
-        void saveLatestNews();
 
         void updateRead(StoriesBean storiesBean);
     }

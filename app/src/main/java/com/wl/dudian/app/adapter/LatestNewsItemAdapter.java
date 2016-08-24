@@ -2,7 +2,7 @@ package com.wl.dudian.app.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +12,23 @@ import android.widget.TextView;
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.DateUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by yisheng on 16/6/21.
+ * Created by Qiushui on 16/6/21.
  */
 
 public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements View.OnClickListener {
 
 
-    private static final String TAG = "mStore111";
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private List<StoriesBean> mStoriesBeen;
@@ -37,6 +38,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * headerview
      */
     private View mHeaderView;
+
+    private HashMap<Integer, String> datePositions = new HashMap<>();
 
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
         mStoriesBeen = new ArrayList<>();
@@ -68,13 +71,11 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     /**
      * 刷新数据
      *
-     * @param storiesBeanList
+     * @param storiesBeanList 新闻内容集合
      */
     public void setRefresh(List<StoriesBean> storiesBeanList) {
         mStoriesBeen.clear();
         mStoriesBeen.addAll(storiesBeanList);
-        Log.d(TAG, "LatestNewsItemAdapter:" + mStoriesBeen.get(0).getTitle());
-
         notifyDataSetChanged();
     }
 
@@ -97,12 +98,19 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (holder instanceof ItemViewHolder) {
             if (position < mStoriesBeen.size()) {
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-//                if (position == 0) {
-//                    itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart("20160701"));
-//                    itemViewHolder.dateTv.setVisibility(View.VISIBLE);
-//                }
                 // 如果有Header
                 if (mHeaderView != null) {
+                    if (datePositions.containsKey(position)) {
+                        String date = datePositions.get(position);
+                        if (TextUtils.isDigitsOnly(date)) {
+                            itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart(date));
+                        } else {
+                            itemViewHolder.dateTv.setText(date);
+                        }
+                        itemViewHolder.dateTv.setVisibility(View.VISIBLE);
+                    } else {
+                        itemViewHolder.dateTv.setVisibility(View.GONE);
+                    }
                     // position数需要-1, 因为0是HeaderView
                     itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
                     if (mStoriesBeen.get(position - 1).isRead()) {
@@ -112,21 +120,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     }
                     itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
                     BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
-                            ((ItemViewHolder) holder).picImageView);
-                } else {
-                    Log.d(TAG, "onBindViewHolder: id: " + position + " title : " + mStoriesBeen.get(position).getTitle() + "  isRead : " + mStoriesBeen.get(position).isRead());
-                    if (mStoriesBeen.get(position).isRead()) {
-                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
-                    } else {
-                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
-                    }
-                    itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
-                    itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
-                    // 如果mei
-                    if (null == mStoriesBeen.get(position) || null == mStoriesBeen.get(position).getImages()) {
-                        return;
-                    }
-                    BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
                             ((ItemViewHolder) holder).picImageView);
                 }
             }
@@ -154,8 +147,9 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return 0;
     }
 
-    public void changeTitleColor(StoriesBean storiesBean) {
-
+    public void changeDateTitle(int i, String dateTitle) {
+        datePositions.put(i, dateTitle);
+        notifyItemChanged(i);
     }
 
     public interface OnLatestNewsItemClickListener {

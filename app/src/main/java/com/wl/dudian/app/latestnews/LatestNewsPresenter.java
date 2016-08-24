@@ -7,6 +7,7 @@ import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.repository.ITimestampedView;
+import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.DateUtil;
 
 import java.util.ArrayList;
@@ -76,13 +77,9 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
                 }
                 currentData = beforeNews.getDate();
                 storiesBeanList.addAll(beforeNews.getStories());
-                view.loadBeforNews(storiesBeanList);
+                view.loadBeforNews(storiesBeanList, currentData);
             }
         });
-    }
-
-    @Override
-    public void saveLatestNews() {
     }
 
     @Override
@@ -97,6 +94,7 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     @Override
     public void unsubscribe() {
-
+        BusinessUtil.unsubscribe(beforeNewsSubscription);
+        BusinessUtil.unsubscribe(latestNewsSubscription);
     }
 }

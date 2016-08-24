@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,8 @@ import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 
 /**
  * 轮播控件
@@ -34,6 +34,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class BannerView extends FrameLayout {
+
+    private static final String TAG = "BannerView111";
 
     /**
      * viewpager
@@ -62,7 +64,9 @@ public class BannerView extends FrameLayout {
     /**
      * 计数器,当前显示的位置
      */
-    private int mCurrentItem = 0;
+    private volatile int mCurrentItem = 0;
+
+    private SlideShowTask slideShowTask;
 
     /**
      * 处理消息
@@ -108,6 +112,7 @@ public class BannerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         mContext = context;
         mAdapter = new BannerViewPagerAdapter();
+        slideShowTask = new SlideShowTask();
     }
 
     /**
@@ -144,12 +149,8 @@ public class BannerView extends FrameLayout {
      * 开始启动自动轮播
      */
     private void startPlay() {
-        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        mScheduledExecutorService.scheduleAtFixedRate(new SlideShowTask(), 5, 4, TimeUnit.SECONDS);
-    }
-
-    private void stopPlay() {
-        mScheduledExecutorService.shutdown();
+//        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+//        mScheduledExecutorService.scheduleAtFixedRate(slideShowTask, 5, 4, TimeUnit.SECONDS);
     }
 
     public static class BannerViewPagerAdapter extends PagerAdapter {
@@ -163,6 +164,7 @@ public class BannerView extends FrameLayout {
 
         /**
          * set点击事件
+         *
          * @param onBannerItemClickListener
          */
         public void setOnBannerItemClickListener(BannerViewPagerAdapter.OnBannerItemClickListener onBannerItemClickListener) {
@@ -253,12 +255,19 @@ public class BannerView extends FrameLayout {
 
         @Override
         public void onPageScrollStateChanged(int state) {
+            Log.d(TAG, "onPageScrollStateChanged: state: " + state);
             switch (state) {
                 case 1: //  手势滑动, 空闲中
                     isAutoPlay = false;
+                    if (!mScheduledExecutorService.isShutdown()) {
+                        mScheduledExecutorService.shutdown();
+                    }
                     break;
                 case 2: //  界面切换中
                     isAutoPlay = true;
+                    if (mScheduledExecutorService.isShutdown()) {
+                        mScheduledExecutorService.execute(slideShowTask);
+                    }
                     break;
                 case 0:  // 滑动结束, 即切换完毕或者加载完毕
                     // 当前为最后一张, 此时从右向左滑动, 则切换到第一张
