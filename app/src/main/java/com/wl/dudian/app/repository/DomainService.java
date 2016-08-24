@@ -188,7 +188,7 @@ public class DomainService {
             public Boolean call(Timestamped<LatestNews> latestNewsTimestamped) {
                 return latestNewsTimestamped != null
                         && latestNewsTimestamped.getValue() != null
-                        && latestNewsTimestamped.getTimestampMillis() > timestampedView.getViewDataTimestampMillis();
+                        && latestNewsTimestamped.getTimestampMillis() >= timestampedView.getViewDataTimestampMillis();
             }
         };
     }
@@ -205,5 +205,9 @@ public class DomainService {
 
     public void updateRead(int id) {
         diskRepository.updateRead(id);
+    }
+
+    public Observable<Timestamped<LatestNews>> getLatestNewsFromDB() {
+        return diskRepository.getLatestNews();
     }
 }

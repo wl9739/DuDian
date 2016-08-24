@@ -9,10 +9,11 @@
     <TextView
         android:id="@+id/latest_news_detail_date_tv"
         tools:text="今日热文"
+        android:textSize="16sp"
         android:layout_marginLeft="@dimen/activity_vertical_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:visibility="gone"
-        android:textColor="@color/textColorSecond"
+        android:textColor="@color/textColorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

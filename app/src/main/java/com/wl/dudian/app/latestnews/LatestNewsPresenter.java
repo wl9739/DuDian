@@ -17,6 +17,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
 
@@ -29,7 +30,6 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     private LatestNewsContract.View view;
     private ITimestampedView timestampedView;
     private DomainService domainService;
-    private Subscription latestNewsSubscription;
     private Subscription beforeNewsSubscription;
     private String currentData;
 
@@ -44,21 +44,27 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     @Override
     public void loadLatestNews() {
-        Observable<Timestamped<LatestNews>> latestNewsObservable = domainService.getLatestNews(timestampedView)
-                .observeOn(AndroidSchedulers.mainThread());
+        domainService.getLatestNews(timestampedView)
+                .flatMap(new Func1<Timestamped<LatestNews>, Observable<Timestamped<LatestNews>>>() {
+                    @Override
+                    public Observable<Timestamped<LatestNews>> call(Timestamped<LatestNews> latestNewsTimestamped) {
+                        return domainService.getLatestNewsFromDB();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Timestamped<LatestNews>>() {
+                    @Override
+                    public void call(Timestamped<LatestNews> latestNewsTimestamped) {
+                        currentData = latestNewsTimestamped.getValue().getDate();
+                        view.stopRefresh();
+                        storiesBeanList.clear();
+                        storiesBeanList.addAll(latestNewsTimestamped.getValue().getStories());
+                        view.showLatestNews(storiesBeanList, latestNewsTimestamped.getTimestampMillis());
+                        view.showHeaderView(latestNewsTimestamped.getValue().getTop_stories());
+                    }
+                });
 
-        latestNewsSubscription = latestNewsObservable.subscribe(new Action1<Timestamped<LatestNews>>() {
-            @Override
-            public void call(Timestamped<LatestNews> latestNewsTimestamped) {
-                currentData = latestNewsTimestamped.getValue().getDate();
-
-                storiesBeanList.clear();
-                storiesBeanList.addAll(latestNewsTimestamped.getValue().getStories());
-
-                view.showHeaderView(latestNewsTimestamped.getValue().getTop_stories());
-                view.showLatestNews(storiesBeanList, latestNewsTimestamped.getTimestampMillis());
-            }
-        });
     }
 
     @Override
@@ -95,6 +101,5 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     @Override
     public void unsubscribe() {
         BusinessUtil.unsubscribe(beforeNewsSubscription);
-        BusinessUtil.unsubscribe(latestNewsSubscription);
     }
 }

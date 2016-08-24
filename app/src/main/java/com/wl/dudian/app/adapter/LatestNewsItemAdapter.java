@@ -40,6 +40,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private View mHeaderView;
 
     private HashMap<Integer, String> datePositions = new HashMap<>();
+    private long timestampMillis;
 
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
         mStoriesBeen = new ArrayList<>();
@@ -72,10 +73,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * 刷新数据
      *
      * @param storiesBeanList 新闻内容集合
+     * @param timestampMillis
      */
-    public void setRefresh(List<StoriesBean> storiesBeanList) {
+    public void setRefresh(List<StoriesBean> storiesBeanList, long timestampMillis) {
         mStoriesBeen.clear();
         mStoriesBeen.addAll(storiesBeanList);
+        this.timestampMillis = timestampMillis;
         notifyDataSetChanged();
     }
 
@@ -144,7 +147,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public long getTimestampMillis() {
-        return 0;
+        return timestampMillis;
     }
 
     public void changeDateTitle(int i, String dateTitle) {

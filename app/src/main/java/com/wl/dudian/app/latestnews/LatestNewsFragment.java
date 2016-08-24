@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * 新闻展示页面
  * <p/>
- * Created by yisheng on 16/6/21.
+ * Created by Qiushui on 16/6/21.
  */
 
 public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View, ITimestampedView{
@@ -52,11 +52,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
      * Recycler view 线性布局管理器
      */
     private LinearLayoutManager mLinearLayoutManager;
-
-    /**
-     * 当前日期
-     */
-    private String mNowDate;
 
     /**
      * 新闻内容实体累集合
@@ -183,7 +178,8 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     /**
      * 停止下拉刷新
      */
-    private void stopRefresh() {
+    @Override
+    public void stopRefresh() {
         if (mContentMainSwiperefresh.isRefreshing()) {
             mContentMainSwiperefresh.setRefreshing(false);
         }
@@ -207,15 +203,13 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
 
     @Override
     public void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis) {
-        stopRefresh();
-        mItemAdapter.setRefresh(storiesBeanList);
+        mItemAdapter.setRefresh(storiesBeanList, timestampMillis);
         mItemAdapter.changeDateTitle(1, "今日热文");
     }
 
     @Override
     public void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData) {
-        stopRefresh();
-        mItemAdapter.setRefresh(storiesBeanList);
+        mItemAdapter.setRefresh(storiesBeanList, 0);
         mItemAdapter.changeDateTitle(datePosition, currentData);
     }
 

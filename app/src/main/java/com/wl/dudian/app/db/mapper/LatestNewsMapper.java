@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import rx.schedulers.Timestamped;
 
@@ -53,7 +54,7 @@ public class LatestNewsMapper {
         return latestNews;
     }
 
-    public static void getLatestNewsDB(Realm realm, Timestamped<LatestNews> latestNewsTimestamped) {
+    public static void saveLatestNewsDB(Realm realm, Timestamped<LatestNews> latestNewsTimestamped) {
         LatestNewsDB latestNewsDB = realm.createObject(LatestNewsDB.class);
         LatestNews latestNews = latestNewsTimestamped.getValue();
         latestNewsDB.setTime(latestNewsTimestamped.getTimestampMillis());
@@ -61,13 +62,17 @@ public class LatestNewsMapper {
         RealmList<StoriesBeanDB> storiesBeanDBRealmList = new RealmList<>();
         RealmList<TopStoriesBeanDB> topStoriesBeanDBRealmList = new RealmList<>();
         for (int i = 0; i < latestNews.getStories().size(); i++) {
-            StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
-            storiesBeanDB.setGa_prefix(latestNews.getStories().get(i).getGa_prefix());
-            storiesBeanDB.setId(latestNews.getStories().get(i).getId());
-            storiesBeanDB.setTitle(latestNews.getStories().get(i).getTitle());
-            storiesBeanDB.setType(latestNews.getStories().get(i).getType());
-            storiesBeanDB.setImages(latestNews.getStories().get(i).getImages().get(0));
-            storiesBeanDBRealmList.add(storiesBeanDB);
+            RealmQuery<StoriesBeanDB> queryDB = realm.where(StoriesBeanDB.class).equalTo("id",
+                    latestNews.getStories().get(i).getId());
+            if (queryDB.count() == 0) {
+                StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
+                storiesBeanDB.setGa_prefix(latestNews.getStories().get(i).getGa_prefix());
+                storiesBeanDB.setId(latestNews.getStories().get(i).getId());
+                storiesBeanDB.setTitle(latestNews.getStories().get(i).getTitle());
+                storiesBeanDB.setType(latestNews.getStories().get(i).getType());
+                storiesBeanDB.setImages(latestNews.getStories().get(i).getImages().get(0));
+                storiesBeanDBRealmList.add(storiesBeanDB);
+            }
         }
         for (int i = 0; i < latestNews.getTop_stories().size(); i++) {
             TopStoriesBeanDB topStoriesBeanDB = realm.createObject(TopStoriesBeanDB.class);

@@ -196,9 +196,12 @@ public class DiskRepository {
             public Timestamped<LatestNews> call() throws Exception {
                 Realm realm = Realm.getDefaultInstance();
                 RealmResults<LatestNewsDB> result;
-                LatestNews latestNews = null;
+                LatestNews latestNews;
                 try {
                     result = realm.where(LatestNewsDB.class).findAll();
+                    if (result.size() < 1) {
+                        return null;
+                    }
                     latestNews = LatestNewsMapper.getLatestNews(result);
                     return new Timestamped<>(result.get(0).getTime(), latestNews);
                 } finally {
@@ -219,14 +222,11 @@ public class DiskRepository {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            final RealmResults<LatestNewsDB> latestNewsDBRealmResults = realm.where(LatestNewsDB.class).findAll();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    // delete
-                    latestNewsDBRealmResults.deleteAllFromRealm();
                     // save
-                    LatestNewsMapper.getLatestNewsDB(realm, latestNews);
+                    LatestNewsMapper.saveLatestNewsDB(realm, latestNews);
                 }
             });
         } finally {

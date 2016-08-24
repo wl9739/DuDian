@@ -20,6 +20,8 @@ public interface LatestNewsContract {
         void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis);
 
         void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData);
+
+        void stopRefresh();
     }
 
     interface Presenter extends BasePresenter{
