@@ -34,6 +34,7 @@ public class LatestNewsMapper {
             storiesBean.setImages(Arrays.asList(query.get(0).getStories().get(i).getImages()));
             storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
             storiesBean.setType(query.get(0).getStories().get(i).getType());
+            storiesBean.setRead(query.get(0).getStories().get(i).isRead());
             storiesBeanList.add(storiesBean);
 
         }

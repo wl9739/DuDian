@@ -30,5 +30,6 @@ public interface LatestNewsContract {
 
         void saveLatestNews();
 
+        void updateRead(StoriesBean storiesBean);
     }
 }

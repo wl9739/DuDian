@@ -153,6 +153,11 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     }
 
     @Override
+    public void showWebView(boolean isShowNight) {
+        binding.webview.setVisibility(isShowNight ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void setPresenter(NewsDetailContract.Presenter presenter) {
         this.presenter = BusinessUtil.checkNotNull(presenter);
     }
@@ -160,7 +165,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     @Override
     public void showNormalData(String newsDetails) {
         binding.webview.loadDataWithBaseURL("x-data://base", newsDetails, "text/html", "UTF-8", null);
-        binding.webview.setVisibility(View.VISIBLE);
     }
 
     @Override

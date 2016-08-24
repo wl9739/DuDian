@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 /**
  * Listens to user actions from the UI , retrieves the data and updates
  * the UI as required.
- *
+ * <p>
  * Created by Qiushui on 16/8/8.
  */
 
@@ -96,7 +96,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
     /**
      * 处理特殊的新闻页面
      *
-     * @param newsDetails   新闻实体类
+     * @param newsDetails 新闻实体类
      */
     private void setNoBodyInfo(NewsDetails newsDetails) {
         String imageUrl;
@@ -109,15 +109,22 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         }
         String shareUrl = newsDetails.getShare_url();
         newsDetailView.showNobodyData(shareUrl);
+        newsDetailView.showWebView(true);
     }
 
     /**
      * 根据是否为为夜间模式, 显示新闻页面
      *
-     * @param newsDetails   新闻实体类
+     * @param newsDetails 新闻实体类
      */
     private void setNormalWebviewInfo(NewsDetails newsDetails) {
         if (Variable.isNight) {
+            String js = "<script src=\"file:///android_asset/js/night.js\"></script>";
+            String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news.css\" type=\"text/css\">";
+            String html = "<html><head>" + css + "</head><body>" + newsDetails.getBody() + "</body>" + js + "</html>";
+            html = html.replace("<div class=\"img-place-holder\">", "");
+            newsDetailView.showNormalData(html);
+
             showNightModel(newsDetails);
         } else {
             showDayModel(newsDetails);
@@ -126,6 +133,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
 
     /**
      * 显示白天样式
+     *
      * @param newsDetails
      */
     private void showDayModel(NewsDetails newsDetails) {
@@ -137,26 +145,27 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                 String html = "<html><head>" + css + "</head><body>" + newsDetails.getBody() + "</body></html>";
                 html = html.replace("<div class=\"img-place-holder\">", "");
                 newsDetailView.showNormalData(html);
+                newsDetailView.showWebView(true);
             }
         });
     }
 
     /**
      * 显示夜间样式
+     *
      * @param newsDetails
      */
     private void showNightModel(final NewsDetails newsDetails) {
         newsDetailView.showHeaderImage(newsDetails.getImage());
-        showDataSubscription = Observable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
-            @Override
-            public void call(Long aLong) {
-                String js = "<script src=\"file:///android_asset/js/night.js\"></script>";
-                String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news.css\" type=\"text/css\">";
-                String html = "<html><head>" + css + "</head><body>" + newsDetails.getBody() + "</body>" + js + "</html>";
-                html = html.replace("<div class=\"img-place-holder\">", "");
-                newsDetailView.showNormalData(html);
-            }
-        });
+        showDataSubscription = Observable
+                .timer(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        newsDetailView.showWebView(true);
+                    }
+                });
     }
 
     @Override
@@ -189,6 +198,6 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
 
     @Override
     public void updateRead(final int id) {
-        domainService.updateRead(id);
+//        domainService.updateRead(id);
     }
 }

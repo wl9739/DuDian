@@ -61,7 +61,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * @param headerView
      */
     public void setHeaderView(View headerView) {
-        this.mHeaderView = headerView;
+        mHeaderView = headerView;
         notifyItemChanged(0);
     }
 
@@ -152,6 +152,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public long getTimestampMillis() {
         return 0;
+    }
+
+    public void changeTitleColor(StoriesBean storiesBean) {
+
     }
 
     public interface OnLatestNewsItemClickListener {

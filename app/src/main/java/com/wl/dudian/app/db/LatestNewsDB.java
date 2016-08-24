@@ -4,7 +4,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
- * Created by wanglin on 16/8/16.
+ * Created by Qiushui on 16/8/16.
  */
 
 public class LatestNewsDB extends RealmObject {

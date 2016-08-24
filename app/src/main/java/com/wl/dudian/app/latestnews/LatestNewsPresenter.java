@@ -86,6 +86,11 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     }
 
     @Override
+    public void updateRead(StoriesBean storiesBean) {
+        domainService.updateRead(storiesBean.getId());
+    }
+
+    @Override
     public void subscribe() {
 
     }

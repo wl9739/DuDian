@@ -2,13 +2,11 @@ package com.wl.dudian.app.latestnews;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +23,6 @@ import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -138,7 +135,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
 
         domainService = DomainService.getInstance(getContext());
 
-        mNewsItemRecyclerView.setAdapter(mItemAdapter = new LatestNewsItemAdapter(Collections.<StoriesBean>emptyList(), getContext()));
+        mNewsItemRecyclerView.setAdapter(mItemAdapter);
 
         new LatestNewsPresenter(getContext(), this, this);
     }
@@ -153,6 +150,8 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
                     public void onItemClick(View view, StoriesBean storiesBean) {
+                        mItemAdapter.changeTitleColor(storiesBean);
+                        presenter.updateRead(storiesBean);
                         NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
                 });
@@ -164,7 +163,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
             }
         });
 
-        mNewsItemRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mNewsItemRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
 
             @Override
@@ -186,24 +185,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                 lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
             }
         });
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState: ");
-        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mLinearLayoutManager.onSaveInstanceState());
-
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        Log.d(TAG, "onViewStateRestored: ");
-        if (savedInstanceState != null) {
-            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-            mNewsItemRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-        }
     }
 
     /**
