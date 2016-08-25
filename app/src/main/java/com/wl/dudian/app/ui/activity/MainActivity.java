@@ -25,18 +25,19 @@ import android.widget.RelativeLayout;
 import com.wl.dudian.R;
 import com.wl.dudian.app.latestnews.LatestNewsFragment;
 import com.wl.dudian.app.model.ThemesModel;
+import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.ui.fragment.AboutFragment;
 import com.wl.dudian.app.ui.fragment.ColumnFragment;
 import com.wl.dudian.app.ui.fragment.FavoriteFragment;
 import com.wl.dudian.app.ui.fragment.SettingsFragment;
-import com.wl.dudian.framework.HttpUtil;
 import com.wl.dudian.framework.ScreenShotUtils;
 import com.wl.dudian.framework.Variable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,6 +65,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private SettingsFragment mSettingsFragment;
     private AboutFragment mAboutFragment;
     private ThemesModel mThemesModel;
+
+    private DomainService domainService;
     private int index = 0;
     private boolean isExit = false;
 
@@ -111,16 +114,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
-//        if (BusinessUtil.isNetConnected(this)) {
-            mContentMain.setVisibility(View.VISIBLE);
-            mContentMainNotconnectedRl.setVisibility(View.GONE);
-            mContentMainWifilogoImg.setVisibility(View.GONE);
-            showLatestNews(savedInstanceState);
-//        } else {
-//            mContentMainNotconnectedRl.setVisibility(View.VISIBLE);
-//            mContentMainWifilogoImg.setVisibility(View.VISIBLE);
-//        }
+        mContentMain.setVisibility(View.VISIBLE);
+        mContentMainNotconnectedRl.setVisibility(View.GONE);
+        mContentMainWifilogoImg.setVisibility(View.GONE);
+        showLatestNews(savedInstanceState);
 
         mToolbar.setTitle("读点日报");
 
@@ -130,6 +127,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         toggle.syncState();
 
         mNavView.setNavigationItemSelectedListener(this);
+        domainService = DomainService.getInstance(this);
         getThemes();
 
     }
@@ -147,22 +145,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void getThemes() {
-        HttpUtil.getInstance().getThemesModel()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ThemesModel>() {
+        domainService.getTheme().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ThemesModel>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ThemesModel themesModel) {
+                    public void call(ThemesModel themesModel) {
                         mThemesModel = themesModel;
                     }
                 });
@@ -179,8 +165,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             if (mLatestNewsFragment == null) {
                 mLatestNewsFragment = LatestNewsFragment.newInstance();
                 fm.beginTransaction()
-                  .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
-                  .commit();
+                        .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
+                        .commit();
             }
 
         }
@@ -267,9 +253,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * 夜间模式切换
      */
     private void changeDayNightModel() {
-        new Handler().post(new Runnable() {
+        Schedulers.newThread().createWorker().schedule(new Action0() {
             @Override
-            public void run() {
+            public void call() {
                 beforeChangeMode();
                 if (!Variable.isNight) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -278,7 +264,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     Variable.isNight = false;
                 }
-
             }
         });
     }

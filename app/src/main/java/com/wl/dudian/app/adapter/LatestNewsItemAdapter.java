@@ -103,30 +103,66 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
                 // 如果有Header
                 if (mHeaderView != null) {
-                    if (datePositions.containsKey(position)) {
-                        String date = datePositions.get(position);
-                        if (TextUtils.isDigitsOnly(date)) {
-                            itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart(date));
-                        } else {
-                            itemViewHolder.dateTv.setText(date);
-                        }
-                        itemViewHolder.dateTv.setVisibility(View.VISIBLE);
-                    } else {
-                        itemViewHolder.dateTv.setVisibility(View.GONE);
-                    }
-                    // position数需要-1, 因为0是HeaderView
-                    itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
-                    if (mStoriesBeen.get(position - 1).isRead()) {
-                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
-                    } else {
-                        itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
-                    }
-                    itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
-                    BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
-                            ((ItemViewHolder) holder).picImageView);
+                    showContent((ItemViewHolder) holder, position, itemViewHolder);
+                } else {
+                    showContentWithoutHeader((ItemViewHolder) holder, position, itemViewHolder);
                 }
             }
         }
+    }
+
+    /**
+     * 显示加载的内容, 在有Headerview的情况下。
+     *
+     * @param holder
+     * @param position
+     * @param itemViewHolder
+     */
+    private void showContent(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
+        if (datePositions.containsKey(position)) {
+            String date = datePositions.get(position);
+            if (TextUtils.isDigitsOnly(date)) {
+                itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart(date));
+            } else {
+                itemViewHolder.dateTv.setText(date);
+            }
+            itemViewHolder.dateTv.setVisibility(View.VISIBLE);
+        } else {
+            itemViewHolder.dateTv.setVisibility(View.GONE);
+        }
+        // position数需要-1, 因为0是HeaderView
+        itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
+        if (mStoriesBeen.get(position - 1).isRead()) {
+            itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
+        } else {
+            itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
+        }
+        itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
+        BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
+                holder.picImageView);
+    }
+
+    /**
+     * 显示加载的内容, 在没有headerview的情况下
+     *
+     * @param holder
+     * @param position
+     * @param itemViewHolder
+     */
+    private void showContentWithoutHeader(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
+        if (mStoriesBeen.get(position).isRead()) {
+            itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
+        } else {
+            itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
+        }
+        itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
+        itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
+        // 如果mei
+        if (null == mStoriesBeen.get(position) || null == mStoriesBeen.get(position).getImages()) {
+            return;
+        }
+        BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
+                holder.picImageView);
     }
 
     @Override

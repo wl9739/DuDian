@@ -198,7 +198,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     @Override
     public void showHeaderView(List<TopStoriesBean> topStoriesBeen) {
         stopRefresh();
-        mBannerView.setImages(topStoriesBeen, true);
+        mBannerView.setImages(topStoriesBeen);
     }
 
     @Override

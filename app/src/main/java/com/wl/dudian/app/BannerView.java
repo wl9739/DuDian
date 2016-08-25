@@ -24,7 +24,9 @@ import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -75,6 +77,7 @@ public class BannerView extends FrameLayout {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            Log.d(TAG, "handleMessage: currentItem " + mCurrentItem);
             mViewPager.setCurrentItem(mCurrentItem);
         }
     };
@@ -120,12 +123,10 @@ public class BannerView extends FrameLayout {
      *
      * @param images
      */
-    public void setImages(List<TopStoriesBean> images, boolean isAutoPlay) {
+    public void setImages(List<TopStoriesBean> images) {
         mImageSize = images.size();
         mAdapter.setImages(images);
-        if (isAutoPlay) {
-            startPlay();
-        }
+        startPlay();
     }
 
     @Override
@@ -135,8 +136,41 @@ public class BannerView extends FrameLayout {
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
         mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setOnPageChangeListener(new BannerPageChangeListener());
         mIndicator.setViewPager(mViewPager);
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            boolean isAutoPlay = false;
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mCurrentItem = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                switch (state) {
+                    case 1: //  手势滑动, 空闲中
+                        isAutoPlay = false;
+                        break;
+                    case 2: //  界面切换中
+                        isAutoPlay = true;
+                        break;
+                    case 0:  // 滑动结束, 即切换完毕或者加载完毕
+                        // 当前为最后一张, 此时从右向左滑动, 则切换到第一张
+                        if (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1 && !isAutoPlay) {
+                            mViewPager.setCurrentItem(0);
+                        }
+                        // 当前为第一张, 此时从左往右滑动, 则切换到最后一张
+                        else if (mViewPager.getCurrentItem() == 0 && !isAutoPlay) {
+                            mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
+                        }
+                        break;
+                }
+            }
+        });
         mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
             @Override
             public void onBannerItemClick(StoriesBean storiesBean) {
@@ -149,8 +183,8 @@ public class BannerView extends FrameLayout {
      * 开始启动自动轮播
      */
     private void startPlay() {
-//        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-//        mScheduledExecutorService.scheduleAtFixedRate(slideShowTask, 5, 4, TimeUnit.SECONDS);
+        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        mScheduledExecutorService.scheduleAtFixedRate(slideShowTask, 4000, 4000, TimeUnit.MILLISECONDS);
     }
 
     public static class BannerViewPagerAdapter extends PagerAdapter {
@@ -229,56 +263,14 @@ public class BannerView extends FrameLayout {
 
         @Override
         public void run() {
-            synchronized (mViewPager) {
+            synchronized (BannerView.class) {
                 mCurrentItem = (mCurrentItem + 1) % mImageSize;
                 mHandler.obtainMessage().sendToTarget();
-            }
-        }
-    }
-
-    /**
-     * 监听器
-     */
-    private class BannerPageChangeListener implements ViewPager.OnPageChangeListener {
-
-        boolean isAutoPlay = false;
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            Log.d(TAG, "onPageScrollStateChanged: state: " + state);
-            switch (state) {
-                case 1: //  手势滑动, 空闲中
-                    isAutoPlay = false;
-                    if (!mScheduledExecutorService.isShutdown()) {
-                        mScheduledExecutorService.shutdown();
-                    }
-                    break;
-                case 2: //  界面切换中
-                    isAutoPlay = true;
-                    if (mScheduledExecutorService.isShutdown()) {
-                        mScheduledExecutorService.execute(slideShowTask);
-                    }
-                    break;
-                case 0:  // 滑动结束, 即切换完毕或者加载完毕
-                    // 当前为最后一张, 此时从右向左滑动, 则切换到第一张
-                    if (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1 && !isAutoPlay) {
-                        mViewPager.setCurrentItem(0);
-                    }
-                    // 当前为第一张, 此时从左往右滑动, 则切换到最后一张
-                    else if (mViewPager.getCurrentItem() == 0 && !isAutoPlay) {
-                        mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
-                    }
-                    break;
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

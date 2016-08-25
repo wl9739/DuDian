@@ -9,6 +9,8 @@ import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
+import com.wl.dudian.app.model.ThemeDetailModel;
+import com.wl.dudian.app.model.ThemesModel;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -194,7 +196,8 @@ public class DomainService {
     }
 
     private Observable<Timestamped<LatestNews>> getMergedNews() {
-        return Observable.mergeDelayError(diskRepository.getLatestNews().subscribeOn(Schedulers.io()),
+        return Observable.mergeDelayError(
+                diskRepository.getLatestNews().subscribeOn(Schedulers.io()),
                 netWorkRepository.getLatestNews().timestamp().doOnNext(new Action1<Timestamped<LatestNews>>() {
                     @Override
                     public void call(Timestamped<LatestNews> latestNewsTimestamped) {
@@ -209,5 +212,17 @@ public class DomainService {
 
     public Observable<Timestamped<LatestNews>> getLatestNewsFromDB() {
         return diskRepository.getLatestNews();
+    }
+
+    public Observable<ThemesModel> getTheme() {
+        return netWorkRepository.getThemesModel()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<ThemeDetailModel> getThemeDetail(String id) {
+        return netWorkRepository.getThemeDetail(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

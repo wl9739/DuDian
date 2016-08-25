@@ -5,6 +5,8 @@ import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
+import com.wl.dudian.app.model.ThemeDetailModel;
+import com.wl.dudian.app.model.ThemesModel;
 import com.wl.dudian.framework.DailyApi;
 
 import java.util.concurrent.TimeUnit;
@@ -68,5 +70,13 @@ public class NetWorkRepository {
     @RxLogObservable
     public Observable<BeforeNews> getBeforeNews(String date) {
         return dailyApi.getBeforeNews(date);
+    }
+
+    public Observable<ThemesModel> getThemesModel() {
+        return dailyApi.getThemesModel();
+    }
+
+    public Observable<ThemeDetailModel> getThemeDetail(String id) {
+        return dailyApi.getThemeDetail(id);
     }
 }

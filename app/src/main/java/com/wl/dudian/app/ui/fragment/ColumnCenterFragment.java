@@ -10,20 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.ThemeDetailModel;
-import com.wl.dudian.framework.HttpUtil;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
+import com.wl.dudian.app.repository.DomainService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.functions.Action1;
 
 /**
  * @author zfeiyu
@@ -36,9 +34,9 @@ public class ColumnCenterFragment extends BaseFragment {
     RecyclerView mRecyclerview;
 
     private LatestNewsItemAdapter mNewsItemAdapter;
-    private ThemeDetailModel mDetailModel;
     private List<StoriesBean> mStoriesBeanList;
     private String mColumnId;
+    private DomainService domainService;
 
     public static ColumnCenterFragment newInstance(String id) {
         ColumnCenterFragment fragment = new ColumnCenterFragment();
@@ -51,7 +49,7 @@ public class ColumnCenterFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.columncenterfragment, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -61,6 +59,7 @@ public class ColumnCenterFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        domainService = DomainService.getInstance(getContext());
         mColumnId = getArguments().getString(COLUMN_ID);
         if (null == mColumnId || TextUtils.isEmpty(mColumnId)) {
             return;
@@ -85,25 +84,14 @@ public class ColumnCenterFragment extends BaseFragment {
      * @param columnId 主题ID
      */
     private void getThemeDetails(String columnId) {
-        HttpUtil.getInstance()
-                .getThemeDetail(columnId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ThemeDetailModel>() {
+        domainService.getThemeDetail(columnId)
+                .subscribe(new Action1<ThemeDetailModel>() {
                     @Override
-                    public void onCompleted() {
-//                        mNewsItemAdapter.setRefresh(mStoriesBeanList, "", i);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ThemeDetailModel themeDetailModel) {
+                    public void call(ThemeDetailModel themeDetailModel) {
                         mStoriesBeanList.clear();
                         mStoriesBeanList.addAll(themeDetailModel.getStories());
+                        mNewsItemAdapter.setRefresh(mStoriesBeanList, 0);
+
                     }
                 });
     }
