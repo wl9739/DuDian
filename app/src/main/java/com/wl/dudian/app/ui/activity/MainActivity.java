@@ -36,7 +36,6 @@ import com.wl.dudian.framework.Variable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -180,25 +179,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         switch (i) {
             case 0:
                 if (null == mLatestNewsFragment) {
+                    mToolbar.setTitle("读点日报");
                     mLatestNewsFragment = LatestNewsFragment.newInstance();
                     ft.add(R.id.content_main, mLatestNewsFragment);
                 } else {
+                    mToolbar.setTitle("读点日报");
                     ft.show(mLatestNewsFragment);
                 }
                 break;
             case 1:
                 if (null == mColumnFragment) {
+                    mToolbar.setTitle("专栏");
                     mColumnFragment = ColumnFragment.newInstance(mThemesModel);
                     ft.add(R.id.content_main, mColumnFragment);
                 } else {
+                    mToolbar.setTitle("专栏");
                     ft.show(mColumnFragment);
                 }
                 break;
             case 2:
                 if (null == mFavoriteFragment) {
+                    mToolbar.setTitle("收藏");
                     mFavoriteFragment = FavoriteFragment.newInstance();
                     ft.add(R.id.content_main, mFavoriteFragment);
                 } else {
+                    mToolbar.setTitle("收藏");
                     // 主动刷新数据
                     mFavoriteFragment.updateFavoriteItem();
                     ft.show(mFavoriteFragment);
@@ -206,17 +211,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case 3:
                 if (null == mSettingsFragment) {
+                    mToolbar.setTitle("设置");
                     mSettingsFragment = SettingsFragment.newInstance();
                     ft.add(R.id.content_main, mSettingsFragment);
                 } else {
+                    mToolbar.setTitle("设置");
                     ft.show(mSettingsFragment);
                 }
                 break;
             case 4:
                 if (null == mAboutFragment) {
+                    mToolbar.setTitle("关于");
                     mAboutFragment = AboutFragment.newInstance();
                     ft.add(R.id.content_main, mAboutFragment);
                 } else {
+                    mToolbar.setTitle("关于");
                     ft.show(mAboutFragment);
                 }
                 break;
@@ -253,9 +262,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * 夜间模式切换
      */
     private void changeDayNightModel() {
-        Schedulers.newThread().createWorker().schedule(new Action0() {
-            @Override
-            public void call() {
+//        Schedulers.newThread().createWorker().schedule(new Action0() {
+//            @Override
+//            public void call() {
                 beforeChangeMode();
                 if (!Variable.isNight) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -264,8 +273,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     Variable.isNight = false;
                 }
-            }
-        });
+//            }
+//        });
     }
 
     private void beforeChangeMode() {

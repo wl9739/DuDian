@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
-
         new NewsDetailPresenter(this, this);
 
         mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
@@ -99,6 +99,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
                 binding.menuBtn.toggle();
                 // 保存到数据库
                 presenter.favorite();
+                Snackbar.make(binding.webview, "保存成功", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -171,5 +172,14 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     public void showNobodyData(String shareUrl) {
         binding.webview.loadUrl(shareUrl);
         binding.webview.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (binding.menuBtn.isExpanded()) {
+            binding.menuBtn.toggle();
+            return;
+        }
+        super.onBackPressed();
     }
 }

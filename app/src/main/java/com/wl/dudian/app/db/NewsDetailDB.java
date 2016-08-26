@@ -16,6 +16,7 @@ public class NewsDetailDB extends RealmObject{
     private String images;
     private int type;
     private int id;
+    private boolean isFavorite;
 
     public String getBody() {
         return body;
@@ -87,5 +88,13 @@ public class NewsDetailDB extends RealmObject{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

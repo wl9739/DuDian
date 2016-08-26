@@ -2,6 +2,7 @@ package com.wl.dudian.app.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
+import com.wl.dudian.app.repository.DomainService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,6 +33,7 @@ public class FavoriteFragment extends BaseFragment {
 
     private LatestNewsItemAdapter mAdapter;
     private List<StoriesBean> mStoriesBeanList;
+    private DomainService domainService;
 
 
     public static FavoriteFragment newInstance() {
@@ -39,7 +43,7 @@ public class FavoriteFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favorite_fragment, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -49,15 +53,19 @@ public class FavoriteFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         updateFavoriteItem();
+        
     }
 
     public void updateFavoriteItem() {
-//        mStoriesBeanList = DataSupport.findAll(StoriesBean.class);
-        if (mStoriesBeanList.size() < 1) {
-            // TODO 没有收藏记录
+        domainService = DomainService.getInstance(getContext());
+        mStoriesBeanList = new ArrayList<>();
+        if (domainService.getFavoriteNews() == null || domainService.getFavoriteNews().size() < 1) {
+            Snackbar.make(mRecyclerview, "没有收藏哦", Snackbar.LENGTH_SHORT).show();
         } else {
-            showFavoriteNews();
+            mStoriesBeanList.addAll(domainService.getFavoriteNews());
         }
+
+        showFavoriteNews();
     }
 
     private void showFavoriteNews() {

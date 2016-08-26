@@ -9,8 +9,11 @@ import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
+import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.ThemeDetailModel;
 import com.wl.dudian.app.model.ThemesModel;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -129,7 +132,7 @@ public class DomainService {
      * @param newsDetails
      */
     public void saveToFavoriteDb(NewsDetails newsDetails) {
-        // TODO 保存到数据库
+        diskRepository.saveFavorite(newsDetails);
     }
 
     /**
@@ -224,5 +227,9 @@ public class DomainService {
         return netWorkRepository.getThemeDetail(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public List<StoriesBean> getFavoriteNews() {
+        return diskRepository.getFavoriteNews();
     }
 }

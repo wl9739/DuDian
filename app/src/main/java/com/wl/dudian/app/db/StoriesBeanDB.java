@@ -14,6 +14,7 @@ public class StoriesBeanDB extends RealmObject{
     private String title;
     private String images;
     private boolean read;
+    private boolean isFavorite;
 
     public int getType() {
         return type;
@@ -61,5 +62,13 @@ public class StoriesBeanDB extends RealmObject{
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

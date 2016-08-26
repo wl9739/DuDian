@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                fab:fabSize="mini"
+                fab:fab_size="mini"
                 fab:fab_title="分享"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                fab:fabSize="mini"
+                fab:fab_size="mini"
                 fab:fab_title="收藏"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                fab:fabSize="mini"
+                fab:fab_size="mini"
                 fab:fab_title="评论"/>
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>

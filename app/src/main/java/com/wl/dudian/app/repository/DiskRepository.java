@@ -13,7 +13,7 @@ import com.wl.dudian.app.db.BeforeNewsDB;
 import com.wl.dudian.app.db.LatestNewsDB;
 import com.wl.dudian.app.db.NewsDetailDB;
 import com.wl.dudian.app.db.StoriesBeanDB;
-import com.wl.dudian.app.db.mapper.LatestNewsMapper;
+import com.wl.dudian.app.db.mapper.Mapper;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
@@ -202,7 +202,7 @@ public class DiskRepository {
                     if (result.size() < 1) {
                         return null;
                     }
-                    latestNews = LatestNewsMapper.getLatestNews(result);
+                    latestNews = Mapper.getLatestNews(result);
                     return new Timestamped<>(result.get(0).getTime(), latestNews);
                 } finally {
                     if (realm != null) {
@@ -226,7 +226,7 @@ public class DiskRepository {
                 @Override
                 public void execute(Realm realm) {
                     // save
-                    LatestNewsMapper.saveLatestNewsDB(realm, latestNews);
+                    Mapper.saveLatestNewsDB(realm, latestNews);
                 }
             });
         } finally {
@@ -328,6 +328,52 @@ public class DiskRepository {
                     query.get(0).setRead(true);
                 }
             });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }
+
+    /**
+     * 保存收藏的新闻
+     *
+     * @param newsDetails
+     */
+    public void saveFavorite(final NewsDetails newsDetails) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
+                    if (query.size() < 0) {
+                        return;
+                    }
+                    query.get(0).setFavorite(true);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }
+
+    /**
+     * 获取收藏的新闻
+     * @return
+     */
+    public List<StoriesBean> getFavoriteNews() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("isFavorite", true).findAll();
+            if (query.size() < 1) {
+                return null;
+            }
+            return Mapper.getStoriesBean(query);
         } finally {
             if (realm != null) {
                 realm.close();

@@ -22,4 +22,7 @@
     <color name="discussBackground">#ffffff</color>
 
     <color name="lineColor">#33000000</color>
+
+    <color name="headerEnd">#795548</color>
+    <color name="headerStart">#D7CCC8</color>
 </resources>

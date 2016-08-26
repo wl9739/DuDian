@@ -1,6 +1,7 @@
 package com.wl.dudian.app.latestnews;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
@@ -26,6 +27,7 @@ import rx.schedulers.Timestamped;
 
 public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
+    private static final String TAG = "LatestNews";
     private LatestNewsContract.View view;
     private ITimestampedView timestampedView;
     private DomainService domainService;
@@ -54,6 +56,11 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
                         storiesBeanList.addAll(latestNewsTimestamped.getValue().getStories());
                         view.showLatestNews(storiesBeanList, latestNewsTimestamped.getTimestampMillis());
                         view.showHeaderView(latestNewsTimestamped.getValue().getTop_stories());
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "call: throwable" + throwable.getMessage());
                     }
                 });
 

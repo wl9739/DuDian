@@ -20,7 +20,7 @@ import rx.schedulers.Timestamped;
  * Created by Qiushui on 16/8/16.
  */
 
-public class LatestNewsMapper {
+public class Mapper {
 
     public static LatestNews getLatestNews(RealmResults<LatestNewsDB> query) {
         LatestNews latestNews = new LatestNews();
@@ -81,5 +81,19 @@ public class LatestNewsMapper {
         latestNewsDB.setStories(storiesBeanDBRealmList);
         latestNewsDB.setTop_stories(topStoriesBeanDBRealmList);
 
+    }
+
+    public static List<StoriesBean> getStoriesBean(RealmResults<StoriesBeanDB> query) {
+        List<StoriesBean> storiesBeanList = new ArrayList<>();
+        for (int i = 0; i < query.size(); i++) {
+            StoriesBean storiesBean = new StoriesBean();
+            storiesBean.setTitle(query.get(i).getTitle());
+            storiesBean.setImages(Arrays.asList(query.get(i).getImages()));
+            storiesBean.setType(query.get(i).getType());
+            storiesBean.setGa_prefix(query.get(i).getGa_prefix());
+            storiesBean.setId(query.get(i).getId());
+            storiesBeanList.add(storiesBean);
+        }
+        return storiesBeanList;
     }
 }
