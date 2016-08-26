@@ -1,7 +1,7 @@
 package com.wl.dudian.framework;
 
 /**
- * Created by yisheng on 16/6/25.
+ * Created by Qiushui on 16/6/25.
  */
 
 public class Variable {

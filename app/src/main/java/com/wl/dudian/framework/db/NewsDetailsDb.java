@@ -3,7 +3,7 @@ package com.wl.dudian.framework.db;
 import io.realm.RealmObject;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class NewsDetailsDb extends RealmObject {

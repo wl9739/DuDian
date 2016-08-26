@@ -10,7 +10,7 @@ import com.wl.dudian.R;
 
 
 /**
- * Created by yisheng on 16/6/26.
+ * Created by Qiushui on 16/6/26.
  */
 
 public class AboutFragment extends BaseFragment {

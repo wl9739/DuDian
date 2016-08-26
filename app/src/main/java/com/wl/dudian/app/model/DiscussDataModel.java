@@ -3,7 +3,7 @@ package com.wl.dudian.app.model;
 import java.util.List;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class DiscussDataModel implements BaseDiscussModel{

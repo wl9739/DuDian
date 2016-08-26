@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class ThemesModel implements Serializable {

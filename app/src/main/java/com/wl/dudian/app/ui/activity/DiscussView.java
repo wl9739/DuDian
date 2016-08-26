@@ -24,7 +24,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class DiscussView {

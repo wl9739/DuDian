@@ -20,7 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * 评论列表Adapter
  *
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{

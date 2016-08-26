@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 轮播控件
  * <p/>
- * Created by yisheng on 16/6/29.
+ * Created by Qiushui on 16/6/29.
  */
 
 public class BannerView extends FrameLayout {
@@ -139,6 +139,7 @@ public class BannerView extends FrameLayout {
         mIndicator.setViewPager(mViewPager);
         mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             boolean isAutoPlay = false;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

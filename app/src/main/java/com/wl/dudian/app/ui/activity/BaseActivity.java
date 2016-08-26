@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class BaseActivity extends AppCompatActivity{

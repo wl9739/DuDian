@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 启动图片model
  *
- * Created by yisheng on 16/6/20.
+ * Created by Qiushui on 16/6/20.
  */
 
 public class StartImage {

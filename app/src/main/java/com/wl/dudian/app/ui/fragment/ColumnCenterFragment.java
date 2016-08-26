@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class ColumnCenterFragment extends BaseFragment {

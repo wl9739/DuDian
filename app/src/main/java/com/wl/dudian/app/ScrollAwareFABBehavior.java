@@ -12,7 +12,7 @@ import android.view.animation.Interpolator;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 /**
- * Created by yisheng on 16/7/12.
+ * Created by Qiushui on 16/7/12.
  */
 
 public class ScrollAwareFABBehavior extends CoordinatorLayout.Behavior<FloatingActionsMenu> {

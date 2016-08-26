@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import rx.Subscription;
 
 /**
- * Created by yisheng on 16/6/22.
+ * Created by Qiushui on 16/6/22.
  */
 
 public class BusinessUtil {

@@ -2,7 +2,7 @@ package com.wl.dudian.app.model;
 
 
 /**
- * Created by yisheng on 16/6/21.
+ * Created by Qiushui on 16/6/21.
  */
 
 public class TopStoriesBean {

@@ -3,7 +3,7 @@ package com.wl.dudian.app.model;
 import java.util.List;
 
 /**
- * Created by yisheng on 16/6/22.
+ * Created by Qiushui on 16/6/22.
  */
 public class NewsDetails {
     /**

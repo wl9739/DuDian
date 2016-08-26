@@ -1,7 +1,7 @@
 package com.wl.dudian.app.model;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class DiscussExtraModel {

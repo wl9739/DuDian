@@ -10,7 +10,7 @@ import com.wl.dudian.app.model.ThemesModel;
 import java.util.List;
 
 /**
- * @author zfeiyu
+ * @author Qiushui
  * @since 0.0.2
  */
 public class ColumnListAdapter extends FragmentPagerAdapter {

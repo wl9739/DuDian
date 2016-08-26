@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 /**
  * 截屏
  *
- * Created by yisheng on 16/6/22.
+ * Created by Qiushui on 16/6/22.
  */
 
 public class ScreenShotUtils {

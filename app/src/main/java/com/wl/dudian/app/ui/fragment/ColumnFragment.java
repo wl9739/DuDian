@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 
 
 /**
- * Created by yisheng on 16/6/26.
+ * Created by Qiushui on 16/6/26.
  */
 
 public class ColumnFragment extends BaseFragment {

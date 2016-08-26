@@ -5,7 +5,7 @@ import java.util.List;
 
 
 /**
- * Created by yisheng on 16/6/21.
+ * Created by Qiushui on 16/6/21.
  */
 
 public class StoriesBean implements Serializable {
