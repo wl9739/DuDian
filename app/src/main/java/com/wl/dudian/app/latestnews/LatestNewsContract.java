@@ -8,7 +8,7 @@ import com.wl.dudian.app.model.TopStoriesBean;
 import java.util.List;
 
 /**
- * Created by wanglin on 16/8/16.
+ * @author Qiushui on 16/8/16.
  */
 
 public interface LatestNewsContract {

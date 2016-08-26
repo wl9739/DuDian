@@ -17,12 +17,11 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
 
 /**
- * Created by wanglin on 16/8/16.
+ * @author Qiushui on 16/8/16.
  */
 
 public class LatestNewsPresenter implements LatestNewsContract.Presenter {
@@ -39,18 +38,11 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
         this.view = view;
         this.timestampedView = timestampedView;
         domainService = DomainService.getInstance(context);
-
     }
 
     @Override
     public void loadLatestNews() {
         domainService.getLatestNews(timestampedView)
-                .flatMap(new Func1<Timestamped<LatestNews>, Observable<Timestamped<LatestNews>>>() {
-                    @Override
-                    public Observable<Timestamped<LatestNews>> call(Timestamped<LatestNews> latestNewsTimestamped) {
-                        return domainService.getLatestNewsFromDB();
-                    }
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Timestamped<LatestNews>>() {

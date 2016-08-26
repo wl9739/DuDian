@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Qiushui
@@ -54,9 +55,9 @@ public class DateUtil {
             throw new IllegalStateException("Illegal date");
         }
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Integer.parseInt(nowDate.substring(0, 4)), Integer.parseInt(nowDate.substring(4, 6)), Integer.parseInt(nowDate.substring(6, 8)));
+        calendar.set(Integer.parseInt(nowDate.substring(0, 4)), Integer.parseInt(nowDate.substring(4, 6)) - 1, Integer.parseInt(nowDate.substring(6, 8)));
         Date date = calendar.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("E");
+        SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.CHINA);
         return sdf.format(date);
     }
 
