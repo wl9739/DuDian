@@ -60,6 +60,9 @@ public class Mapper {
         latestNewsDB.setDate(latestNews.getDate());
         RealmList<StoriesBeanDB> storiesBeanDBRealmList = new RealmList<>();
         RealmList<TopStoriesBeanDB> topStoriesBeanDBRealmList = new RealmList<>();
+        // delete first
+        RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
+        topResult.deleteAllFromRealm();
         for (int i = 0; i < latestNews.getStories().size(); i++) {
             StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
             storiesBeanDB.setGa_prefix(latestNews.getStories().get(i).getGa_prefix());
