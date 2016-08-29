@@ -73,12 +73,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * 刷新数据
      *
      * @param storiesBeanList 新闻内容集合
-     * @param timestampMillis
      */
-    public void setRefresh(List<StoriesBean> storiesBeanList, long timestampMillis) {
+    public void setRefresh(List<StoriesBean> storiesBeanList) {
         mStoriesBeen.clear();
         mStoriesBeen.addAll(storiesBeanList);
-        this.timestampMillis = timestampMillis;
         notifyDataSetChanged();
     }
 

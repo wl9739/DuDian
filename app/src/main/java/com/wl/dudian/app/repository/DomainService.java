@@ -29,6 +29,7 @@ import rx.schedulers.Timestamped;
 
 public class DomainService {
 
+    private final String TAG = "Domainservice";
     private static DomainService INSTANCE = null;
 
     private final DiskRepository diskRepository;
@@ -174,47 +175,24 @@ public class DomainService {
         });
     }
 
-    public Observable<Timestamped<LatestNews>> getLatestNews(final ITimestampedView timestampedView) {
-        return getMergedNews()
-                .onErrorReturn(new Func1<Throwable, Timestamped<LatestNews>>() {
+
+    public Observable<LatestNews> getLatestNews() {
+        return netWorkRepository.getLatestNews()
+                .onErrorReturn(new Func1<Throwable, LatestNews>() {
                     @Override
-                    public Timestamped<LatestNews> call(Throwable throwable) {
+                    public LatestNews call(Throwable throwable) {
+                        Log.d(TAG, "call: " + throwable.getMessage());
                         return null;
                     }
-                })
-                .filter(getLatestNewsFilter(timestampedView));
-
-    }
-
-    @NonNull
-    private Func1<Timestamped<LatestNews>, Boolean> getLatestNewsFilter(final ITimestampedView timestampedView) {
-        return new Func1<Timestamped<LatestNews>, Boolean>() {
-            @Override
-            public Boolean call(Timestamped<LatestNews> latestNewsTimestamped) {
-                return latestNewsTimestamped != null
-                        && latestNewsTimestamped.getValue() != null
-                        && latestNewsTimestamped.getTimestampMillis() >= timestampedView.getViewDataTimestampMillis();
-            }
-        };
-    }
-
-    private Observable<Timestamped<LatestNews>> getMergedNews() {
-        return Observable.mergeDelayError(
-                diskRepository.getLatestNews().subscribeOn(Schedulers.io()),
-                netWorkRepository.getLatestNews().timestamp().doOnNext(new Action1<Timestamped<LatestNews>>() {
-                    @Override
-                    public void call(Timestamped<LatestNews> latestNewsTimestamped) {
-                        diskRepository.saveLatestNews(latestNewsTimestamped);
-                    }
-                }).subscribeOn(Schedulers.io()));
+                });
     }
 
     public void updateRead(int id) {
         diskRepository.updateRead(id);
     }
 
-    public Observable<Timestamped<LatestNews>> getLatestNewsFromDB() {
-        return diskRepository.getLatestNews();
+    public Observable<LatestNews> getLatestNewsFromDB() {
+        return diskRepository.getLatestNewsFromDB();
     }
 
     public Observable<ThemesModel> getTheme() {
@@ -231,5 +209,9 @@ public class DomainService {
 
     public List<StoriesBean> getFavoriteNews() {
         return diskRepository.getFavoriteNews();
+    }
+
+    public void saveLatestNews(LatestNews latestNews) {
+        diskRepository.saveLatestNews(latestNews);
     }
 }

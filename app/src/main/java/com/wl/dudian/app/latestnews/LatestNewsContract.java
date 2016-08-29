@@ -17,7 +17,7 @@ public interface LatestNewsContract {
 
         void showHeaderView(List<TopStoriesBean> topStoriesBeen);
 
-        void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis);
+        void showLatestNews(List<StoriesBean> storiesBeanList);
 
         void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData);
 

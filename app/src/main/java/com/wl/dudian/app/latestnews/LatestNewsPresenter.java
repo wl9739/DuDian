@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
 
@@ -44,23 +45,27 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     @Override
     public void loadLatestNews() {
-        domainService.getLatestNews(timestampedView)
+        domainService.getLatestNewsFromDB()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Timestamped<LatestNews>>() {
+                .onErrorReturn(new Func1<Throwable, LatestNews>() {
                     @Override
-                    public void call(Timestamped<LatestNews> latestNewsTimestamped) {
-                        currentData = latestNewsTimestamped.getValue().getDate();
-                        view.stopRefresh();
-                        storiesBeanList.clear();
-                        storiesBeanList.addAll(latestNewsTimestamped.getValue().getStories());
-                        view.showLatestNews(storiesBeanList, latestNewsTimestamped.getTimestampMillis());
-                        view.showHeaderView(latestNewsTimestamped.getValue().getTop_stories());
+                    public LatestNews call(Throwable throwable) {
+                        Log.d(TAG, "call: " + throwable.getMessage());
+                        return null;
                     }
-                }, new Action1<Throwable>() {
+                })
+                .subscribe(new Action1<LatestNews>() {
                     @Override
-                    public void call(Throwable throwable) {
-                        Log.d(TAG, "call: throwable" + throwable.getMessage());
+                    public void call(LatestNews latestNews) {
+                        if (latestNews != null) {
+                            currentData = latestNews.getDate();
+                            view.stopRefresh();
+                            storiesBeanList.clear();
+                            storiesBeanList.addAll(latestNews.getStories());
+                            view.showLatestNews(storiesBeanList);
+                            view.showHeaderView(latestNews.getTop_stories());
+                        }
                     }
                 });
 

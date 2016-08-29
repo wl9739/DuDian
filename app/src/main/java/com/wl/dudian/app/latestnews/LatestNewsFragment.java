@@ -202,14 +202,14 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     }
 
     @Override
-    public void showLatestNews(List<StoriesBean> storiesBeanList, long timestampMillis) {
-        mItemAdapter.setRefresh(storiesBeanList, timestampMillis);
+    public void showLatestNews(List<StoriesBean> storiesBeanList) {
+        mItemAdapter.setRefresh(storiesBeanList);
         mItemAdapter.changeDateTitle(1, "今日热文");
     }
 
     @Override
     public void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData) {
-        mItemAdapter.setRefresh(storiesBeanList, 0);
+        mItemAdapter.setRefresh(storiesBeanList);
         mItemAdapter.changeDateTitle(datePosition, currentData);
     }
 

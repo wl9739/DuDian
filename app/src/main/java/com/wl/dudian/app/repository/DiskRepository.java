@@ -13,6 +13,7 @@ import com.wl.dudian.app.db.BeforeNewsDB;
 import com.wl.dudian.app.db.LatestNewsDB;
 import com.wl.dudian.app.db.NewsDetailDB;
 import com.wl.dudian.app.db.StoriesBeanDB;
+import com.wl.dudian.app.db.TopStoriesBeanDB;
 import com.wl.dudian.app.db.mapper.Mapper;
 import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
@@ -213,22 +214,45 @@ public class DiskRepository {
         });
     }
 
-    /**
-     * 将下载的新闻标题内容保存到数据库中
-     *
-     * @param latestNews
-     */
-    public void saveLatestNews(final Timestamped<LatestNews> latestNews) {
+    public Observable<LatestNews> getLatestNewsFromDB() {
+        return Observable.fromCallable(new Callable<LatestNews>() {
+            @Override
+            public LatestNews call() throws Exception {
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<LatestNewsDB> result;
+                LatestNews latestNews;
+                try {
+                    result = realm.where(LatestNewsDB.class).findAll();
+                    if (result.size() < 1) {
+                        return null;
+                    }
+                    latestNews = Mapper.getLatestNews(result);
+                    return latestNews;
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                }
+            }
+        });
+    }
+
+    public void saveLatestNews(final LatestNews latestNews) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    // save
-                    Mapper.saveLatestNewsDB(realm, latestNews);
-                }
-            });
+//            final RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
+//            realm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    // delete first
+//                    topResult.deleteAllFromRealm();
+//                }
+//            });
+            realm.beginTransaction();
+            // save
+            Mapper.saveLatestNewsDB(realm, latestNews);
+            realm.commitTransaction();
         } finally {
             if (realm != null) {
                 realm.close();
@@ -363,6 +387,7 @@ public class DiskRepository {
 
     /**
      * 获取收藏的新闻
+     *
      * @return
      */
     public List<StoriesBean> getFavoriteNews() {
