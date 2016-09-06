@@ -192,7 +192,9 @@ public class DomainService {
     }
 
     public Observable<LatestNews> getLatestNewsFromDB() {
-        return diskRepository.getLatestNewsFromDB();
+        return diskRepository.getLatestNewsFromDB()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ThemesModel> getTheme() {

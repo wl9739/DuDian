@@ -42,8 +42,6 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     @Override
     public void loadLatestNews() {
         domainService.getLatestNewsFromDB()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .onErrorReturn(new Func1<Throwable, LatestNews>() {
                     @Override
                     public LatestNews call(Throwable throwable) {
