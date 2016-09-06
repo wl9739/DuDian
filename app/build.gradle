@@ -80,17 +80,4 @@ dependencies {
     // Picture
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-
-
-    // Share SDK
-    compile files('libs/MobCommons-2016.0623.1641.jar')
-    compile files('libs/MobTools-2016.0623.1641.jar')
-    compile files('libs/ShareSDK-Core-2.7.3.jar')
-    compile files('libs/ShareSDK-QQ-2.7.3.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.7.3.jar')
-    compile files('libs/ShareSDK-TencentWeibo-2.7.3.jar')
-    compile files('libs/ShareSDK-Wechat-2.7.3.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.7.3.jar')
-    compile files('libs/ShareSDK-Wechat-Favorite-2.7.3.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.7.3.jar')
 }

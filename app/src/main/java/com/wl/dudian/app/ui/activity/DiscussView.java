@@ -13,15 +13,13 @@ import com.wl.dudian.app.adapter.DiscussAdapter;
 import com.wl.dudian.app.model.CommentsBean;
 import com.wl.dudian.app.model.DiscussDataModel;
 import com.wl.dudian.app.model.DiscussExtraModel;
-import com.wl.dudian.framework.HttpUtil;
+import com.wl.dudian.app.repository.DomainService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.functions.Action1;
 
 /**
  * @author Qiushui
@@ -40,9 +38,12 @@ public class DiscussView {
     private DiscussAdapter mAdapter;
     private List<CommentsBean> mCommentsBeenList = new ArrayList<>();
 
+    private DomainService domainService;
+
     public DiscussView(Context context, int id) {
         mContext = context;
         mId = id;
+        domainService = DomainService.getInstance(context);
 
         init(mContext);
         loadDiscussData(id, true);
@@ -50,22 +51,10 @@ public class DiscussView {
     }
 
     private void loadExtraData(int id) {
-        HttpUtil.getInstance().getDiscussExtra("" + id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DiscussExtraModel>() {
+        domainService.getDiscussExtra("" + id)
+                .subscribe(new Action1<DiscussExtraModel>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(DiscussExtraModel discussExtraModel) {
+                    public void call(DiscussExtraModel discussExtraModel) {
                         mShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
                         mLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
                         mProvalTv.setText("" + discussExtraModel.getPopularity());
@@ -74,32 +63,20 @@ public class DiscussView {
     }
 
     private void loadDiscussData(int id, boolean isShortDiscuss) {
-        Observable discussObservable;
+        Observable<DiscussDataModel> discussObservable;
         if (isShortDiscuss) {
-            discussObservable = HttpUtil.getInstance().getDiscussShort("" + id);
+            discussObservable = domainService.getDiscussShort("" + id);
         } else {
-            discussObservable = HttpUtil.getInstance().getDiscussLong("" + id);
+            discussObservable = domainService.getDiscussLong("" + id);
         }
-        discussObservable.subscribeOn(Schedulers.io())
-                         .observeOn(AndroidSchedulers.mainThread())
-                         .subscribe(new Subscriber<DiscussDataModel>() {
-                             @Override
-                             public void onCompleted() {
-
-                             }
-
-                             @Override
-                             public void onError(Throwable e) {
-
-                             }
-
-                             @Override
-                             public void onNext(DiscussDataModel discussDataModel) {
-                                 mCommentsBeenList.clear();
-                                 mCommentsBeenList.addAll(discussDataModel.getComments());
-                                 mAdapter.notifyDataSetChanged();
-                             }
-                         });
+        discussObservable.subscribe(new Action1<DiscussDataModel>() {
+            @Override
+            public void call(DiscussDataModel discussDataModel) {
+                mCommentsBeenList.clear();
+                mCommentsBeenList.addAll(discussDataModel.getComments());
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void init(Context mContent) {

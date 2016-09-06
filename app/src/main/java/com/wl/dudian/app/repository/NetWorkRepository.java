@@ -2,6 +2,8 @@ package com.wl.dudian.app.repository;
 
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.wl.dudian.app.model.BeforeNews;
+import com.wl.dudian.app.model.DiscussDataModel;
+import com.wl.dudian.app.model.DiscussExtraModel;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
@@ -78,5 +80,17 @@ public class NetWorkRepository {
 
     public Observable<ThemeDetailModel> getThemeDetail(String id) {
         return dailyApi.getThemeDetail(id);
+    }
+
+    public Observable<DiscussDataModel> getDiscussLong(String id) {
+        return dailyApi.getDiscussLong(id);
+    }
+
+    public Observable<DiscussDataModel> getDiscussShort(String id) {
+        return dailyApi.getDiscussShort(id);
+    }
+
+    public Observable<DiscussExtraModel> getdiscussExtra(String id) {
+        return dailyApi.getDiscussExtra(id);
     }
 }

@@ -31,6 +31,7 @@ import java.util.concurrent.Callable;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import rx.Observable;
@@ -243,17 +244,20 @@ public class DiskRepository {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-//            final RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
-//            realm.executeTransaction(new Realm.Transaction() {
-//                @Override
-//                public void execute(Realm realm) {
-//                    // delete first
-//                    topResult.deleteAllFromRealm();
-//                }
-//            });
+            final RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
+            final RealmResults<LatestNewsDB> latestNewsResult = realm.where(LatestNewsDB.class).findAll();
+            final RealmQuery<StoriesBeanDB> storiesBeanResult = realm.where(StoriesBeanDB.class);
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    // delete first
+                    topResult.deleteAllFromRealm();
+                    latestNewsResult.deleteAllFromRealm();
+                }
+            });
             realm.beginTransaction();
             // save
-            Mapper.saveLatestNewsDB(realm, latestNews);
+            Mapper.saveLatestNewsDB(realm, latestNews, storiesBeanResult);
             realm.commitTransaction();
         } finally {
             if (realm != null) {

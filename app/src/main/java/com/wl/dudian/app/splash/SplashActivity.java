@@ -13,8 +13,6 @@ import com.wl.dudian.app.ui.activity.MainActivity;
 import com.wl.dudian.databinding.SplashActivityBinding;
 import com.wl.dudian.framework.BusinessUtil;
 
-import cn.sharesdk.framework.ShareSDK;
-
 /**
  * @author Qiushui
  * @since 0.0.2
@@ -30,8 +28,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // init ShareSDK
-        ShareSDK.initSDK(this);
         // init presenter
         new SplashPresenter(this, this);
         // init databinding
@@ -73,13 +69,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View{
     public void onBackPressed() {
         super.onBackPressed();
         presenter.unLanchSubscription();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // stop ShareSDK
-        ShareSDK.stopSDK(this);
     }
 
 }

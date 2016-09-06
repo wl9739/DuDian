@@ -17,7 +17,6 @@ import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
-import com.wl.dudian.app.repository.ITimestampedView;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.framework.BusinessUtil;
 
@@ -34,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by Qiushui on 16/6/21.
  */
 
-public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View, ITimestampedView{
+public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View{
 
     public static final String TAG = "LatestNewsFragment11111";
 
@@ -78,7 +77,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new LatestNewsPresenter(getContext(), this, this);
+        presenter = new LatestNewsPresenter(getContext(), this);
     }
 
     @Nullable
@@ -126,7 +125,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
 
         mNewsItemRecyclerView.setAdapter(mItemAdapter);
 
-        new LatestNewsPresenter(getContext(), this, this);
+        new LatestNewsPresenter(getContext(), this);
     }
 
     @Override
@@ -188,11 +187,6 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     @Override
     public void setPresenter(LatestNewsContract.Presenter presenter) {
         this.presenter = BusinessUtil.checkNotNull(presenter);
-    }
-
-    @Override
-    public long getViewDataTimestampMillis() {
-        return mItemAdapter == null ? 0 : mItemAdapter.getTimestampMillis();
     }
 
     @Override

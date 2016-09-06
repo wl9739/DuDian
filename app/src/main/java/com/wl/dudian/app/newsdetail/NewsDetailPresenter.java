@@ -10,7 +10,6 @@ import com.wl.dudian.framework.Variable;
 
 import java.util.concurrent.TimeUnit;
 
-import cn.sharesdk.framework.ShareSDK;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -171,6 +170,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                     }
                 });
     }
+
     @Override
     public void updateRead(final int id) {
 //        domainService.updateRead(id);

@@ -7,7 +7,6 @@ import com.wl.dudian.app.model.BeforeNews;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.repository.DomainService;
-import com.wl.dudian.app.repository.ITimestampedView;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.DateUtil;
 
@@ -20,7 +19,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.schedulers.Timestamped;
 
 /**
  * @author Qiushui on 16/8/16.
@@ -30,16 +28,14 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     private static final String TAG = "LatestNews";
     private LatestNewsContract.View view;
-    private ITimestampedView timestampedView;
     private DomainService domainService;
     private Subscription beforeNewsSubscription;
     private String currentData;
 
     private List<StoriesBean> storiesBeanList = new ArrayList<>();
 
-    public LatestNewsPresenter(Context context, LatestNewsContract.View view, ITimestampedView timestampedView) {
+    public LatestNewsPresenter(Context context, LatestNewsContract.View view) {
         this.view = view;
-        this.timestampedView = timestampedView;
         domainService = DomainService.getInstance(context);
     }
 

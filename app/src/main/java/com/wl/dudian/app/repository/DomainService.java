@@ -2,10 +2,11 @@ package com.wl.dudian.app.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.wl.dudian.app.model.BeforeNews;
+import com.wl.dudian.app.model.DiscussDataModel;
+import com.wl.dudian.app.model.DiscussExtraModel;
 import com.wl.dudian.app.model.LatestNews;
 import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StartImage;
@@ -21,7 +22,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.schedulers.Timestamped;
 
 /**
  * Created by Qiushui on 16/8/3.
@@ -213,5 +213,24 @@ public class DomainService {
 
     public void saveLatestNews(LatestNews latestNews) {
         diskRepository.saveLatestNews(latestNews);
+    }
+
+    public Observable<DiscussDataModel> getDiscussLong(String id) {
+        return netWorkRepository.getDiscussLong(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<DiscussDataModel> getDiscussShort(String id) {
+        return netWorkRepository.getDiscussShort(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<DiscussExtraModel> getDiscussExtra(String id) {
+        return netWorkRepository.getdiscussExtra(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 }
