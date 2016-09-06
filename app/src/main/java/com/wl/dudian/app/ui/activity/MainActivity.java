@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,7 +101,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitBy2Click();
+            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                mDrawerLayout.closeDrawers();
+            } else {
+                exitBy2Click();
+            }
         }
         // 不执行退出事件
         return false;
@@ -262,19 +267,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * 夜间模式切换
      */
     private void changeDayNightModel() {
-//        Schedulers.newThread().createWorker().schedule(new Action0() {
-//            @Override
-//            public void call() {
-                beforeChangeMode();
-                if (!Variable.isNight) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    Variable.isNight = true;
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    Variable.isNight = false;
-                }
-//            }
-//        });
+        beforeChangeMode();
+        if (!Variable.isNight) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            Variable.isNight = true;
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            Variable.isNight = false;
+        }
     }
 
     private void beforeChangeMode() {

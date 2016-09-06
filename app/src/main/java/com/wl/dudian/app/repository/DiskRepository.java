@@ -32,6 +32,7 @@ import java.util.concurrent.Callable;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
@@ -223,6 +224,7 @@ public class DiskRepository {
                 LatestNews latestNews;
                 try {
                     result = realm.where(LatestNewsDB.class).findAll();
+                    result = result.sort("date", Sort.DESCENDING);
                     if (result.size() < 1) {
                         return null;
                     }
@@ -395,6 +397,7 @@ public class DiskRepository {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("isFavorite", true).findAll();
+            query = query.sort("id", Sort.DESCENDING);
             if (query.size() < 1) {
                 return null;
             }
