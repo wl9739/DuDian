@@ -38,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -150,6 +151,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void getThemes() {
         domainService.getTheme().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn(new Func1<Throwable, ThemesModel>() {
+                    @Override
+                    public ThemesModel call(Throwable throwable) {
+                        return null;
+                    }
+                })
                 .subscribe(new Action1<ThemesModel>() {
                     @Override
                     public void call(ThemesModel themesModel) {

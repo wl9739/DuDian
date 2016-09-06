@@ -20,7 +20,7 @@ import rx.schedulers.Schedulers;
 /**
  * Listens to user actions from the UI , retrieves the data and updates
  * the UI as required.
- *
+ * <p>
  * Created by Qiushui on 16/8/8.
  */
 
@@ -65,10 +65,18 @@ public class SplashPresenter implements SplashContract.Presenter {
 
         domainService.getLatestNews()
                 .delay(2000, TimeUnit.MILLISECONDS)
+                .onErrorReturn(new Func1<Throwable, LatestNews>() {
+                    @Override
+                    public LatestNews call(Throwable throwable) {
+                        return null;
+                    }
+                })
                 .doOnNext(new Action1<LatestNews>() {
                     @Override
                     public void call(LatestNews latestNews) {
-                        domainService.saveLatestNews(latestNews);
+                        if (latestNews != null) {
+                            domainService.saveLatestNews(latestNews);
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
