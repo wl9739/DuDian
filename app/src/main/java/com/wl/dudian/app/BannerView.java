@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -86,6 +87,7 @@ public class BannerView extends FrameLayout {
      * 轮播图片的数量
      */
     private int mImageSize;
+    private boolean isMoving;
 
     /**
      * 将TopStoriesBean转化为StoriesBean
@@ -142,34 +144,35 @@ public class BannerView extends FrameLayout {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                isMoving = mCurrentItem != position;
             }
 
             @Override
             public void onPageSelected(int position) {
                 mCurrentItem = position;
+                isMoving = false;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                switch (state) {
-                    case 1: //  手势滑动, 空闲中
-                        isAutoPlay = false;
+                isMoving = state != ViewPager.SCROLL_STATE_IDLE;
+            }
+        });
+        mViewPager.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isMoving = false;
                         break;
-                    case 2: //  界面切换中
-                        isAutoPlay = true;
+                    case MotionEvent.ACTION_CANCEL:
+                        isMoving = false;
                         break;
-                    case 0:  // 滑动结束, 即切换完毕或者加载完毕
-                        // 当前为最后一张, 此时从右向左滑动, 则切换到第一张
-                        if (mViewPager.getCurrentItem() == mViewPager.getAdapter().getCount() - 1 && !isAutoPlay) {
-                            mViewPager.setCurrentItem(0);
-                        }
-                        // 当前为第一张, 此时从左往右滑动, 则切换到最后一张
-                        else if (mViewPager.getCurrentItem() == 0 && !isAutoPlay) {
-                            mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
-                        }
+                    case MotionEvent.ACTION_MOVE:
+                        isMoving = true;
                         break;
                 }
+                return false;
             }
         });
         mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
@@ -185,7 +188,7 @@ public class BannerView extends FrameLayout {
      */
     private void startPlay() {
         mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        mScheduledExecutorService.scheduleAtFixedRate(slideShowTask, 4000, 4000, TimeUnit.MILLISECONDS);
+        mScheduledExecutorService.scheduleWithFixedDelay(slideShowTask, 4000, 4000, TimeUnit.MILLISECONDS);
     }
 
     public static class BannerViewPagerAdapter extends PagerAdapter {
@@ -265,13 +268,9 @@ public class BannerView extends FrameLayout {
         @Override
         public void run() {
             synchronized (BannerView.class) {
+                if (!isMoving)
                 mCurrentItem = (mCurrentItem + 1) % mImageSize;
                 mHandler.obtainMessage().sendToTarget();
-                try {
-                    Thread.sleep(4000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
