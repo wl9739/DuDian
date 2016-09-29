@@ -1,5 +1,9 @@
 package com.wl.dudian.app.latestnews;
 
+import android.annotation.TargetApi;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -7,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,7 +144,12 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                     @Override
                     public void onItemClick(View view, StoriesBean storiesBean) {
                         presenter.updateRead(storiesBean);
-                        NewsDetailActivity.launch(getActivity(), storiesBean);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            showTransitionAnim(view, storiesBean);
+                        } else {
+                            NewsDetailActivity.launch(getActivity(), storiesBean);
+                        }
+
                     }
                 });
 
@@ -206,6 +216,21 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     public void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData) {
         mItemAdapter.setRefresh(storiesBeanList);
         mItemAdapter.changeDateTitle(datePosition, currentData);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void showTransitionAnim(View view, StoriesBean storiesBean) {
+        ActivityOptions options =
+                ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        view.findViewById(R.id.latest_news_fragment_image), getString(R.string.transition_name));
+        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+        intent.putExtra(NewsDetailActivity.ARGU_STORIES_BEAN, storiesBean);
+        if (storiesBean.getImages() == null || storiesBean.getImages().size() < 1) {
+            intent.putExtra(NewsDetailActivity.ARGU_IS_NOHEADER, true);
+        } else {
+            intent.putExtra(NewsDetailActivity.ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0)));
+        }
+        startActivity(intent, options.toBundle());
     }
 
 }

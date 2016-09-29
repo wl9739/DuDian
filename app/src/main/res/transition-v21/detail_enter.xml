@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:transitionOrdering="sequential">
+
+    <slide android:slideEdge="bottom">
+        <targets>
+            <target android:targetId="@id/header_image"/>
+            <target android:targetId="@id/nested_scrollview"/>
+        </targets>
+    </slide>
+
+    <fade>
+        <targets>
+            <target android:excludeId="@android:id/statusBarBackground"/>
+            <target android:excludeId="@android:id/navigationBarBackground"/>
+            <target android:excludeId="@id/header_image"/>
+            <target android:excludeId="@id/nested_scrollview"/>
+        </targets>
+    </fade>
+</transitionSet>

@@ -1,5 +1,6 @@
 package com.wl.dudian.app.newsdetail;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -7,8 +8,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.transition.Transition;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -31,8 +34,8 @@ import com.wl.dudian.framework.BusinessUtil;
 
 public class NewsDetailActivity extends BaseActivity implements NewsDetailContract.View {
 
-    private static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
-    private static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
+    public static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
+    public static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
 
     private StoriesBean mStoriesBean;
 
@@ -97,19 +100,22 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             binding.menuBtn.toggle();
             return;
         }
-        super.onBackPressed();
+
+        binding.menuBtn.animate().scaleX(0).scaleY(0).setListener(new AnimatorLinstenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                supportFinishAfterTransition();
+            }
+        });
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
-        if (Build.VERSION.SDK_INT >= 21) {
-            View decorView = getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(option);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tansparentStatusBar();
+            transition(savedInstanceState);
         }
 
         new NewsDetailPresenter(this, this);
@@ -159,6 +165,34 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
 
         initWebView();
         presenter.loadData(String.valueOf(mStoriesBean.getId()));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void tansparentStatusBar() {
+        View decorView = getWindow().getDecorView();
+        int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        decorView.setSystemUiVisibility(option);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void transition(@Nullable Bundle savedInstanceState) {
+        if (getIntent() != null) {
+            StoriesBean storiesBean = (StoriesBean) getIntent().getExtras().get(ARGU_STORIES_BEAN);
+            BusinessUtil.loadImage(this, storiesBean.getImages().get(0), binding.headerImage);
+        }
+        if (savedInstanceState == null) {
+            binding.menuBtn.setScaleX(0);
+            binding.menuBtn.setScaleY(0);
+            getWindow().getEnterTransition().addListener(new TransitionAdapter() {
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    getWindow().getEnterTransition().removeListener(this);
+                    binding.menuBtn.animate().scaleX(1).scaleY(1);
+                }
+            });
+        }
     }
 
     /**

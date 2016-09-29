@@ -30,9 +30,11 @@
         <activity
             android:name=".app.ui.activity.MainActivity"
             android:launchMode="singleTask"
+            android:theme="@style/AppTheme.LatestNews"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".app.newsdetail.NewsDetailActivity"
+            android:theme="@style/AppTheme.Detail"
             android:screenOrientation="portrait"/>
         <activity android:name=".app.ui.activity.TransitionActivity"/>
 
