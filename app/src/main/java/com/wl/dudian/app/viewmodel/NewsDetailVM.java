@@ -13,7 +13,6 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 /**
- *
  * Created by Qiushui on 16/8/8.
  */
 

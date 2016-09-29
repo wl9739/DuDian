@@ -6,7 +6,7 @@ import io.realm.RealmObject;
  * @author Qiushui on 16/8/16.
  */
 
-public class StoriesBeanDB extends RealmObject{
+public class StoriesBeanDB extends RealmObject {
 
     private int type;
     private int id;

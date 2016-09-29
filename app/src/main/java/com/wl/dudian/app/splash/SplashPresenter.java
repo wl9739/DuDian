@@ -18,8 +18,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * Listens to user actions from the UI , retrieves the data and updates
- * the UI as required.
+ * Listens to user actions from the UI , retrieves the data and updates the UI as required.
  * <p>
  * Created by Qiushui on 16/8/8.
  */
@@ -64,34 +63,34 @@ public class SplashPresenter implements SplashContract.Presenter {
     public void subscribe() {
 
         domainService.getLatestNews()
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .onErrorReturn(new Func1<Throwable, LatestNews>() {
-                    @Override
-                    public LatestNews call(Throwable throwable) {
-                        return null;
-                    }
-                })
-                .doOnNext(new Action1<LatestNews>() {
-                    @Override
-                    public void call(LatestNews latestNews) {
-                        if (latestNews != null) {
-                            domainService.saveLatestNews(latestNews);
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<LatestNews>() {
-                    @Override
-                    public void call(LatestNews latestNews) {
-                        splashView.startActivity();
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.d(TAG, "call: " + throwable.getMessage());
-                    }
-                });
+                     .delay(2000, TimeUnit.MILLISECONDS)
+                     .onErrorReturn(new Func1<Throwable, LatestNews>() {
+                         @Override
+                         public LatestNews call(Throwable throwable) {
+                             return null;
+                         }
+                     })
+                     .doOnNext(new Action1<LatestNews>() {
+                         @Override
+                         public void call(LatestNews latestNews) {
+                             if (latestNews != null) {
+                                 domainService.saveLatestNews(latestNews);
+                             }
+                         }
+                     })
+                     .subscribeOn(Schedulers.io())
+                     .observeOn(AndroidSchedulers.mainThread())
+                     .subscribe(new Action1<LatestNews>() {
+                         @Override
+                         public void call(LatestNews latestNews) {
+                             splashView.startActivity();
+                         }
+                     }, new Action1<Throwable>() {
+                         @Override
+                         public void call(Throwable throwable) {
+                             Log.d(TAG, "call: " + throwable.getMessage());
+                         }
+                     });
     }
 
     @Override

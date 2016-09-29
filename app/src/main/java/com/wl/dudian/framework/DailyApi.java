@@ -15,8 +15,7 @@ import retrofit2.http.Path;
 import rx.Observable;
 
 /**
- * Api接口类
- * Created by Qiushui on 16/6/20.
+ * Api接口类 Created by Qiushui on 16/6/20.
  */
 public interface DailyApi {
 
@@ -70,6 +69,7 @@ public interface DailyApi {
 
     /**
      * 新闻评论额外信息
+     *
      * @param id
      * @return
      */
@@ -78,6 +78,7 @@ public interface DailyApi {
 
     /**
      * 获取新闻长评
+     *
      * @param id
      * @return
      */
@@ -86,6 +87,7 @@ public interface DailyApi {
 
     /**
      * 获取新闻短评
+     *
      * @param id
      * @return
      */

@@ -42,26 +42,26 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
     @Override
     public void loadLatestNews() {
         domainService.getLatestNewsFromDB()
-                .onErrorReturn(new Func1<Throwable, LatestNews>() {
-                    @Override
-                    public LatestNews call(Throwable throwable) {
-                        Log.d(TAG, "call: " + throwable.getMessage());
-                        return null;
-                    }
-                })
-                .subscribe(new Action1<LatestNews>() {
-                    @Override
-                    public void call(LatestNews latestNews) {
-                        if (latestNews != null) {
-                            currentData = latestNews.getDate();
-                            view.stopRefresh();
-                            storiesBeanList.clear();
-                            storiesBeanList.addAll(latestNews.getStories());
-                            view.showLatestNews(storiesBeanList);
-                            view.showHeaderView(latestNews.getTop_stories());
-                        }
-                    }
-                });
+                     .onErrorReturn(new Func1<Throwable, LatestNews>() {
+                         @Override
+                         public LatestNews call(Throwable throwable) {
+                             Log.d(TAG, "call: " + throwable.getMessage());
+                             return null;
+                         }
+                     })
+                     .subscribe(new Action1<LatestNews>() {
+                         @Override
+                         public void call(LatestNews latestNews) {
+                             if (latestNews != null) {
+                                 currentData = latestNews.getDate();
+                                 view.stopRefresh();
+                                 storiesBeanList.clear();
+                                 storiesBeanList.addAll(latestNews.getStories());
+                                 view.showLatestNews(storiesBeanList);
+                                 view.showHeaderView(latestNews.getTop_stories());
+                             }
+                         }
+                     });
 
     }
 
@@ -70,9 +70,9 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
         Observable<BeforeNews> beforeNewsObservable = Observable.concat(
                 domainService.getBeforeNewsFromDB(DateUtil.getLastDay(currentData)),
                 domainService.getBeforeNewsFromNet(currentData))
-                .first()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                                                .first()
+                                                                .subscribeOn(Schedulers.io())
+                                                                .observeOn(AndroidSchedulers.mainThread());
         beforeNewsSubscription = beforeNewsObservable.subscribe(new Action1<BeforeNews>() {
             @Override
             public void call(BeforeNews beforeNews) {

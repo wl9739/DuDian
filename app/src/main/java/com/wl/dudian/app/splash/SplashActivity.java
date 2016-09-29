@@ -17,11 +17,34 @@ import com.wl.dudian.framework.BusinessUtil;
  * @author Qiushui
  * @since 0.0.2
  */
-public class SplashActivity extends BaseActivity implements SplashContract.View{
+public class SplashActivity extends BaseActivity implements SplashContract.View {
 
     private SplashActivityBinding binding;
 
     private SplashContract.Presenter presenter;
+
+    @Override
+    public void showStartImage(Bitmap bitmap) {
+        binding.image.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void startActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void setPresenter(SplashContract.Presenter presenter) {
+        this.presenter = BusinessUtil.checkNotNull(presenter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        presenter.unLanchSubscription();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,29 +69,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View{
     protected void onPause() {
         super.onPause();
         presenter.unsubscribe();
-    }
-
-    @Override
-    public void showStartImage(Bitmap bitmap) {
-        binding.image.setImageBitmap(bitmap);
-    }
-
-    @Override
-    public void startActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void setPresenter(SplashContract.Presenter presenter) {
-        this.presenter = BusinessUtil.checkNotNull(presenter);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        presenter.unLanchSubscription();
     }
 
 }

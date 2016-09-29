@@ -7,7 +7,7 @@ import io.realm.RealmObject;
  * @author Qiushui on 16/8/16.
  */
 
-public class BeforeNewsDB extends RealmObject{
+public class BeforeNewsDB extends RealmObject {
 
     private String date;
 

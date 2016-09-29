@@ -52,14 +52,14 @@ public class DiscussView {
 
     private void loadExtraData(int id) {
         domainService.getDiscussExtra("" + id)
-                .subscribe(new Action1<DiscussExtraModel>() {
-                    @Override
-                    public void call(DiscussExtraModel discussExtraModel) {
-                        mShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
-                        mLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
-                        mProvalTv.setText("" + discussExtraModel.getPopularity());
-                    }
-                });
+                     .subscribe(new Action1<DiscussExtraModel>() {
+                         @Override
+                         public void call(DiscussExtraModel discussExtraModel) {
+                             mShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
+                             mLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
+                             mProvalTv.setText("" + discussExtraModel.getPopularity());
+                         }
+                     });
     }
 
     private void loadDiscussData(int id, boolean isShortDiscuss) {

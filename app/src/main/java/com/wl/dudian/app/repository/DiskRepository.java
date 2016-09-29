@@ -35,8 +35,6 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import rx.Observable;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
 
 /**
@@ -45,12 +43,11 @@ import rx.schedulers.Timestamped;
 
 public class DiskRepository {
 
-    private Context context;
     /**
      * 启动图片文件路径
      */
     private static final String SPLASH_IMAGE_FILEPATH = "start.jpg";
-
+    private Context context;
     /**
      * 保存图片的文件
      */
@@ -67,21 +64,16 @@ public class DiskRepository {
      */
     public void saveStartImage(final StartImage startImage) {
         Glide.with(context)
-                .load(startImage.getCreatives().get(0).getUrl())
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                          @Override
-                          public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                              Schedulers.io().createWorker().schedule(new Action0() {
-                                  @Override
-                                  public void call() {
-                                      saveAsFile(resource);
-                                  }
-                              });
-                          }
-                      }
+             .load(startImage.getCreatives().get(0).getUrl())
+             .asBitmap()
+             .into(new SimpleTarget<Bitmap>() {
+                       @Override
+                       public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                           saveAsFile(resource);
+                       }
+                   }
 
-                );
+             );
     }
 
     /**
@@ -103,25 +95,6 @@ public class DiskRepository {
                 }
             }
         });
-    }
-
-    /**
-     * 将下载的图片保存到文件里
-     *
-     * @param bitmap 下载的图片Bitmap
-     */
-    private void saveAsFile(Bitmap bitmap) {
-        try {
-            if (mImageFile.exists()) {
-                mImageFile.delete();
-            }
-            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(mImageFile));
-            bitmap.compress(Bitmap.CompressFormat.PNG, 80, os);
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -156,7 +129,6 @@ public class DiskRepository {
 
         return newsDetails;
     }
-
 
     /**
      * 将下载的新闻详情保存到数据库中
@@ -278,7 +250,8 @@ public class DiskRepository {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class).equalTo("date", beforeNews.getDate()).findAll();
+                    RealmResults<BeforeNewsDB> query =
+                            realm.where(BeforeNewsDB.class).equalTo("date", beforeNews.getDate()).findAll();
                     // 如果已经保存了, 则不再重复保存
                     if (query.size() > 0) {
                         return;
@@ -318,7 +291,7 @@ public class DiskRepository {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class)
-                    .equalTo("date", date).findAll();
+                                                    .equalTo("date", date).findAll();
             if (query.size() < 1) {
                 return null;
             }
@@ -377,7 +350,8 @@ public class DiskRepository {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
+                    RealmResults<StoriesBeanDB> query =
+                            realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
                     if (query.size() < 0) {
                         return;
                     }
@@ -410,6 +384,25 @@ public class DiskRepository {
             if (realm != null) {
                 realm.close();
             }
+        }
+    }
+
+    /**
+     * 将下载的图片保存到文件里
+     *
+     * @param bitmap 下载的图片Bitmap
+     */
+    private void saveAsFile(Bitmap bitmap) {
+        try {
+            if (mImageFile.exists()) {
+                mImageFile.delete();
+            }
+            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(mImageFile));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

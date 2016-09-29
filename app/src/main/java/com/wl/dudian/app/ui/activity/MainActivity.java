@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -43,7 +42,6 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MainActivity11111";
     private static final String FRAGMENT_INDEX = "FRAGMENT_INDEX";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -71,6 +69,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private int index = 0;
     private boolean isExit = false;
 
+    /**
+     * 缩小图片规格
+     *
+     * @return
+     */
+    public static Bitmap zoomBitmap(Bitmap bitmap, int width, int height) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Matrix matrix = new Matrix();
+        float scaleWidth = ((float) width / w);
+        float scaleHeight = ((float) height / h);
+        matrix.postScale(scaleWidth, scaleHeight); // 不改变原来图像大小
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -114,7 +126,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -151,18 +162,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void getThemes() {
         domainService.getTheme().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturn(new Func1<Throwable, ThemesModel>() {
-                    @Override
-                    public ThemesModel call(Throwable throwable) {
-                        return null;
-                    }
-                })
-                .subscribe(new Action1<ThemesModel>() {
-                    @Override
-                    public void call(ThemesModel themesModel) {
-                        mThemesModel = themesModel;
-                    }
-                });
+                     .onErrorReturn(new Func1<Throwable, ThemesModel>() {
+                         @Override
+                         public ThemesModel call(Throwable throwable) {
+                             return null;
+                         }
+                     })
+                     .subscribe(new Action1<ThemesModel>() {
+                         @Override
+                         public void call(ThemesModel themesModel) {
+                             mThemesModel = themesModel;
+                         }
+                     });
     }
 
     private void showLatestNews(Bundle savedInstanceState) {
@@ -176,8 +187,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             if (mLatestNewsFragment == null) {
                 mLatestNewsFragment = LatestNewsFragment.newInstance();
                 fm.beginTransaction()
-                        .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
-                        .commit();
+                  .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
+                  .commit();
             }
 
         }
@@ -287,8 +298,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void beforeChangeMode() {
         Bitmap bitmap = ScreenShotUtils.captureScreen(this);
         bitmap = zoomBitmap(bitmap, bitmap.getWidth() / 5, bitmap.getHeight() / 5);
-        Intent intent = new Intent(this, TestActivity.class);
-        intent.putExtra("IMAGE", bitmap);
+        Intent intent = new Intent(this, TransitionActivity.class);
+        intent.putExtra(TransitionActivity.IMAGE_NAME, bitmap);
         startActivity(intent);
         finish();
     }
@@ -309,20 +320,5 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         } else {
             finish();
         }
-    }
-
-    /**
-     * 缩小图片规格
-     *
-     * @return
-     */
-    public static Bitmap zoomBitmap(Bitmap bitmap, int width, int height) {
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-        Matrix matrix = new Matrix();
-        float scaleWidth = ((float) width / w);
-        float scaleHeight = ((float) height / h);
-        matrix.postScale(scaleWidth, scaleHeight); // 不改变原来图像大小
-        return Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
     }
 }

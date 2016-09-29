@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 启动图片model
- *
+ * <p>
  * Created by Qiushui on 16/6/20.
  */
 

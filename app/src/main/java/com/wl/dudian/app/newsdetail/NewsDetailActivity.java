@@ -25,7 +25,7 @@ import com.wl.dudian.framework.BusinessUtil;
 
 /**
  * 新闻详情界面
- *
+ * <p>
  * Created by Qiushui on 16/6/22.
  */
 
@@ -52,6 +52,52 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             intent.putExtra(ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0)));
         }
         activity.startActivity(intent);
+    }
+
+    @Override
+    public void share(NewsDetails newsDetails) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+        intent.putExtra(Intent.EXTRA_TEXT,
+                "来自读点日报的分享" + newsDetails.getTitle() + "，http://daily.zhihu.com/story/" + newsDetails.getId());
+        startActivity(Intent.createChooser(intent, newsDetails.getTitle()));
+    }
+
+    @Override
+    public void showHeaderImage(String imageUrl) {
+        BusinessUtil.loadImage(this, imageUrl, binding.headerImage);
+    }
+
+    @Override
+    public void showWebView(boolean isShowNight) {
+        binding.webview.setVisibility(isShowNight ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setPresenter(NewsDetailContract.Presenter presenter) {
+        this.presenter = BusinessUtil.checkNotNull(presenter);
+    }
+
+    @Override
+    public void showNormalData(String newsDetails) {
+        binding.webview.loadDataWithBaseURL("x-data://base", newsDetails, "text/html", "UTF-8", null);
+    }
+
+    @Override
+    public void showNobodyData(String shareUrl) {
+        binding.webview.loadUrl(shareUrl);
+        binding.webview.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (binding.menuBtn.isExpanded()) {
+            binding.menuBtn.toggle();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -135,51 +181,5 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
                 return true;
             }
         });
-    }
-
-    @Override
-    public void share(NewsDetails newsDetails) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-        intent.putExtra(Intent.EXTRA_TEXT,
-                "来自读点日报的分享" + newsDetails.getTitle() + "，http://daily.zhihu.com/story/" + newsDetails.getId());
-        startActivity(Intent.createChooser(intent, newsDetails.getTitle()));
-    }
-
-    @Override
-    public void showHeaderImage(String imageUrl) {
-        BusinessUtil.loadImage(this, imageUrl, binding.headerImage);
-    }
-
-    @Override
-    public void showWebView(boolean isShowNight) {
-        binding.webview.setVisibility(isShowNight ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setPresenter(NewsDetailContract.Presenter presenter) {
-        this.presenter = BusinessUtil.checkNotNull(presenter);
-    }
-
-    @Override
-    public void showNormalData(String newsDetails) {
-        binding.webview.loadDataWithBaseURL("x-data://base", newsDetails, "text/html", "UTF-8", null);
-    }
-
-    @Override
-    public void showNobodyData(String shareUrl) {
-        binding.webview.loadUrl(shareUrl);
-        binding.webview.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (binding.menuBtn.isExpanded()) {
-            binding.menuBtn.toggle();
-            return;
-        }
-        super.onBackPressed();
     }
 }

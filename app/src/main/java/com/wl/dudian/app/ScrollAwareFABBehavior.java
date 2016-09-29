@@ -25,13 +25,16 @@ public class ScrollAwareFABBehavior extends CoordinatorLayout.Behavior<FloatingA
     }
 
     @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionsMenu child, View directTargetChild, View target, int nestedScrollAxes) {
+    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionsMenu child,
+            View directTargetChild, View target, int nestedScrollAxes) {
         // 处理垂直方向上的滚动事件
-        return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL || super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
+        return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL ||
+                super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
     }
 
     @Override
-    public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionsMenu child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+    public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionsMenu child, View target,
+            int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         // 向上滚动进入, 向下滚动隐藏
         if (dyConsumed > 0 && !this.isAnimationOut && child.getVisibility() == View.VISIBLE) {
@@ -49,34 +52,34 @@ public class ScrollAwareFABBehavior extends CoordinatorLayout.Behavior<FloatingA
     private void animatæeIn(FloatingActionsMenu child) {
         child.setVisibility(View.VISIBLE);
         ViewCompat.animate(child).translationY(0)
-                .setInterpolator(INTERPOLATOR)
-                .withLayer()
-                .setListener(null)
-                .start();
+                  .setInterpolator(INTERPOLATOR)
+                  .withLayer()
+                  .setListener(null)
+                  .start();
     }
 
     private void animateOut(FloatingActionsMenu child) {
         ViewCompat.animate(child)
-                .translationY(500)
-                .setInterpolator(INTERPOLATOR)
-                .withLayer()
-                .setListener(new ViewPropertyAnimatorListener() {
-                    @Override
-                    public void onAnimationStart(View view) {
-                        ScrollAwareFABBehavior.this.isAnimationOut = true;
-                    }
+                  .translationY(500)
+                  .setInterpolator(INTERPOLATOR)
+                  .withLayer()
+                  .setListener(new ViewPropertyAnimatorListener() {
+                      @Override
+                      public void onAnimationStart(View view) {
+                          ScrollAwareFABBehavior.this.isAnimationOut = true;
+                      }
 
-                    @Override
-                    public void onAnimationEnd(View view) {
-                        ScrollAwareFABBehavior.this.isAnimationOut = false;
-                        view.setVisibility(View.GONE);
-                    }
+                      @Override
+                      public void onAnimationEnd(View view) {
+                          ScrollAwareFABBehavior.this.isAnimationOut = false;
+                          view.setVisibility(View.GONE);
+                      }
 
-                    @Override
-                    public void onAnimationCancel(View view) {
-                        ScrollAwareFABBehavior.this.isAnimationOut = false;
-                    }
-                })
-                .start();
+                      @Override
+                      public void onAnimationCancel(View view) {
+                          ScrollAwareFABBehavior.this.isAnimationOut = false;
+                      }
+                  })
+                  .start();
     }
 }

@@ -29,16 +29,10 @@ import rx.schedulers.Schedulers;
 
 public class DomainService {
 
-    private final String TAG = "Domainservice";
     private static DomainService INSTANCE = null;
-
+    private final String TAG = "Domainservice";
     private final DiskRepository diskRepository;
     private final NetWorkRepository netWorkRepository;
-
-    private DomainService(Context context) {
-        diskRepository = new DiskRepository(context);
-        netWorkRepository = new NetWorkRepository();
-    }
 
     public static DomainService getInstance(Context context) {
         if (INSTANCE == null) {
@@ -46,6 +40,11 @@ public class DomainService {
             INSTANCE = new DomainService(context.getApplicationContext());
         }
         return INSTANCE;
+    }
+
+    private DomainService(Context context) {
+        diskRepository = new DiskRepository(context);
+        netWorkRepository = new NetWorkRepository();
     }
 
     /**
@@ -86,43 +85,15 @@ public class DomainService {
      */
     public Observable<NewsDetails> getNewsDetailsFromNet(final String newsId) {
         return netWorkRepository.getNewsDetails(newsId)
-                .doOnNext(new Action1<NewsDetails>() {
-                    @Override
-                    public void call(NewsDetails newsDetails) {
-                        diskRepository.saveNewsDetail(newsDetails);
-                    }
-                }).onErrorReturn(new Func1<Throwable, NewsDetails>() {
+                                .doOnNext(new Action1<NewsDetails>() {
+                                    @Override
+                                    public void call(NewsDetails newsDetails) {
+                                        diskRepository.saveNewsDetail(newsDetails);
+                                    }
+                                }).onErrorReturn(new Func1<Throwable, NewsDetails>() {
                     @Override
                     public NewsDetails call(Throwable throwable) {
                         return null;
-                    }
-                });
-    }
-
-    /**
-     * 下载并保存图片
-     */
-    private void getAndSaveImageFromNet() {
-        netWorkRepository.getStartImage()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturn(new Func1<Throwable, StartImage>() {
-                    @Override
-                    public StartImage call(Throwable throwable) {
-                        return null;
-                    }
-                })
-                .filter(new Func1<StartImage, Boolean>() {
-                    @Override
-                    public Boolean call(StartImage startImage) {
-                        return null != startImage;
-                    }
-                })
-                .subscribe(new Action1<StartImage>() {
-                    @Override
-                    public void call(StartImage startImage) {
-                        Log.d("000000", "call: getAndSaveImageFromNet() " + Thread.currentThread());
-                        diskRepository.saveStartImage(startImage);
                     }
                 });
     }
@@ -175,16 +146,15 @@ public class DomainService {
         });
     }
 
-
     public Observable<LatestNews> getLatestNews() {
         return netWorkRepository.getLatestNews()
-                .onErrorReturn(new Func1<Throwable, LatestNews>() {
-                    @Override
-                    public LatestNews call(Throwable throwable) {
-                        Log.d(TAG, "call: " + throwable.getMessage());
-                        return null;
-                    }
-                });
+                                .onErrorReturn(new Func1<Throwable, LatestNews>() {
+                                    @Override
+                                    public LatestNews call(Throwable throwable) {
+                                        Log.d(TAG, "call: " + throwable.getMessage());
+                                        return null;
+                                    }
+                                });
     }
 
     public void updateRead(int id) {
@@ -193,20 +163,20 @@ public class DomainService {
 
     public Observable<LatestNews> getLatestNewsFromDB() {
         return diskRepository.getLatestNewsFromDB()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                             .subscribeOn(Schedulers.io())
+                             .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ThemesModel> getTheme() {
         return netWorkRepository.getThemesModel()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ThemeDetailModel> getThemeDetail(String id) {
         return netWorkRepository.getThemeDetail(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public List<StoriesBean> getFavoriteNews() {
@@ -219,20 +189,48 @@ public class DomainService {
 
     public Observable<DiscussDataModel> getDiscussLong(String id) {
         return netWorkRepository.getDiscussLong(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<DiscussDataModel> getDiscussShort(String id) {
         return netWorkRepository.getDiscussShort(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<DiscussExtraModel> getDiscussExtra(String id) {
         return netWorkRepository.getdiscussExtra(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread());
 
+    }
+
+    /**
+     * 下载并保存图片
+     */
+    private void getAndSaveImageFromNet() {
+        netWorkRepository.getStartImage()
+                         .subscribeOn(Schedulers.io())
+                         .observeOn(AndroidSchedulers.mainThread())
+                         .onErrorReturn(new Func1<Throwable, StartImage>() {
+                             @Override
+                             public StartImage call(Throwable throwable) {
+                                 return null;
+                             }
+                         })
+                         .filter(new Func1<StartImage, Boolean>() {
+                             @Override
+                             public Boolean call(StartImage startImage) {
+                                 return null != startImage;
+                             }
+                         })
+                         .subscribe(new Action1<StartImage>() {
+                             @Override
+                             public void call(StartImage startImage) {
+                                 Log.d("000000", "call: getAndSaveImageFromNet() " + Thread.currentThread());
+                                 diskRepository.saveStartImage(startImage);
+                             }
+                         });
     }
 }

@@ -49,7 +49,7 @@ public class ColumnCenterFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.columncenterfragment, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -85,14 +85,14 @@ public class ColumnCenterFragment extends BaseFragment {
      */
     private void getThemeDetails(String columnId) {
         domainService.getThemeDetail(columnId)
-                .subscribe(new Action1<ThemeDetailModel>() {
-                    @Override
-                    public void call(ThemeDetailModel themeDetailModel) {
-                        mStoriesBeanList.clear();
-                        mStoriesBeanList.addAll(themeDetailModel.getStories());
-                        mNewsItemAdapter.setRefresh(mStoriesBeanList);
+                     .subscribe(new Action1<ThemeDetailModel>() {
+                         @Override
+                         public void call(ThemeDetailModel themeDetailModel) {
+                             mStoriesBeanList.clear();
+                             mStoriesBeanList.addAll(themeDetailModel.getStories());
+                             mNewsItemAdapter.setRefresh(mStoriesBeanList);
 
-                    }
-                });
+                         }
+                     });
     }
 }

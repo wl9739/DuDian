@@ -14,8 +14,9 @@ import com.wl.dudian.R;
  * Created by Qiushui on 16/6/24.
  */
 
-public class TestActivity extends BaseActivity {
+public class TransitionActivity extends BaseActivity {
 
+    public static final String IMAGE_NAME = "IMAGE";
     private ImageView mImageView;
 
     @Override
@@ -24,7 +25,7 @@ public class TestActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.text_activity);
 
-        Bitmap bitmap = getIntent().getParcelableExtra("IMAGE");
+        Bitmap bitmap = getIntent().getParcelableExtra(IMAGE_NAME);
         mImageView = (ImageView) findViewById(R.id.test_img_view);
         mImageView.setImageBitmap(bitmap);
 

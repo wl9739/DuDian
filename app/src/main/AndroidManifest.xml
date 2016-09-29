@@ -34,7 +34,7 @@
         <activity
             android:name=".app.newsdetail.NewsDetailActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".app.ui.activity.TestActivity"/>
+        <activity android:name=".app.ui.activity.TransitionActivity"/>
 
         <!--友盟-->
         <meta-data

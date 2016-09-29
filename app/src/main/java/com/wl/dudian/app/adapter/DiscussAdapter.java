@@ -23,10 +23,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * @author Qiushui
  * @since 0.0.2
  */
-public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<CommentsBean> mCommentsBean = new ArrayList<>();
     private Context mContext;
+
     public DiscussAdapter(List<CommentsBean> comments, Context context) {
         mCommentsBean = comments;
         mContext = context;
@@ -52,13 +53,14 @@ public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mCommentsBean.size();
     }
 
-    static class DiscussViewHolder extends RecyclerView.ViewHolder{
+    static class DiscussViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profileImg;
         TextView likeTv;
         TextView nameTv;
         TextView contentTv;
         TextView timeTv;
+
         public DiscussViewHolder(View itemView) {
             super(itemView);
 

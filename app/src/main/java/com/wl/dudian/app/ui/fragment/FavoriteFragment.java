@@ -43,7 +43,7 @@ public class FavoriteFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favorite_fragment, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -53,7 +53,7 @@ public class FavoriteFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         updateFavoriteItem();
-        
+
     }
 
     public void updateFavoriteItem() {

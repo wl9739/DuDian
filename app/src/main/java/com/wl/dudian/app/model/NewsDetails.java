@@ -22,6 +22,19 @@ public class NewsDetails {
     private String share_url;
     private String ga_prefix;
     private List<String> images;
+    /**
+     * thumbnail : http://pic4.zhimg.com/6a1ddebda9e8899811c4c169b92c35b3.jpg id : 1 name : 深夜惊奇
+     */
+
+    private SectionBean section;
+    private int type;
+    private int id;
+    /**
+     * avatar : http: //pic2.zhimg.com/fcb7039c1_m.jpg
+     */
+
+    private java.util.List<RecommendersBean> recommenders;
+    private java.util.List<String> css;
 
     public String getGa_prefix() {
         return ga_prefix;
@@ -70,20 +83,6 @@ public class NewsDetails {
     public void setCss(List<String> css) {
         this.css = css;
     }
-
-    /**
-     * thumbnail : http://pic4.zhimg.com/6a1ddebda9e8899811c4c169b92c35b3.jpg id : 1 name : 深夜惊奇
-     */
-
-    private SectionBean section;
-    private int type;
-    private int id;
-    /**
-     * avatar : http: //pic2.zhimg.com/fcb7039c1_m.jpg
-     */
-
-    private java.util.List<RecommendersBean> recommenders;
-    private java.util.List<String> css;
 
     public int getId() {
         return id;

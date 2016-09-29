@@ -24,7 +24,7 @@ public interface LatestNewsContract {
         void stopRefresh();
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         void loadLatestNews();
 

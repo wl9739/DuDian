@@ -15,7 +15,6 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import rx.schedulers.Timestamped;
 
 /**
  * Created by Qiushui on 16/8/16.
@@ -54,7 +53,8 @@ public class Mapper {
         return latestNews;
     }
 
-    public static void saveLatestNewsDB(Realm realm, LatestNews latestNews, RealmQuery<StoriesBeanDB> storiesBeanResult) {
+    public static void saveLatestNewsDB(Realm realm, LatestNews latestNews,
+            RealmQuery<StoriesBeanDB> storiesBeanResult) {
         LatestNewsDB latestNewsDB = realm.createObject(LatestNewsDB.class);
         latestNewsDB.setDate(latestNews.getDate());
         RealmList<StoriesBeanDB> storiesBeanDBRealmList = new RealmList<>();

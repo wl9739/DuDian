@@ -26,7 +26,6 @@ import rx.Observable;
 
 public class NetWorkRepository {
 
-    private DailyApi dailyApi;
     /**
      * BaseURL
      */
@@ -35,6 +34,7 @@ public class NetWorkRepository {
      * TIMEOUT
      */
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
+    private DailyApi dailyApi;
 
     public NetWorkRepository() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

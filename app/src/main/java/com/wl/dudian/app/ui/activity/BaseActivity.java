@@ -8,7 +8,7 @@ import com.umeng.analytics.MobclickAgent;
  * @author Qiushui
  * @since 0.0.2
  */
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {

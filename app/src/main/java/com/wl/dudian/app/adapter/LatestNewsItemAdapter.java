@@ -109,6 +109,32 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (null != mHeaderView && position == 0) {
+            return TYPE_HEADER;
+        } else {
+            return TYPE_ITEM;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        if (null != mHeaderView) {
+            return mStoriesBeen.size() + 1;
+        }
+        return mStoriesBeen.size();
+    }
+
+    public long getTimestampMillis() {
+        return timestampMillis;
+    }
+
+    public void changeDateTitle(int i, String dateTitle) {
+        datePositions.put(i, dateTitle);
+        notifyItemChanged(i);
+    }
+
     /**
      * 显示加载的内容, 在有Headerview的情况下。
      *
@@ -161,32 +187,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
                 holder.picImageView);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (null != mHeaderView && position == 0) {
-            return TYPE_HEADER;
-        } else {
-            return TYPE_ITEM;
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        if (null != mHeaderView) {
-            return mStoriesBeen.size() + 1;
-        }
-        return mStoriesBeen.size();
-    }
-
-    public long getTimestampMillis() {
-        return timestampMillis;
-    }
-
-    public void changeDateTitle(int i, String dateTitle) {
-        datePositions.put(i, dateTitle);
-        notifyItemChanged(i);
     }
 
     public interface OnLatestNewsItemClickListener {

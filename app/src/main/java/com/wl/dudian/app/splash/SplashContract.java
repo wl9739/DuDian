@@ -7,7 +7,7 @@ import com.wl.dudian.app.BaseView;
 
 /**
  * This specifies the contract between the view and the presenter.
- *
+ * <p>
  * Created by Qiushui on 16/8/8.
  */
 

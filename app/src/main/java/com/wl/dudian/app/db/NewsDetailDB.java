@@ -6,7 +6,7 @@ import io.realm.RealmObject;
  * @author Qiushui on 16/8/16.
  */
 
-public class NewsDetailDB extends RealmObject{
+public class NewsDetailDB extends RealmObject {
     private String body;
     private String image_source;
     private String title;

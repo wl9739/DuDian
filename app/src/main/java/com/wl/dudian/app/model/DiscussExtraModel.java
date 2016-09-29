@@ -6,10 +6,7 @@ package com.wl.dudian.app.model;
  */
 public class DiscussExtraModel {
     /**
-     * long_comments : 1
-     * popularity : 13
-     * short_comments : 153
-     * comments : 154
+     * long_comments : 1 popularity : 13 short_comments : 153 comments : 154
      */
 
     private int long_comments;

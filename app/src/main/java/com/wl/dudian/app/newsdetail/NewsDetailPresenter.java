@@ -17,8 +17,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
- * Listens to user actions from the UI , retrieves the data and updates
- * the UI as required.
+ * Listens to user actions from the UI , retrieves the data and updates the UI as required.
  * <p>
  * Created by Qiushui on 16/8/8.
  */
@@ -61,9 +60,9 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         Observable<NewsDetails> getNewsDetail = Observable.concat(
                 domainService.getNewsDetailFromDb(newsId),
                 domainService.getNewsDetailsFromNet(newsId))
-                .first()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                                                          .first()
+                                                          .subscribeOn(Schedulers.io())
+                                                          .observeOn(AndroidSchedulers.mainThread());
 
 
         dataSubscription = getNewsDetail.subscribe(new Action1<NewsDetails>() {
@@ -94,6 +93,11 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
     @Override
     public void share() {
 
+    }
+
+    @Override
+    public void updateRead(final int id) {
+//        domainService.updateRead(id);
     }
 
     /**
@@ -169,10 +173,5 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                         newsDetailView.showWebView(true);
                     }
                 });
-    }
-
-    @Override
-    public void updateRead(final int id) {
-//        domainService.updateRead(id);
     }
 }

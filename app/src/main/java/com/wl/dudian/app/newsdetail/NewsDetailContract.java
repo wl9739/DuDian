@@ -23,7 +23,7 @@ public interface NewsDetailContract {
         void showWebView(boolean isShowNight);
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         void loadData(String newsId);
 

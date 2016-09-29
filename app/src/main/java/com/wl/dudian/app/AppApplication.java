@@ -10,6 +10,7 @@ import io.realm.RealmConfiguration;
 
 /**
  * Custom Application
+ *
  * @author Qiushui
  */
 public class AppApplication extends Application {
@@ -35,8 +36,8 @@ public class AppApplication extends Application {
     private void initStetho() {
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-                        .build());
+                      .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                      .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                      .build());
     }
 }
