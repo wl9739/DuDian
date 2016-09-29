@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BannerView extends FrameLayout {
 
-    private static final String TAG = "BannerView111";
+    private static final String TAG = BannerView.class.getSimpleName();
 
     /**
      * viewpager
@@ -118,6 +118,7 @@ public class BannerView extends FrameLayout {
         mContext = context;
         mAdapter = new BannerViewPagerAdapter();
         slideShowTask = new SlideShowTask();
+        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, true);
     }
 
     /**
@@ -133,14 +134,11 @@ public class BannerView extends FrameLayout {
 
     @Override
     protected void onFinishInflate() {
-        super.onFinishInflate();
-        LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, true);
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
         mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
         mViewPager.setAdapter(mAdapter);
         mIndicator.setViewPager(mViewPager);
         mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            boolean isAutoPlay = false;
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -187,8 +185,10 @@ public class BannerView extends FrameLayout {
      * 开始启动自动轮播
      */
     private void startPlay() {
-        mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        mScheduledExecutorService.scheduleWithFixedDelay(slideShowTask, 4000, 4000, TimeUnit.MILLISECONDS);
+        if (mScheduledExecutorService == null) {
+            mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            mScheduledExecutorService.scheduleWithFixedDelay(slideShowTask, 4000, 4000, TimeUnit.MILLISECONDS);
+        }
     }
 
     public static class BannerViewPagerAdapter extends PagerAdapter {
@@ -205,7 +205,8 @@ public class BannerView extends FrameLayout {
          *
          * @param onBannerItemClickListener
          */
-        public void setOnBannerItemClickListener(BannerViewPagerAdapter.OnBannerItemClickListener onBannerItemClickListener) {
+        public void setOnBannerItemClickListener(
+                BannerViewPagerAdapter.OnBannerItemClickListener onBannerItemClickListener) {
             mOnBannerItemClickListener = onBannerItemClickListener;
         }
 
@@ -269,7 +270,7 @@ public class BannerView extends FrameLayout {
         public void run() {
             synchronized (BannerView.class) {
                 if (!isMoving)
-                mCurrentItem = (mCurrentItem + 1) % mImageSize;
+                    mCurrentItem = (mCurrentItem + 1) % mImageSize;
                 mHandler.obtainMessage().sendToTarget();
             }
         }

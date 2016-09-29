@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by Qiushui on 16/6/21.
  */
 
-public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View{
+public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View {
 
     public static final String TAG = "LatestNewsFragment11111";
 
@@ -166,6 +166,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                     });
                 }
             }
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
