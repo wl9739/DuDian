@@ -285,6 +285,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * 夜间模式切换
      */
     private void changeDayNightModel() {
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
         beforeChangeMode();
         if (!Variable.isNight) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

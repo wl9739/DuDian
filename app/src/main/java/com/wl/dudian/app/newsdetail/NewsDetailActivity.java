@@ -16,7 +16,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.NewsDetails;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.DiscussView;
@@ -55,14 +54,14 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     }
 
     @Override
-    public void share(NewsDetails newsDetails) {
+    public void share(StoriesBean storiesBean) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
         intent.putExtra(Intent.EXTRA_TEXT,
-                "来自读点日报的分享" + newsDetails.getTitle() + "，http://daily.zhihu.com/story/" + newsDetails.getId());
-        startActivity(Intent.createChooser(intent, newsDetails.getTitle()));
+               storiesBean.getTitle() + " http://daily.zhihu.com/story/" + storiesBean.getId() + "  （来自土豪炫酷无敌吊炸天的分享）");
+        startActivity(Intent.createChooser(intent, storiesBean.getTitle()));
     }
 
     @Override
@@ -157,6 +156,14 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             }
         });
 
+        binding.shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.menuBtn.toggle();
+                share(mStoriesBean);
+            }
+        });
+
         initWebView();
         presenter.loadData(String.valueOf(mStoriesBean.getId()));
     }
@@ -174,6 +181,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         binding.webview.getSettings().setDatabaseEnabled(true);
         // 开启Application Cache功能
         binding.webview.getSettings().setAppCacheEnabled(true);
+
+        binding.webview.getSettings().setBlockNetworkImage(true);
 
         binding.webview.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

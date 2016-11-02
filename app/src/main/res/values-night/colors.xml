@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#303030</color>
-    <color name="colorPrimaryDark">#212121</color>
+    <color name="colorPrimary">@android:color/black</color>
+    <color name="colorPrimaryDark">@android:color/black</color>
     <color name="colorCard">#424242</color>
-    <color name="colorAccent">#703535</color>
+    <color name="colorAccent">#000000</color>
 
     <color name="textColorPrimary">#cccccc</color>
     <color name="textColorSecond">#888888</color>
@@ -14,6 +14,6 @@
 
     <color name="lineColor">#424242</color>
 
-    <color name="headerEnd">#462121</color>
-    <color name="headerStart">#4b4442</color>
+    <color name="headerEnd">#000000</color>
+    <color name="headerStart">#000000</color>
 </resources>

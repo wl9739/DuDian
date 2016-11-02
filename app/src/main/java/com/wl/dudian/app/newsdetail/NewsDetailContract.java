@@ -2,7 +2,7 @@ package com.wl.dudian.app.newsdetail;
 
 import com.wl.dudian.app.BasePresenter;
 import com.wl.dudian.app.BaseView;
-import com.wl.dudian.app.model.NewsDetails;
+import com.wl.dudian.app.model.StoriesBean;
 
 /**
  * Created by Qiushui on 16/8/8.
@@ -16,7 +16,7 @@ public interface NewsDetailContract {
 
         void showNobodyData(String shareUrl);
 
-        void share(NewsDetails newsDetails);
+        void share(StoriesBean newsDetails);
 
         void showHeaderImage(String imageUrl);
 

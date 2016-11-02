@@ -165,7 +165,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
     private void showNightModel(final NewsDetails newsDetails) {
         newsDetailView.showHeaderImage(newsDetails.getImage());
         showDataSubscription = Observable
-                .timer(500, TimeUnit.MILLISECONDS)
+                .timer(800, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
