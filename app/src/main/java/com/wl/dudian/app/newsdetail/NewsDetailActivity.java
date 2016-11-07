@@ -2,6 +2,7 @@ package com.wl.dudian.app.newsdetail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.DiscussView;
 import com.wl.dudian.databinding.NewsDetailActivityBinding;
 import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.Constants;
 
 /**
  * 新闻详情界面
@@ -60,7 +62,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
         intent.putExtra(Intent.EXTRA_TEXT,
-               storiesBean.getTitle() + " http://daily.zhihu.com/story/" + storiesBean.getId() + "  （来自土豪炫酷无敌吊炸天的分享）");
+                storiesBean.getTitle() + " http://daily.zhihu.com/story/" + storiesBean.getId() + "  （来自土豪炫酷无敌吊炸天的分享）");
         startActivity(Intent.createChooser(intent, storiesBean.getTitle()));
     }
 
@@ -141,10 +143,11 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         binding.favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                binding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
                 binding.menuBtn.toggle();
                 // 保存到数据库
                 presenter.favorite();
-                Snackbar.make(binding.webview, "保存成功", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(binding.coordinatorLayout, "保存成功", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -182,7 +185,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         // 开启Application Cache功能
         binding.webview.getSettings().setAppCacheEnabled(true);
 
-        binding.webview.getSettings().setBlockNetworkImage(true);
 
         binding.webview.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -190,5 +192,9 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
                 return true;
             }
         });
+
+        SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
+        boolean hideImage = sp.getBoolean(Constants.HIDE_IMAGE, false);
+        binding.webview.getSettings().setBlockNetworkImage(hideImage);
     }
 }

@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_home"
             android:title="首页"/>
         <item
             android:id="@+id/nav_column"
@@ -12,25 +12,33 @@
             android:title="专栏"/>
         <item
             android:id="@+id/nav_favorite"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_love"
             android:title="收藏"/>
-        <item
-            android:id="@+id/nav_daynight"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="夜间"/>
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="设置">
         <menu>
             <item
-                android:id="@+id/nav_setting"
-                android:icon="@drawable/ic_menu_share"
-                android:title="设置"/>
+                android:id="@+id/nav_daynight"
+                android:icon="@drawable/ic_menu_daynight"
+                android:title="夜间"/>
+            <item
+                android:id="@+id/nav_pic"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="无图"/>
+
+        </menu>
+    </item>
+
+    <item android:title="其他">
+        <menu>
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_menu_send"
                 android:title="关于"/>
         </menu>
     </item>
+
 
 </menu>
