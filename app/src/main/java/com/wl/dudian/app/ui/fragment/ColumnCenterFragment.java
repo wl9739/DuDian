@@ -1,5 +1,6 @@
 package com.wl.dudian.app.ui.fragment;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,28 +16,28 @@ import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.ThemeDetailModel;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.databinding.ColumncenterfragmentBinding;
+import com.wl.dudian.databinding.ColumnfragmentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 /**
+ * 专栏父类
+ *
  * @author Qiushui
  * @since 0.0.2
  */
 public class ColumnCenterFragment extends BaseFragment {
 
     private static final String COLUMN_ID = "COLUMN_ID";
-    @BindView(R.id.columncenterfragment_recyclerview)
-    RecyclerView mRecyclerview;
 
     private LatestNewsItemAdapter mNewsItemAdapter;
     private List<StoriesBean> mStoriesBeanList;
     private String mColumnId;
     private DomainService domainService;
+    private ColumncenterfragmentBinding mBinding;
 
     public static ColumnCenterFragment newInstance(String id) {
         ColumnCenterFragment fragment = new ColumnCenterFragment();
@@ -50,9 +51,8 @@ public class ColumnCenterFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.columncenterfragment, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.columncenterfragment, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -67,8 +67,8 @@ public class ColumnCenterFragment extends BaseFragment {
         getThemeDetails(mColumnId);
         mStoriesBeanList = new ArrayList<>();
         mNewsItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getActivity());
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerview.setAdapter(mNewsItemAdapter);
+        mBinding.columncenterfragmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBinding.columncenterfragmentRecyclerview.setAdapter(mNewsItemAdapter);
 
         mNewsItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override

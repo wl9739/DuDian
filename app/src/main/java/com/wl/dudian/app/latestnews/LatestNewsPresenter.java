@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
  * @author Qiushui on 16/8/16.
  */
 
-public class LatestNewsPresenter implements LatestNewsContract.Presenter {
+class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     private static final String TAG = "LatestNews";
     private LatestNewsContract.View view;
@@ -34,7 +34,7 @@ public class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     private List<StoriesBean> storiesBeanList = new ArrayList<>();
 
-    public LatestNewsPresenter(Context context, LatestNewsContract.View view) {
+    LatestNewsPresenter(Context context, LatestNewsContract.View view) {
         this.view = view;
         domainService = DomainService.getInstance(context);
     }

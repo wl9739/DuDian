@@ -18,9 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Qiushui on 16/6/21.
  */
@@ -195,16 +192,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.latest_news_detail_date_tv)
         TextView dateTv;
-        @BindView(R.id.latest_news_fragment_title)
         TextView titleTv;
-        @BindView(R.id.latest_news_fragment_image)
         ImageView picImageView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
             dateTv = (TextView) itemView.findViewById(R.id.latest_news_detail_date_tv);
             titleTv = (TextView) itemView.findViewById(R.id.latest_news_fragment_title);
             picImageView = (ImageView) itemView.findViewById(R.id.latest_news_fragment_image);

@@ -22,13 +22,12 @@ import com.wl.dudian.R;
 import com.wl.dudian.app.latestnews.LatestNewsFragment;
 import com.wl.dudian.app.model.ThemesModel;
 import com.wl.dudian.app.repository.DomainService;
-import com.wl.dudian.app.ui.fragment.AboutFragment;
 import com.wl.dudian.app.ui.fragment.ColumnFragment;
 import com.wl.dudian.app.ui.fragment.FavoriteFragment;
 import com.wl.dudian.app.ui.fragment.SettingsFragment;
 import com.wl.dudian.databinding.ActivityMainBinding;
-import com.wl.dudian.framework.ScreenShotUtils;
 import com.wl.dudian.framework.Constants;
+import com.wl.dudian.framework.ScreenShotUtils;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -43,7 +42,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private FavoriteFragment mFavoriteFragment;
     private ColumnFragment mColumnFragment;
     private SettingsFragment mSettingsFragment;
-    private AboutFragment mAboutFragment;
     private ThemesModel mThemesModel;
 
     private ActivityMainBinding binding;
@@ -236,16 +234,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     ft.show(mSettingsFragment);
                 }
                 break;
-//            case 4:
-//                if (null == mAboutFragment) {
-//                    binding.content.toolbar.setTitle("关于");
-//                    mAboutFragment = AboutFragment.newInstance();
-//                    ft.add(R.id.content_main, mAboutFragment);
-//                } else {
-//                    binding.content.toolbar.setTitle("关于");
-//                    ft.show(mAboutFragment);
-//                }
-//                break;
         }
         ft.commit();
         // close drawer
@@ -269,9 +257,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         if (null != mSettingsFragment) {
             ft.hide(mSettingsFragment);
-        }
-        if (null != mAboutFragment) {
-            ft.hide(mAboutFragment);
         }
     }
 

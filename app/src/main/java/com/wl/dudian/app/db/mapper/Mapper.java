@@ -8,7 +8,7 @@ import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.model.TopStoriesBean;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
@@ -17,6 +17,9 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
+ *
+ * 转换类
+ *
  * Created by Qiushui on 16/8/16.
  */
 
@@ -31,7 +34,7 @@ public class Mapper {
             StoriesBean storiesBean = new StoriesBean();
             storiesBean.setTitle(query.get(0).getStories().get(i).getTitle());
             storiesBean.setId(query.get(0).getStories().get(i).getId());
-            storiesBean.setImages(Arrays.asList(query.get(0).getStories().get(i).getImages()));
+            storiesBean.setImages(Collections.singletonList(query.get(0).getStories().get(i).getImages()));
             storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
             storiesBean.setType(query.get(0).getStories().get(i).getType());
             storiesBean.setRead(query.get(0).getStories().get(i).isRead());
@@ -89,7 +92,7 @@ public class Mapper {
         for (int i = 0; i < query.size(); i++) {
             StoriesBean storiesBean = new StoriesBean();
             storiesBean.setTitle(query.get(i).getTitle());
-            storiesBean.setImages(Arrays.asList(query.get(i).getImages()));
+            storiesBean.setImages(Collections.singletonList(query.get(i).getImages()));
             storiesBean.setType(query.get(i).getType());
             storiesBean.setGa_prefix(query.get(i).getGa_prefix());
             storiesBean.setId(query.get(i).getId());

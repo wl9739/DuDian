@@ -1,9 +1,8 @@
 package com.wl.dudian.app.ui.fragment;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +10,18 @@ import android.view.ViewGroup;
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.ColumnListAdapter;
 import com.wl.dudian.app.model.ThemesModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
+import com.wl.dudian.databinding.ColumnfragmentBinding;
 
 /**
+ * 专栏列表
  * Created by Qiushui on 16/6/26.
  */
 
 public class ColumnFragment extends BaseFragment {
 
     private static final String THEMES_MODEL = "THEMES_MODEL";
-    @BindView(R.id.columnfragment_tablayout)
-    TabLayout mTablayout;
-    @BindView(R.id.columnfragment_vp)
-    ViewPager mViewPager;
+
+    private ColumnfragmentBinding mBinding;
 
     private ColumnListAdapter mColumnListAdapter;
 
@@ -42,9 +37,8 @@ public class ColumnFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.columnfragment, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.columnfragment, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -55,9 +49,9 @@ public class ColumnFragment extends BaseFragment {
             return;
         }
         mColumnListAdapter = new ColumnListAdapter(getChildFragmentManager(), model.getOthers());
-        if (null != mViewPager) {
-            mViewPager.setAdapter(mColumnListAdapter);
+        if (null != mBinding.columnfragmentVp) {
+            mBinding.columnfragmentVp.setAdapter(mColumnListAdapter);
         }
-        mTablayout.setupWithViewPager(mViewPager);
+        mBinding.columnfragmentTablayout.setupWithViewPager(mBinding.columnfragmentVp);
     }
 }
