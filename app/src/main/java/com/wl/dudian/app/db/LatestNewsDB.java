@@ -2,6 +2,7 @@ package com.wl.dudian.app.db;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Qiushui on 16/8/16.
@@ -9,6 +10,7 @@ import io.realm.RealmObject;
 
 public class LatestNewsDB extends RealmObject {
 
+    @PrimaryKey
     private long time;
 
     private String date;

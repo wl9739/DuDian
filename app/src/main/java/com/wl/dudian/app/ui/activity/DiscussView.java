@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.DiscussAdapter;
-import com.wl.dudian.app.model.CommentsBean;
-import com.wl.dudian.app.model.DiscussDataModel;
-import com.wl.dudian.app.model.DiscussExtraModel;
+import com.wl.dudian.app.db.model.CommentsBean;
+import com.wl.dudian.app.db.model.DiscussDataModel;
+import com.wl.dudian.app.db.model.DiscussExtraModel;
 import com.wl.dudian.app.repository.DomainService;
 
 import java.util.ArrayList;

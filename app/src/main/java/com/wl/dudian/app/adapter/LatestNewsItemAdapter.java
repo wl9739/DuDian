@@ -10,25 +10,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.db.LatestNewsDB;
+import com.wl.dudian.app.db.StoriesBeanDB;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.DateUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 
 /**
  * Created by Qiushui on 16/6/21.
  */
 
-public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class LatestNewsItemAdapter extends RealmRecyclerViewAdapter<StoriesBeanDB, RecyclerView.ViewHolder>
         implements View.OnClickListener {
 
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-    private List<StoriesBean> mStoriesBeen;
+    private List<StoriesBeanDB> mStoriesBeenDB;
     private Context mContext;
     private OnLatestNewsItemClickListener mOnLatestNewsItemClickListener;
     /**
@@ -39,16 +42,15 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private HashMap<Integer, String> datePositions = new HashMap<>();
     private long timestampMillis;
 
-    public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
-        mStoriesBeen = new ArrayList<>();
-        mStoriesBeen.addAll(storiesBean);
+    public LatestNewsItemAdapter(Context context, OrderedRealmCollection<StoriesBeanDB> data) {
+        super(data, true);
         mContext = context;
     }
 
     @Override
     public void onClick(View v) {
         if (mOnLatestNewsItemClickListener != null) {
-            mOnLatestNewsItemClickListener.onItemClick(v, (StoriesBean) v.getTag());
+            mOnLatestNewsItemClickListener.onItemClick(v, (StoriesBeanDB) v.getTag());
         }
     }
 
@@ -69,11 +71,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     /**
      * 刷新数据
      *
-     * @param storiesBeanList 新闻内容集合
      */
-    public void setRefresh(List<StoriesBean> storiesBeanList) {
-        mStoriesBeen.clear();
-        mStoriesBeen.addAll(storiesBeanList);
+    public void setRefresh() {
         notifyDataSetChanged();
     }
 
@@ -94,7 +93,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            if (position < mStoriesBeen.size()) {
+            if (position < mStoriesBeenDB.size()) {
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
                 // 如果有Header
                 if (mHeaderView != null) {
@@ -118,9 +117,9 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public int getItemCount() {
         if (null != mHeaderView) {
-            return mStoriesBeen.size() + 1;
+            return mStoriesBeenDB.size() + 1;
         }
-        return mStoriesBeen.size();
+        return mStoriesBeenDB.size();
     }
 
     public long getTimestampMillis() {
@@ -152,14 +151,14 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             itemViewHolder.dateTv.setVisibility(View.GONE);
         }
         // position数需要-1, 因为0是HeaderView
-        itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
-        if (mStoriesBeen.get(position - 1).isRead()) {
+        itemViewHolder.titleTv.setText(mStoriesBeenDB.get(position - 1).getTitle());
+        if (mStoriesBeenDB.get(position - 1).isRead()) {
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
         } else {
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
         }
-        itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
-        BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
+        itemViewHolder.itemView.setTag(mStoriesBeenDB.get(position - 1));
+        BusinessUtil.loadImage(mContext, mStoriesBeenDB.get(position - 1).getImages().get(0).getVal(),
                 holder.picImageView);
     }
 
@@ -171,32 +170,32 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * @param itemViewHolder
      */
     private void showContentWithoutHeader(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
-        if (mStoriesBeen.get(position).isRead()) {
+        if (mStoriesBeenDB.get(position).isRead()) {
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
         } else {
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
         }
-        itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
-        itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
+        itemViewHolder.titleTv.setText(mStoriesBeenDB.get(position).getTitle());
+        itemViewHolder.itemView.setTag(mStoriesBeenDB.get(position));
         // 如果mei
-        if (null == mStoriesBeen.get(position) || null == mStoriesBeen.get(position).getImages()) {
+        if (null == mStoriesBeenDB.get(position) || null == mStoriesBeenDB.get(position).getImages()) {
             return;
         }
-        BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
+        BusinessUtil.loadImage(mContext, mStoriesBeenDB.get(position).getImages().get(0).getVal(),
                 holder.picImageView);
     }
 
     public interface OnLatestNewsItemClickListener {
-        void onItemClick(View view, StoriesBean storiesBean);
+        void onItemClick(View view, StoriesBeanDB storiesBean);
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    private class ItemViewHolder extends RecyclerView.ViewHolder {
 
         TextView dateTv;
         TextView titleTv;
         ImageView picImageView;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
             dateTv = (TextView) itemView.findViewById(R.id.latest_news_detail_date_tv);
             titleTv = (TextView) itemView.findViewById(R.id.latest_news_fragment_title);
@@ -204,9 +203,9 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        public HeaderViewHolder(View view) {
+        HeaderViewHolder(View view) {
             super(view);
         }
     }

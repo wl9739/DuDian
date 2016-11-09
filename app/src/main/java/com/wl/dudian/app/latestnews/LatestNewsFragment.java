@@ -15,8 +15,7 @@ import android.view.ViewGroup;
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.app.db.StoriesBeanDB;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.databinding.LatestNewsFragmentBinding;
@@ -48,7 +47,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     /**
      * 新闻内容实体累集合
      */
-    private List<StoriesBean> mStoriesBeanList = new ArrayList<>();
+    private List<StoriesBeanDB> mStoriesBeanList = new ArrayList<>();
 
     /**
      * 轮播广告组件
@@ -94,7 +93,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         mBinding.latestNewsFragmentRecyclerview.setItemAnimator(new DefaultItemAnimator());
 
         // init adapter
-        mItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getContext());
+        mItemAdapter = new LatestNewsItemAdapter(getContext());
         // set adapter
         mBinding.latestNewsFragmentRecyclerview.setAdapter(mItemAdapter);
 
@@ -127,7 +126,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         mItemAdapter.setOnLatestNewsItemClickListener(
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
-                    public void onItemClick(View view, StoriesBean storiesBean) {
+                    public void onItemClick(View view, StoriesBeanDB storiesBean) {
                         presenter.updateRead(storiesBean);
                         NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
@@ -181,20 +180,20 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     }
 
     @Override
-    public void showHeaderView(List<TopStoriesBean> topStoriesBeen) {
+    public void showHeaderView() {
         stopRefresh();
-        mBannerView.setImages(topStoriesBeen);
+        mBannerView.setImages();
     }
 
     @Override
-    public void showLatestNews(List<StoriesBean> storiesBeanList) {
-        mItemAdapter.setRefresh(storiesBeanList);
+    public void showLatestNews() {
+        mItemAdapter.setRefresh();
         mItemAdapter.changeDateTitle(1, "今日热文");
     }
 
     @Override
-    public void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData) {
-        mItemAdapter.setRefresh(storiesBeanList);
+    public void loadBeforNews(List<StoriesBeanDB> storiesBeanList, String currentData) {
+        mItemAdapter.setRefresh();
         mItemAdapter.changeDateTitle(datePosition, currentData);
     }
 

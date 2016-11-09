@@ -17,12 +17,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.db.StoriesBeanDB;
 import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.DiscussView;
 import com.wl.dudian.databinding.NewsDetailActivityBinding;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.Constants;
+
+import io.realm.Realm;
 
 /**
  * 新闻详情界面
@@ -35,7 +37,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     private static final String ARGU_STORIES_BEAN = "ARGU_STORIES_BEAN";
     private static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
 
-    private StoriesBean mStoriesBean;
+    private StoriesBeanDB mStoriesBeanDB;
 
     private NewsDetailContract.Presenter presenter;
 
@@ -44,19 +46,19 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     /**
      * launch
      */
-    public static void launch(Context activity, StoriesBean storiesBean) {
+    public static void launch(Context activity, StoriesBeanDB storiesBean) {
         Intent intent = new Intent(activity, NewsDetailActivity.class);
-        intent.putExtra(ARGU_STORIES_BEAN, storiesBean);
+        intent.putExtra(ARGU_STORIES_BEAN, storiesBean.getId());
         if (storiesBean.getImages() == null || storiesBean.getImages().size() < 1) {
             intent.putExtra(ARGU_IS_NOHEADER, true);
         } else {
-            intent.putExtra(ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0)));
+            intent.putExtra(ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0).getVal()));
         }
         activity.startActivity(intent);
     }
 
     @Override
-    public void share(StoriesBean storiesBean) {
+    public void share(StoriesBeanDB storiesBean) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -115,7 +117,9 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
 
         new NewsDetailPresenter(this, this);
 
-        mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
+        int mStoriesBeanId = getIntent().getIntExtra(ARGU_STORIES_BEAN, 0);
+        Realm realm = Realm.getDefaultInstance();
+        mStoriesBeanDB = realm.where(StoriesBeanDB.class).equalTo("id", mStoriesBeanId).findAll().first();
         boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
         if (isNoHeader) {
             ViewGroup.LayoutParams params = binding.appBarLayout.getLayoutParams();
@@ -124,12 +128,12 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         } else {
             binding.appBarLayout.setVisibility(View.VISIBLE);
         }
-        if (null == mStoriesBean) {
+        if (null == mStoriesBeanDB) {
             return;
         }
 
         binding.collapsingtoolbarlayout.setTitle(" ");
-        binding.titleTv.setText(mStoriesBean.getTitle());
+        binding.titleTv.setText(mStoriesBeanDB.getTitle());
         binding.toolbar.setTitleTextColor(0x333333);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -155,7 +159,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             @Override
             public void onClick(View view) {
                 binding.menuBtn.toggle();
-                new DiscussView(NewsDetailActivity.this, mStoriesBean.getId());
+                new DiscussView(NewsDetailActivity.this, mStoriesBeanDB.getId());
             }
         });
 
@@ -163,12 +167,12 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             @Override
             public void onClick(View v) {
                 binding.menuBtn.toggle();
-                share(mStoriesBean);
+                share(mStoriesBeanDB);
             }
         });
 
         initWebView();
-        presenter.loadData(String.valueOf(mStoriesBean.getId()));
+        presenter.loadData(String.valueOf(mStoriesBeanDB.getId()));
     }
 
     /**

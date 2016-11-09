@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,15 @@ import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.ThemeDetailModel;
+import com.wl.dudian.app.db.StoriesBeanDB;
+import com.wl.dudian.app.db.model.ThemeDetailModel;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.databinding.ColumncenterfragmentBinding;
-import com.wl.dudian.databinding.ColumnfragmentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import rx.functions.Action1;
 
 /**
@@ -34,7 +33,7 @@ public class ColumnCenterFragment extends BaseFragment {
     private static final String COLUMN_ID = "COLUMN_ID";
 
     private LatestNewsItemAdapter mNewsItemAdapter;
-    private List<StoriesBean> mStoriesBeanList;
+    private List<StoriesBeanDB> mStoriesBeanList;
     private String mColumnId;
     private DomainService domainService;
     private ColumncenterfragmentBinding mBinding;
@@ -66,13 +65,13 @@ public class ColumnCenterFragment extends BaseFragment {
         }
         getThemeDetails(mColumnId);
         mStoriesBeanList = new ArrayList<>();
-        mNewsItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getActivity());
+        mNewsItemAdapter = new LatestNewsItemAdapter(getActivity());
         mBinding.columncenterfragmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.columncenterfragmentRecyclerview.setAdapter(mNewsItemAdapter);
 
         mNewsItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override
-            public void onItemClick(View view, StoriesBean storiesBean) {
+            public void onItemClick(View view, StoriesBeanDB storiesBean) {
                 NewsDetailActivity.launch(getActivity(), storiesBean);
             }
         });
@@ -90,7 +89,7 @@ public class ColumnCenterFragment extends BaseFragment {
                          public void call(ThemeDetailModel themeDetailModel) {
                              mStoriesBeanList.clear();
                              mStoriesBeanList.addAll(themeDetailModel.getStories());
-                             mNewsItemAdapter.setRefresh(mStoriesBeanList);
+                             mNewsItemAdapter.setRefresh();
 
                          }
                      });

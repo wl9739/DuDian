@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.db.StoriesBeanDB;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.databinding.FavoriteFragmentBinding;
@@ -28,7 +27,7 @@ import java.util.List;
 public class FavoriteFragment extends BaseFragment {
 
     private LatestNewsItemAdapter mAdapter;
-    private List<StoriesBean> mStoriesBeanList;
+    private List<StoriesBeanDB> mStoriesBeanList;
     private DomainService mDomainService;
     private FavoriteFragmentBinding mBinding;
 
@@ -66,12 +65,12 @@ public class FavoriteFragment extends BaseFragment {
 
     private void showFavoriteNews() {
         mBinding.favoriteFragmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getContext());
+        mAdapter = new LatestNewsItemAdapter(getContext());
         mBinding.favoriteFragmentRecyclerview.setAdapter(mAdapter);
 
         mAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override
-            public void onItemClick(View view, StoriesBean storiesBean) {
+            public void onItemClick(View view, StoriesBeanDB storiesBean) {
                 NewsDetailActivity.launch(getActivity(), storiesBean);
             }
         });

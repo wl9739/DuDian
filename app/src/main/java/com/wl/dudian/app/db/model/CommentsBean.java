@@ -1,4 +1,4 @@
-package com.wl.dudian.app.model;
+package com.wl.dudian.app.db.model;
 
 /**
  * @author Qiushui

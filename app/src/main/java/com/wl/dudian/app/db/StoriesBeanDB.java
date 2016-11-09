@@ -1,5 +1,6 @@
 package com.wl.dudian.app.db;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
@@ -12,9 +13,17 @@ public class StoriesBeanDB extends RealmObject {
     private int id;
     private String ga_prefix;
     private String title;
-    private String images;
+    private RealmList<RealmString> images;
     private boolean read;
     private boolean isFavorite;
+
+    public RealmList<RealmString> getImages() {
+        return images;
+    }
+
+    public void setImages(RealmList<RealmString> images) {
+        this.images = images;
+    }
 
     public int getType() {
         return type;
@@ -46,14 +55,6 @@ public class StoriesBeanDB extends RealmObject {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
     }
 
     public boolean isRead() {

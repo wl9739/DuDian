@@ -18,16 +18,19 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.app.db.RealmString;
+import com.wl.dudian.app.db.StoriesBeanDB;
+import com.wl.dudian.app.db.TopStoriesBeanDB;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import io.realm.Realm;
+import io.realm.RealmList;
 
 
 /**
@@ -95,10 +98,10 @@ public class BannerView extends FrameLayout {
      * @param topStoriesBean
      * @return
      */
-    private static StoriesBean topStoriesBeanToStoriesBean(TopStoriesBean topStoriesBean) {
-        StoriesBean storiesBean = new StoriesBean();
+    private static StoriesBeanDB topStoriesBeanToStoriesBean(TopStoriesBeanDB topStoriesBean) {
+        StoriesBeanDB storiesBean = new StoriesBeanDB();
         storiesBean.setId(topStoriesBean.getId());
-        storiesBean.setImages(Arrays.asList(topStoriesBean.getImage()));
+        storiesBean.setImages(new RealmList<>(new RealmString(topStoriesBean.getImage())));
         storiesBean.setTitle(topStoriesBean.getTitle());
         storiesBean.setType(topStoriesBean.getType());
         storiesBean.setGa_prefix(topStoriesBean.getGa_prefix());
@@ -123,12 +126,15 @@ public class BannerView extends FrameLayout {
 
     /**
      * 添加轮播显示的图片
-     *
-     * @param images
      */
-    public void setImages(List<TopStoriesBean> images) {
-        mImageSize = images.size();
-        mAdapter.setImages(images);
+    public void setImages() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mAdapter.setImages(realm.where(TopStoriesBeanDB.class).findAll());
+            }
+        });
         startPlay();
     }
 
@@ -175,7 +181,7 @@ public class BannerView extends FrameLayout {
         });
         mAdapter.setOnBannerItemClickListener(new BannerViewPagerAdapter.OnBannerItemClickListener() {
             @Override
-            public void onBannerItemClick(StoriesBean storiesBean) {
+            public void onBannerItemClick(StoriesBeanDB storiesBean) {
                 NewsDetailActivity.launch(mContext, storiesBean);
             }
         });
@@ -194,7 +200,7 @@ public class BannerView extends FrameLayout {
     public static class BannerViewPagerAdapter extends PagerAdapter {
 
         private OnBannerItemClickListener mOnBannerItemClickListener;
-        private List<TopStoriesBean> mTopStoriesBeanList;
+        private List<TopStoriesBeanDB> mTopStoriesBeanList;
 
         public BannerViewPagerAdapter() {
             mTopStoriesBeanList = new ArrayList<>();
@@ -210,7 +216,7 @@ public class BannerView extends FrameLayout {
             mOnBannerItemClickListener = onBannerItemClickListener;
         }
 
-        public void setImages(List<TopStoriesBean> images) {
+        public void setImages(List<TopStoriesBeanDB> images) {
             mTopStoriesBeanList.clear();
             mTopStoriesBeanList = images;
             notifyDataSetChanged();
@@ -257,7 +263,7 @@ public class BannerView extends FrameLayout {
          * 点击事件接口
          */
         public interface OnBannerItemClickListener {
-            void onBannerItemClick(StoriesBean storiesBean);
+            void onBannerItemClick(StoriesBeanDB storiesBean);
         }
     }
 
