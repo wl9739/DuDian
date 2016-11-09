@@ -1,5 +1,6 @@
 package com.wl.dudian.app.latestnews;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -14,18 +15,14 @@ import android.view.ViewGroup;
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.app.db.StoriesBeanDB;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
+import com.wl.dudian.databinding.LatestNewsFragmentBinding;
 import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 
 /**
  * 新闻展示页面
@@ -35,12 +32,7 @@ import butterknife.ButterKnife;
 
 public class LatestNewsFragment extends BaseFragment implements LatestNewsContract.View {
 
-    public static final String TAG = "LatestNewsFragment11111";
-
-    @BindView(R.id.latest_news_fragment_recyclerview)
-    RecyclerView mNewsItemRecyclerView;
-    @BindView(R.id.latest_news_sr)
-    SwipeRefreshLayout mContentMainSwiperefresh;
+    LatestNewsFragmentBinding mBinding;
 
     /**
      * item adapter
@@ -55,7 +47,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     /**
      * 新闻内容实体累集合
      */
-    private List<StoriesBean> mStoriesBeanList = new ArrayList<>();
+    private List<StoriesBeanDB> mStoriesBeanList = new ArrayList<>();
 
     /**
      * 轮播广告组件
@@ -85,45 +77,42 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        // init
-        mContentMainSwiperefresh =
-                (SwipeRefreshLayout) inflater.inflate(R.layout.latest_news_fragment, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.latest_news_fragment, container, false);
 
-        ButterKnife.bind(this, mContentMainSwiperefresh);
         // init headerview
-        mHeaderView = inflater.inflate(R.layout.latest_news_fragment_header, mContentMainSwiperefresh, false);
+        mHeaderView = inflater.inflate(R.layout.latest_news_fragment_header, mBinding.latestNewsSr, false);
         mBannerView = (BannerView) mHeaderView.findViewById(R.id.latest_news_fragment_header_banner);
-        return mContentMainSwiperefresh;
+        return mBinding.latestNewsSr;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mNewsItemRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mNewsItemRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mBinding.latestNewsFragmentRecyclerview.setLayoutManager(mLinearLayoutManager);
+        mBinding.latestNewsFragmentRecyclerview.setItemAnimator(new DefaultItemAnimator());
 
         // init adapter
-        mItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getContext());
+        mItemAdapter = new LatestNewsItemAdapter(getContext());
         // set adapter
-        mNewsItemRecyclerView.setAdapter(mItemAdapter);
+        mBinding.latestNewsFragmentRecyclerview.setAdapter(mItemAdapter);
 
         // set header
         mItemAdapter.setHeaderView(mHeaderView);
 
         // init swiprefresh
-        mContentMainSwiperefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
+        mBinding.latestNewsSr.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mBinding.latestNewsSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 presenter.loadMoreNews();
             }
         });
 
-        mNewsItemRecyclerView.setAdapter(mItemAdapter);
+        mBinding.latestNewsFragmentRecyclerview.setAdapter(mItemAdapter);
 
         new LatestNewsPresenter(getContext(), this);
     }
@@ -137,20 +126,20 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         mItemAdapter.setOnLatestNewsItemClickListener(
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
-                    public void onItemClick(View view, StoriesBean storiesBean) {
+                    public void onItemClick(View view, StoriesBeanDB storiesBean) {
                         presenter.updateRead(storiesBean);
                         NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
                 });
 
-        mContentMainSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mBinding.latestNewsSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 presenter.loadLatestNews();
             }
         });
 
-        mNewsItemRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mBinding.latestNewsFragmentRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
 
             @Override
@@ -180,8 +169,8 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
      */
     @Override
     public void stopRefresh() {
-        if (mContentMainSwiperefresh.isRefreshing()) {
-            mContentMainSwiperefresh.setRefreshing(false);
+        if (mBinding.latestNewsSr.isRefreshing()) {
+            mBinding.latestNewsSr.setRefreshing(false);
         }
     }
 
@@ -191,20 +180,20 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     }
 
     @Override
-    public void showHeaderView(List<TopStoriesBean> topStoriesBeen) {
+    public void showHeaderView() {
         stopRefresh();
-        mBannerView.setImages(topStoriesBeen);
+        mBannerView.setImages();
     }
 
     @Override
-    public void showLatestNews(List<StoriesBean> storiesBeanList) {
-        mItemAdapter.setRefresh(storiesBeanList);
+    public void showLatestNews() {
+        mItemAdapter.setRefresh();
         mItemAdapter.changeDateTitle(1, "今日热文");
     }
 
     @Override
-    public void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData) {
-        mItemAdapter.setRefresh(storiesBeanList);
+    public void loadBeforNews(List<StoriesBeanDB> storiesBeanList, String currentData) {
+        mItemAdapter.setRefresh();
         mItemAdapter.changeDateTitle(datePosition, currentData);
     }
 

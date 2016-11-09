@@ -20,7 +20,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/ic_vote_thumb_blue"
+        android:drawableLeft="@drawable/icon_love"
         android:drawablePadding="8dp"
         android:text="0"/>
 

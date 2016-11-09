@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#795548</color>
-    <color name="colorPrimaryDark">#5D4037</color>
-    <color name="colorAccent">#FF5252</color>
+    <color name="colorPrimary">@android:color/black</color>
+    <color name="colorPrimaryDark">@android:color/black</color>
+    <color name="colorAccent">@android:color/holo_red_dark</color>
 
     <color name="textColorPrimary">#212121</color>
     <color name="textColorSecond">#757575</color>
@@ -17,12 +17,12 @@
     <color name="color_unread">#000000</color>
     <color name="color_source">#A1FFFFFF</color>
 
-    <color name="textColorDiscussShow">@android:color/holo_red_light</color>
+    <color name="textColorDiscussShow">@android:color/holo_red_dark</color>
     <color name="textColorDiscussHide">@color/textColorPrimary</color>
     <color name="discussBackground">#ffffff</color>
 
     <color name="lineColor">#33000000</color>
 
-    <color name="headerEnd">#795548</color>
-    <color name="headerStart">#D7CCC8</color>
+    <color name="headerEnd">#000</color>
+    <color name="headerStart">#000</color>
 </resources>

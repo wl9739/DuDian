@@ -13,29 +13,18 @@ import com.wl.dudian.app.db.BeforeNewsDB;
 import com.wl.dudian.app.db.LatestNewsDB;
 import com.wl.dudian.app.db.NewsDetailDB;
 import com.wl.dudian.app.db.StoriesBeanDB;
-import com.wl.dudian.app.db.TopStoriesBeanDB;
-import com.wl.dudian.app.db.mapper.Mapper;
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.NewsDetails;
-import com.wl.dudian.app.model.StartImage;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.db.model.StartImage;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import rx.Observable;
-import rx.schedulers.Timestamped;
 
 /**
  * Created by Qiushui on 16/8/3.
@@ -53,7 +42,7 @@ public class DiskRepository {
      */
     private File mImageFile;
 
-    public DiskRepository(Context context) {
+    DiskRepository(Context context) {
         this.context = context;
     }
 
@@ -62,18 +51,18 @@ public class DiskRepository {
      *
      * @param startImage startimage
      */
-    public void saveStartImage(final StartImage startImage) {
+    void saveStartImage(final StartImage startImage) {
         Glide.with(context)
-             .load(startImage.getCreatives().get(0).getUrl())
-             .asBitmap()
-             .into(new SimpleTarget<Bitmap>() {
-                       @Override
-                       public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                           saveAsFile(resource);
-                       }
-                   }
+                .load(startImage.getCreatives().get(0).getUrl())
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                          @Override
+                          public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                              saveAsFile(resource);
+                          }
+                      }
 
-             );
+                );
     }
 
     /**
@@ -82,7 +71,7 @@ public class DiskRepository {
      * @return
      */
     @RxLogObservable
-    public Observable<Bitmap> getStartImage() {
+    Observable<Bitmap> getStartImage() {
         return Observable.fromCallable(new Callable<Bitmap>() {
             @Override
             public Bitmap call() throws Exception {
@@ -103,173 +92,66 @@ public class DiskRepository {
      * @param newsId 新闻详情ID
      * @return
      */
-    public NewsDetails getNewsDetail(String newsId) {
+    NewsDetailDB getNewsDetail(String newsId) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<NewsDetailDB> query;
-        NewsDetails newsDetails = null;
-        try {
-            query = realm.where(NewsDetailDB.class).equalTo("id", Integer.parseInt(newsId)).findAll();
-            if (query.size() < 1) {
-                return null;
-            }
-            newsDetails = new NewsDetails();
-            newsDetails.setTitle(query.get(0).getTitle());
-            newsDetails.setType(query.get(0).getType());
-            newsDetails.setId(query.get(0).getId());
-            newsDetails.setImage(query.get(0).getImage());
-            newsDetails.setBody(query.get(0).getBody());
-            newsDetails.setShare_url(query.get(0).getShare_url());
-            newsDetails.setImage_source(query.get(0).getImage_source());
-            newsDetails.setGa_prefix(query.get(0).getGa_prefix());
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
+        RealmResults<NewsDetailDB> results;
+        results = realm.where(NewsDetailDB.class).equalTo("id", Integer.parseInt(newsId)).findAll();
+        if (results.size() < 1) {
+            return null;
         }
 
-        return newsDetails;
+        return results.first();
     }
 
     /**
      * 将下载的新闻详情保存到数据库中
-     *
-     * @param newsDetails
      */
-    public void saveNewsDetail(final NewsDetails newsDetails) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    NewsDetailDB newsDetailDB = realm.createObject(NewsDetailDB.class);
-                    newsDetailDB.setImage(newsDetails.getImage());
-                    newsDetailDB.setGa_prefix(newsDetails.getGa_prefix());
-                    newsDetailDB.setTitle(newsDetails.getTitle());
-                    newsDetailDB.setBody(newsDetails.getBody());
-                    newsDetailDB.setImage_source(newsDetails.getImage_source());
-                    newsDetailDB.setShare_url(newsDetails.getShare_url());
-                    newsDetailDB.setId(newsDetails.getId());
-                    newsDetailDB.setType(newsDetails.getType());
-                }
-            });
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-    }
-
-    /**
-     * 获取在本地保存的最新新闻
-     *
-     * @return
-     */
-    public Observable<Timestamped<LatestNews>> getLatestNews() {
-        return Observable.fromCallable(new Callable<Timestamped<LatestNews>>() {
+    void saveNewsDetail(final NewsDetailDB newsDetailDB) {
+        Realm realm;
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public Timestamped<LatestNews> call() throws Exception {
-                Realm realm = Realm.getDefaultInstance();
-                RealmResults<LatestNewsDB> result;
-                LatestNews latestNews;
-                try {
-                    result = realm.where(LatestNewsDB.class).findAll();
-                    if (result.size() < 1) {
-                        return null;
-                    }
-                    latestNews = Mapper.getLatestNews(result);
-                    return new Timestamped<>(result.get(0).getTime(), latestNews);
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
-                }
+            public void execute(Realm realm) {
+                realm.copyToRealmOrUpdate(newsDetailDB);
             }
         });
     }
 
-    public Observable<LatestNews> getLatestNewsFromDB() {
-        return Observable.fromCallable(new Callable<LatestNews>() {
-            @Override
-            public LatestNews call() throws Exception {
-                Realm realm = Realm.getDefaultInstance();
-                RealmResults<LatestNewsDB> result;
-                LatestNews latestNews;
-                try {
-                    result = realm.where(LatestNewsDB.class).findAll();
-                    result = result.sort("date", Sort.DESCENDING);
-                    if (result.size() < 1) {
-                        return null;
-                    }
-                    latestNews = Mapper.getLatestNews(result);
-                    return latestNews;
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
-                }
-            }
-        });
+    Observable<LatestNewsDB> getLatestNewsFromDB() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<LatestNewsDB> result;
+        result = realm.where(LatestNewsDB.class).findAll();
+        return result.first().asObservable();
     }
 
-    public void saveLatestNews(final LatestNews latestNews) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            final RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
-            final RealmResults<LatestNewsDB> latestNewsResult = realm.where(LatestNewsDB.class).findAll();
-            final RealmQuery<StoriesBeanDB> storiesBeanResult = realm.where(StoriesBeanDB.class);
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    // delete first
-                    topResult.deleteAllFromRealm();
-                    latestNewsResult.deleteAllFromRealm();
-                }
-            });
-            realm.beginTransaction();
-            // save
-            Mapper.saveLatestNewsDB(realm, latestNews, storiesBeanResult);
-            realm.commitTransaction();
-        } finally {
-            if (realm != null) {
-                realm.close();
+    void saveLatestNews(final LatestNewsDB latestNewsDB) {
+        Realm realm;
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealmOrUpdate(latestNewsDB);
             }
-        }
+        });
     }
 
     /**
      * 保存往日新闻
-     *
-     * @param beforeNews
      */
-    public void saveBeforeNews(final BeforeNews beforeNews) {
+    void saveBeforeNews(final BeforeNewsDB beforeNewsDB) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    RealmResults<BeforeNewsDB> query =
-                            realm.where(BeforeNewsDB.class).equalTo("date", beforeNews.getDate()).findAll();
+                    RealmResults<BeforeNewsDB> results =
+                            realm.where(BeforeNewsDB.class).equalTo("date", beforeNewsDB.getDate()).findAll();
                     // 如果已经保存了, 则不再重复保存
-                    if (query.size() > 0) {
+                    if (results.size() > 0) {
                         return;
                     }
-                    // 如果之前没有保存,则保存到数据库
-                    BeforeNewsDB beforeNewsDB = realm.createObject(BeforeNewsDB.class);
-                    beforeNewsDB.setDate(beforeNews.getDate());
-                    RealmList<StoriesBeanDB> storiesBeanRealmList = new RealmList<>();
-                    for (int i = 0; i < beforeNews.getStories().size(); i++) {
-                        StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
-                        storiesBeanDB.setId(beforeNews.getStories().get(i).getId());
-                        storiesBeanDB.setTitle(beforeNews.getStories().get(i).getTitle());
-                        storiesBeanDB.setGa_prefix(beforeNews.getStories().get(i).getGa_prefix());
-                        storiesBeanDB.setType(beforeNews.getStories().get(i).getType());
-                        storiesBeanDB.setImages(beforeNews.getStories().get(i).getImages().get(0));
-                        storiesBeanRealmList.add(storiesBeanDB);
-                    }
-                    beforeNewsDB.setStories(storiesBeanRealmList);
+                    realm.copyToRealmOrUpdate(beforeNewsDB);
                 }
             });
         } finally {
@@ -285,31 +167,16 @@ public class DiskRepository {
      * @param date 新闻日期
      * @return
      */
-    public BeforeNews getBeforeNews(String date) {
+    BeforeNewsDB getBeforeNews(String date) {
         Realm realm = null;
-        BeforeNews beforeNews;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class)
-                                                    .equalTo("date", date).findAll();
-            if (query.size() < 1) {
+            RealmResults<BeforeNewsDB> results = realm.where(BeforeNewsDB.class)
+                    .equalTo("date", date).findAll();
+            if (results.size() < 1) {
                 return null;
             }
-            beforeNews = new BeforeNews();
-            beforeNews.setDate(query.get(0).getDate());
-            List<StoriesBean> storiesBeenList = new ArrayList<>();
-            for (int i = 0; i < query.get(0).getStories().size(); i++) {
-                StoriesBean storiesBean = new StoriesBean();
-                storiesBean.setType(query.get(0).getStories().get(i).getType());
-                storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
-                storiesBean.setImages(Arrays.asList(query.get(0).getStories().get(i).getImages()));
-                storiesBean.setId(query.get(0).getStories().get(i).getId());
-                storiesBean.setTitle(query.get(0).getStories().get(i).getTitle());
-                storiesBean.setRead(query.get(0).getStories().get(i).isRead());
-                storiesBeenList.add(storiesBean);
-            }
-            beforeNews.setStories(storiesBeenList);
-            return beforeNews;
+            return results.first();
         } finally {
             if (realm != null) {
                 realm.close();
@@ -317,7 +184,7 @@ public class DiskRepository {
         }
     }
 
-    public void updateRead(final int id) {
+    void updateRead(final int id) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -343,26 +210,21 @@ public class DiskRepository {
      *
      * @param newsDetails
      */
-    public void saveFavorite(final NewsDetails newsDetails) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    RealmResults<StoriesBeanDB> query =
-                            realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
-                    if (query.size() < 0) {
-                        return;
-                    }
-                    query.get(0).setFavorite(true);
+    void saveFavorite(final NewsDetailDB newsDetails) {
+        Realm realm;
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<StoriesBeanDB> query =
+                        realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
+                if (query.size() < 0) {
+                    return;
                 }
-            });
-        } finally {
-            if (realm != null) {
-                realm.close();
+                query.get(0).setFavorite(true);
             }
-        }
+        });
+
     }
 
     /**
@@ -370,16 +232,16 @@ public class DiskRepository {
      *
      * @return
      */
-    public List<StoriesBean> getFavoriteNews() {
+    List<StoriesBeanDB> getFavoriteNews() {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("isFavorite", true).findAll();
-            query = query.sort("id", Sort.DESCENDING);
-            if (query.size() < 1) {
+            RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class).equalTo("isFavorite", true).findAll();
+            results = results.sort("id", Sort.DESCENDING);
+            if (results.size() < 1) {
                 return null;
             }
-            return Mapper.getStoriesBean(query);
+            return results;
         } finally {
             if (realm != null) {
                 realm.close();

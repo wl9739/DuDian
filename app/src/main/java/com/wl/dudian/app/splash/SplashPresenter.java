@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.wl.dudian.app.model.LatestNews;
+import com.wl.dudian.app.db.LatestNewsDB;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.framework.BusinessUtil;
 
@@ -64,25 +64,20 @@ public class SplashPresenter implements SplashContract.Presenter {
 
         domainService.getLatestNews()
                      .delay(2000, TimeUnit.MILLISECONDS)
-                     .onErrorReturn(new Func1<Throwable, LatestNews>() {
+                     .onErrorReturn(new Func1<Throwable, LatestNewsDB>() {
                          @Override
-                         public LatestNews call(Throwable throwable) {
+                         public LatestNewsDB call(Throwable throwable) {
                              return null;
-                         }
-                     })
-                     .doOnNext(new Action1<LatestNews>() {
-                         @Override
-                         public void call(LatestNews latestNews) {
-                             if (latestNews != null) {
-                                 domainService.saveLatestNews(latestNews);
-                             }
                          }
                      })
                      .subscribeOn(Schedulers.io())
                      .observeOn(AndroidSchedulers.mainThread())
-                     .subscribe(new Action1<LatestNews>() {
+                     .subscribe(new Action1<LatestNewsDB>() {
                          @Override
-                         public void call(LatestNews latestNews) {
+                         public void call(LatestNewsDB latestNewsDB) {
+                             if (latestNewsDB != null) {
+                                 domainService.saveLatestNews(latestNewsDB);
+                             }
                              splashView.startActivity();
                          }
                      }, new Action1<Throwable>() {

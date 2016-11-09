@@ -2,8 +2,7 @@ package com.wl.dudian.app.latestnews;
 
 import com.wl.dudian.app.BasePresenter;
 import com.wl.dudian.app.BaseView;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.app.db.StoriesBeanDB;
 
 import java.util.List;
 
@@ -15,11 +14,11 @@ public interface LatestNewsContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showHeaderView(List<TopStoriesBean> topStoriesBeen);
+        void showHeaderView();
 
-        void showLatestNews(List<StoriesBean> storiesBeanList);
+        void showLatestNews();
 
-        void loadBeforNews(List<StoriesBean> storiesBeanList, String currentData);
+        void loadBeforNews(List<StoriesBeanDB> storiesBeanList, String currentData);
 
         void stopRefresh();
     }
@@ -30,6 +29,6 @@ public interface LatestNewsContract {
 
         void loadMoreNews();
 
-        void updateRead(StoriesBean storiesBean);
+        void updateRead(StoriesBeanDB storiesBean);
     }
 }

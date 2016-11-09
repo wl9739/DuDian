@@ -3,10 +3,10 @@ package com.wl.dudian.app.newsdetail;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.wl.dudian.app.model.NewsDetails;
+import com.wl.dudian.app.db.NewsDetailDB;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.framework.BusinessUtil;
-import com.wl.dudian.framework.Variable;
+import com.wl.dudian.framework.Constants;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +33,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
     private Context context;
     private Subscription showDataSubscription;
 
-    private NewsDetails newsDetails;
+    private NewsDetailDB newsDetails;
 
     public NewsDetailPresenter(Context context, NewsDetailContract.View newsDetailView) {
         this.context = context;
@@ -57,7 +57,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
 
     @Override
     public void loadData(String newsId) {
-        Observable<NewsDetails> getNewsDetail = Observable.concat(
+        Observable<NewsDetailDB> getNewsDetail = Observable.concat(
                 domainService.getNewsDetailFromDb(newsId),
                 domainService.getNewsDetailsFromNet(newsId))
                                                           .first()
@@ -65,9 +65,9 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                                                           .observeOn(AndroidSchedulers.mainThread());
 
 
-        dataSubscription = getNewsDetail.subscribe(new Action1<NewsDetails>() {
+        dataSubscription = getNewsDetail.subscribe(new Action1<NewsDetailDB>() {
             @Override
-            public void call(NewsDetails newsDetails) {
+            public void call(NewsDetailDB newsDetails) {
                 if (null == newsDetails) {
                     return;
                 }
@@ -105,13 +105,13 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
      *
      * @param newsDetails 新闻实体类
      */
-    private void setNoBodyInfo(NewsDetails newsDetails) {
+    private void setNoBodyInfo(NewsDetailDB newsDetails) {
         String imageUrl;
         if (!TextUtils.isEmpty(newsDetails.getImage())) {
             imageUrl = newsDetails.getImage();
             newsDetailView.showHeaderImage(imageUrl);
-        } else if (!TextUtils.isEmpty(newsDetails.getImages().get(0))) {
-            imageUrl = newsDetails.getImages().get(0);
+        } else if (!TextUtils.isEmpty(newsDetails.getImages().get(0).getVal())) {
+            imageUrl = newsDetails.getImages().get(0).getVal();
             newsDetailView.showHeaderImage(imageUrl);
         }
         String shareUrl = newsDetails.getShare_url();
@@ -124,8 +124,8 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
      *
      * @param newsDetails 新闻实体类
      */
-    private void setNormalWebviewInfo(NewsDetails newsDetails) {
-        if (Variable.isNight) {
+    private void setNormalWebviewInfo(NewsDetailDB newsDetails) {
+        if (Constants.isNight) {
             String js = "<script src=\"file:///android_asset/js/night.js\"></script>";
             String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news.css\" type=\"text/css\">";
             String html = "<html><head>" + css + "</head><body>" + newsDetails.getBody() + "</body>" + js + "</html>";
@@ -143,11 +143,11 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
      *
      * @param newsDetails
      */
-    private void showDayModel(NewsDetails newsDetails) {
+    private void showDayModel(NewsDetailDB newsDetails) {
         newsDetailView.showHeaderImage(newsDetails.getImage());
-        showDataSubscription = Observable.just(newsDetails).subscribe(new Action1<NewsDetails>() {
+        showDataSubscription = Observable.just(newsDetails).subscribe(new Action1<NewsDetailDB>() {
             @Override
-            public void call(NewsDetails newsDetails) {
+            public void call(NewsDetailDB newsDetails) {
                 String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news.css\" type=\"text/css\">";
                 String html = "<html><head>" + css + "</head><body>" + newsDetails.getBody() + "</body></html>";
                 html = html.replace("<div class=\"img-place-holder\">", "");
@@ -162,10 +162,10 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
      *
      * @param newsDetails
      */
-    private void showNightModel(final NewsDetails newsDetails) {
+    private void showNightModel(final NewsDetailDB newsDetails) {
         newsDetailView.showHeaderImage(newsDetails.getImage());
         showDataSubscription = Observable
-                .timer(500, TimeUnit.MILLISECONDS)
+                .timer(800, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override

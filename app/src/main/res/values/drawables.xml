@@ -5,4 +5,9 @@
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
     <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
+
+    <item name="ic_menu_home" type="drawable">@drawable/ic_home_grey_700_24dp</item>
+    <item name="ic_menu_love" type="drawable">@drawable/ic_favorite_grey_700_24dp</item>
+    <item name="ic_menu_daynight" type="drawable">@drawable/ic_brightness_4_grey600_24dp</item>
+
 </resources>

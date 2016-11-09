@@ -1,39 +1,35 @@
 package com.wl.dudian.app.ui.fragment;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.app.db.StoriesBeanDB;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.databinding.FavoriteFragmentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-
 /**
+ * 收藏栏
  * Created by Qiushui on 16/6/26.
  */
 
 public class FavoriteFragment extends BaseFragment {
 
-    @BindView(R.id.favorite_fragment_recyclerview)
-    RecyclerView mRecyclerview;
-
     private LatestNewsItemAdapter mAdapter;
-    private List<StoriesBean> mStoriesBeanList;
-    private DomainService domainService;
+    private List<StoriesBeanDB> mStoriesBeanList;
+    private DomainService mDomainService;
+    private FavoriteFragmentBinding mBinding;
 
 
     public static FavoriteFragment newInstance() {
@@ -43,10 +39,9 @@ public class FavoriteFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.favorite_fragment, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+                             @Nullable Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.favorite_fragment, container, false);
+        return mBinding.getRoot();
     }
 
     @Override
@@ -57,25 +52,25 @@ public class FavoriteFragment extends BaseFragment {
     }
 
     public void updateFavoriteItem() {
-        domainService = DomainService.getInstance(getContext());
+        mDomainService = DomainService.getInstance(getContext());
         mStoriesBeanList = new ArrayList<>();
-        if (domainService.getFavoriteNews() == null || domainService.getFavoriteNews().size() < 1) {
-            Snackbar.make(mRecyclerview, "没有收藏哦", Snackbar.LENGTH_SHORT).show();
+        if (mDomainService.getFavoriteNews() == null || mDomainService.getFavoriteNews().size() < 1) {
+            Snackbar.make(mBinding.favoriteFragmentRecyclerview, "没有收藏哦", Snackbar.LENGTH_SHORT).show();
         } else {
-            mStoriesBeanList.addAll(domainService.getFavoriteNews());
+            mStoriesBeanList.addAll(mDomainService.getFavoriteNews());
         }
 
         showFavoriteNews();
     }
 
     private void showFavoriteNews() {
-        mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getContext());
-        mRecyclerview.setAdapter(mAdapter);
+        mBinding.favoriteFragmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new LatestNewsItemAdapter(getContext());
+        mBinding.favoriteFragmentRecyclerview.setAdapter(mAdapter);
 
         mAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override
-            public void onItemClick(View view, StoriesBean storiesBean) {
+            public void onItemClick(View view, StoriesBeanDB storiesBean) {
                 NewsDetailActivity.launch(getActivity(), storiesBean);
             }
         });

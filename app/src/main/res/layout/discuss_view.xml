@@ -34,7 +34,7 @@
             android:id="@+id/discuss_view_prov_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_vote_thumb_blue"
+            android:drawableLeft="@drawable/icon_love"
             android:drawablePadding="8dp"
             android:gravity="right"
             android:text="0"/>

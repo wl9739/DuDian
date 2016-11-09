@@ -1,6 +1,8 @@
 package com.wl.dudian.app.db;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * @author Qiushui on 16/8/16.
@@ -13,10 +15,19 @@ public class NewsDetailDB extends RealmObject {
     private String image;
     private String share_url;
     private String ga_prefix;
-    private String images;
+    private RealmList<RealmString> images;
     private int type;
+    @PrimaryKey
     private int id;
     private boolean isFavorite;
+
+    public RealmList<RealmString> getImages() {
+        return images;
+    }
+
+    public void setImages(RealmList<RealmString> images) {
+        this.images = images;
+    }
 
     public String getBody() {
         return body;
@@ -64,14 +75,6 @@ public class NewsDetailDB extends RealmObject {
 
     public void setGa_prefix(String ga_prefix) {
         this.ga_prefix = ga_prefix;
-    }
-
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
     }
 
     public int getType() {

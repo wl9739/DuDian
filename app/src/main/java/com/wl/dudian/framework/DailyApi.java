@@ -1,14 +1,14 @@
 package com.wl.dudian.framework;
 
 
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.DiscussDataModel;
-import com.wl.dudian.app.model.DiscussExtraModel;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.NewsDetails;
-import com.wl.dudian.app.model.StartImage;
-import com.wl.dudian.app.model.ThemeDetailModel;
-import com.wl.dudian.app.model.ThemesModel;
+import com.wl.dudian.app.db.BeforeNewsDB;
+import com.wl.dudian.app.db.LatestNewsDB;
+import com.wl.dudian.app.db.NewsDetailDB;
+import com.wl.dudian.app.db.model.DiscussDataModel;
+import com.wl.dudian.app.db.model.DiscussExtraModel;
+import com.wl.dudian.app.db.model.StartImage;
+import com.wl.dudian.app.db.model.ThemeDetailModel;
+import com.wl.dudian.app.db.model.ThemesModel;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -33,7 +33,7 @@ public interface DailyApi {
      * @return
      */
     @GET("/api/4/news/latest")
-    Observable<LatestNews> getLatestNews();
+    Observable<LatestNewsDB> getLatestNews();
 
     /**
      * 获取新闻详细内容
@@ -42,7 +42,7 @@ public interface DailyApi {
      * @return
      */
     @GET("/api/4/news/{newsId}")
-    Observable<NewsDetails> getNewsDetails(@Path("newsId") String newsId);
+    Observable<NewsDetailDB> getNewsDetails(@Path("newsId") String newsId);
 
     /**
      * 获得历史新闻
@@ -51,7 +51,7 @@ public interface DailyApi {
      * @return
      */
     @GET("/api/4/news/before/{date}")
-    Observable<BeforeNews> getBeforeNews(@Path("date") String date);
+    Observable<BeforeNewsDB> getBeforeNews(@Path("date") String date);
 
     /**
      * 主题日报列表查看

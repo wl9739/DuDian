@@ -4,15 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.DiscussDataModel;
-import com.wl.dudian.app.model.DiscussExtraModel;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.NewsDetails;
-import com.wl.dudian.app.model.StartImage;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.ThemeDetailModel;
-import com.wl.dudian.app.model.ThemesModel;
+import com.wl.dudian.app.db.BeforeNewsDB;
+import com.wl.dudian.app.db.LatestNewsDB;
+import com.wl.dudian.app.db.NewsDetailDB;
+import com.wl.dudian.app.db.StoriesBeanDB;
+import com.wl.dudian.app.db.model.DiscussDataModel;
+import com.wl.dudian.app.db.model.DiscussExtraModel;
+import com.wl.dudian.app.db.model.StartImage;
+import com.wl.dudian.app.db.model.ThemeDetailModel;
+import com.wl.dudian.app.db.model.ThemesModel;
 
 import java.util.List;
 
@@ -63,11 +63,11 @@ public class DomainService {
      * @param newsId 新闻ID
      * @return
      */
-    public Observable<NewsDetails> getNewsDetailFromDb(final String newsId) {
-        final NewsDetails newsDetails = diskRepository.getNewsDetail(newsId);
-        return Observable.create(new Observable.OnSubscribe<NewsDetails>() {
+    public Observable<NewsDetailDB> getNewsDetailFromDb(final String newsId) {
+        final NewsDetailDB newsDetails = diskRepository.getNewsDetail(newsId);
+        return Observable.create(new Observable.OnSubscribe<NewsDetailDB>() {
             @Override
-            public void call(Subscriber<? super NewsDetails> subscriber) {
+            public void call(Subscriber<? super NewsDetailDB> subscriber) {
                 if (newsDetails != null) {
                     subscriber.onNext(newsDetails);
                 } else {
@@ -83,16 +83,16 @@ public class DomainService {
      * @param newsId 新闻ID
      * @return
      */
-    public Observable<NewsDetails> getNewsDetailsFromNet(final String newsId) {
+    public Observable<NewsDetailDB> getNewsDetailsFromNet(final String newsId) {
         return netWorkRepository.getNewsDetails(newsId)
-                                .doOnNext(new Action1<NewsDetails>() {
-                                    @Override
-                                    public void call(NewsDetails newsDetails) {
-                                        diskRepository.saveNewsDetail(newsDetails);
-                                    }
-                                }).onErrorReturn(new Func1<Throwable, NewsDetails>() {
+                .doOnNext(new Action1<NewsDetailDB>() {
                     @Override
-                    public NewsDetails call(Throwable throwable) {
+                    public void call(NewsDetailDB newsDetailDB) {
+                        diskRepository.saveNewsDetail(newsDetailDB);
+                    }
+                }).onErrorReturn(new Func1<Throwable, NewsDetailDB>() {
+                    @Override
+                    public NewsDetailDB call(Throwable throwable) {
                         return null;
                     }
                 });
@@ -103,7 +103,7 @@ public class DomainService {
      *
      * @param newsDetails
      */
-    public void saveToFavoriteDb(NewsDetails newsDetails) {
+    public void saveToFavoriteDb(NewsDetailDB newsDetails) {
         diskRepository.saveFavorite(newsDetails);
     }
 
@@ -113,16 +113,16 @@ public class DomainService {
      * @param date
      * @return
      */
-    public Observable<BeforeNews> getBeforeNewsFromNet(String date) {
+    public Observable<BeforeNewsDB> getBeforeNewsFromNet(String date) {
 
-        return netWorkRepository.getBeforeNews(date).doOnNext(new Action1<BeforeNews>() {
+        return netWorkRepository.getBeforeNews(date).doOnNext(new Action1<BeforeNewsDB>() {
             @Override
-            public void call(BeforeNews beforeNews) {
+            public void call(BeforeNewsDB beforeNews) {
                 diskRepository.saveBeforeNews(beforeNews);
             }
-        }).onErrorReturn(new Func1<Throwable, BeforeNews>() {
+        }).onErrorReturn(new Func1<Throwable, BeforeNewsDB>() {
             @Override
-            public BeforeNews call(Throwable throwable) {
+            public BeforeNewsDB call(Throwable throwable) {
                 return null;
             }
         });
@@ -132,11 +132,11 @@ public class DomainService {
      * @param date
      * @return
      */
-    public Observable<BeforeNews> getBeforeNewsFromDB(final String date) {
-        final BeforeNews beforeNews = diskRepository.getBeforeNews(date);
-        return Observable.create(new Observable.OnSubscribe<BeforeNews>() {
+    public Observable<BeforeNewsDB> getBeforeNewsFromDB(final String date) {
+        final BeforeNewsDB beforeNews = diskRepository.getBeforeNews(date);
+        return Observable.create(new Observable.OnSubscribe<BeforeNewsDB>() {
             @Override
-            public void call(Subscriber<? super BeforeNews> subscriber) {
+            public void call(Subscriber<? super BeforeNewsDB> subscriber) {
                 if (beforeNews != null) {
                     subscriber.onNext(beforeNews);
                 } else {
@@ -146,63 +146,61 @@ public class DomainService {
         });
     }
 
-    public Observable<LatestNews> getLatestNews() {
+    public Observable<LatestNewsDB> getLatestNews() {
         return netWorkRepository.getLatestNews()
-                                .onErrorReturn(new Func1<Throwable, LatestNews>() {
-                                    @Override
-                                    public LatestNews call(Throwable throwable) {
-                                        Log.d(TAG, "call: " + throwable.getMessage());
-                                        return null;
-                                    }
-                                });
+                .onErrorReturn(new Func1<Throwable, LatestNewsDB>() {
+                    @Override
+                    public LatestNewsDB call(Throwable throwable) {
+                        Log.d(TAG, "call: " + throwable.getMessage());
+                        return null;
+                    }
+                });
     }
 
     public void updateRead(int id) {
         diskRepository.updateRead(id);
     }
 
-    public Observable<LatestNews> getLatestNewsFromDB() {
-        return diskRepository.getLatestNewsFromDB()
-                             .subscribeOn(Schedulers.io())
-                             .observeOn(AndroidSchedulers.mainThread());
+    public Observable<LatestNewsDB> getLatestNewsFromDB() {
+        return diskRepository.getLatestNewsFromDB();
     }
 
     public Observable<ThemesModel> getTheme() {
         return netWorkRepository.getThemesModel()
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ThemeDetailModel> getThemeDetail(String id) {
         return netWorkRepository.getThemeDetail(id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public List<StoriesBean> getFavoriteNews() {
+    public List<StoriesBeanDB> getFavoriteNews() {
         return diskRepository.getFavoriteNews();
     }
 
-    public void saveLatestNews(LatestNews latestNews) {
-        diskRepository.saveLatestNews(latestNews);
+    public void saveLatestNews(LatestNewsDB latestNewsDB) {
+        diskRepository.saveLatestNews(latestNewsDB);
     }
 
     public Observable<DiscussDataModel> getDiscussLong(String id) {
         return netWorkRepository.getDiscussLong(id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<DiscussDataModel> getDiscussShort(String id) {
         return netWorkRepository.getDiscussShort(id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<DiscussExtraModel> getDiscussExtra(String id) {
         return netWorkRepository.getdiscussExtra(id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
     }
 
@@ -211,26 +209,26 @@ public class DomainService {
      */
     private void getAndSaveImageFromNet() {
         netWorkRepository.getStartImage()
-                         .subscribeOn(Schedulers.io())
-                         .observeOn(AndroidSchedulers.mainThread())
-                         .onErrorReturn(new Func1<Throwable, StartImage>() {
-                             @Override
-                             public StartImage call(Throwable throwable) {
-                                 return null;
-                             }
-                         })
-                         .filter(new Func1<StartImage, Boolean>() {
-                             @Override
-                             public Boolean call(StartImage startImage) {
-                                 return null != startImage;
-                             }
-                         })
-                         .subscribe(new Action1<StartImage>() {
-                             @Override
-                             public void call(StartImage startImage) {
-                                 Log.d("000000", "call: getAndSaveImageFromNet() " + Thread.currentThread());
-                                 diskRepository.saveStartImage(startImage);
-                             }
-                         });
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturn(new Func1<Throwable, StartImage>() {
+                    @Override
+                    public StartImage call(Throwable throwable) {
+                        return null;
+                    }
+                })
+                .filter(new Func1<StartImage, Boolean>() {
+                    @Override
+                    public Boolean call(StartImage startImage) {
+                        return null != startImage;
+                    }
+                })
+                .subscribe(new Action1<StartImage>() {
+                    @Override
+                    public void call(StartImage startImage) {
+                        Log.d("000000", "call: getAndSaveImageFromNet() " + Thread.currentThread());
+                        diskRepository.saveStartImage(startImage);
+                    }
+                });
     }
 }

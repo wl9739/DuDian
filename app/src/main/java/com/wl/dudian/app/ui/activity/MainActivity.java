@@ -1,40 +1,34 @@
 package com.wl.dudian.app.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.latestnews.LatestNewsFragment;
-import com.wl.dudian.app.model.ThemesModel;
+import com.wl.dudian.app.db.model.ThemesModel;
 import com.wl.dudian.app.repository.DomainService;
-import com.wl.dudian.app.ui.fragment.AboutFragment;
 import com.wl.dudian.app.ui.fragment.ColumnFragment;
 import com.wl.dudian.app.ui.fragment.FavoriteFragment;
 import com.wl.dudian.app.ui.fragment.SettingsFragment;
+import com.wl.dudian.databinding.ActivityMainBinding;
+import com.wl.dudian.framework.Constants;
 import com.wl.dudian.framework.ScreenShotUtils;
-import com.wl.dudian.framework.Variable;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -43,27 +37,14 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String FRAGMENT_INDEX = "FRAGMENT_INDEX";
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.content_main_wifilogo_img)
-    ImageView mContentMainWifilogoImg;
-    @BindView(R.id.content_main_notconnected_rl)
-    RelativeLayout mContentMainNotconnectedRl;
-    @BindView(R.id.content_main)
-    FrameLayout mContentMain;
-    @BindView(R.id.app_bar_main_coordinatorlayout)
-    CoordinatorLayout mAppBarMainCoordinatorlayout;
-    @BindView(R.id.nav_view)
-    NavigationView mNavView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
 
     private LatestNewsFragment mLatestNewsFragment;
     private FavoriteFragment mFavoriteFragment;
     private ColumnFragment mColumnFragment;
     private SettingsFragment mSettingsFragment;
-    private AboutFragment mAboutFragment;
     private ThemesModel mThemesModel;
+
+    private ActivityMainBinding binding;
 
     private DomainService domainService;
     private int index = 0;
@@ -99,11 +80,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.nav_daynight:
                 changeDayNightModel();
                 break;
-            case R.id.nav_setting:
-                setNavSelection(3);
+            case R.id.nav_pic:
+                switchImage();
                 break;
             case R.id.nav_about:
-                setNavSelection(4);
+                startActivity(new Intent(this, AboutActivity.class));
                 break;
             default:
                 break;
@@ -111,11 +92,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return false;
     }
 
+    private void switchImage() {
+        SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
+        boolean hideImage = sp.getBoolean(Constants.HIDE_IMAGE, false);
+        SharedPreferences.Editor editor = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE).edit();
+        if (hideImage) {
+            editor.putBoolean(Constants.HIDE_IMAGE, false).apply();
+        } else {
+            editor.putBoolean(Constants.HIDE_IMAGE, true).apply();
+        }
+        binding.drawerLayout.closeDrawer(Gravity.LEFT);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                mDrawerLayout.closeDrawers();
+            if (binding.drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                binding.drawerLayout.closeDrawers();
             } else {
                 exitBy2Click();
             }
@@ -127,22 +120,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        mContentMain.setVisibility(View.VISIBLE);
-        mContentMainNotconnectedRl.setVisibility(View.GONE);
-        mContentMainWifilogoImg.setVisibility(View.GONE);
+        binding.content.contentLayout.contentMain.setVisibility(View.VISIBLE);
+        binding.content.contentLayout.contentMainNotconnectedRl.setVisibility(View.GONE);
+        binding.content.contentLayout.contentMainWifilogoImg.setVisibility(View.GONE);
         showLatestNews(savedInstanceState);
 
-        mToolbar.setTitle("读点日报");
+        binding.content.toolbar.setTitle("读点日报");
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.setDrawerListener(toggle);
+                this, binding.drawerLayout, binding.content.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        mNavView.setNavigationItemSelectedListener(this);
+        binding.navView.setNavigationItemSelectedListener(this);
         domainService = DomainService.getInstance(this);
         getThemes();
 
@@ -162,18 +154,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void getThemes() {
         domainService.getTheme().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                     .onErrorReturn(new Func1<Throwable, ThemesModel>() {
-                         @Override
-                         public ThemesModel call(Throwable throwable) {
-                             return null;
-                         }
-                     })
-                     .subscribe(new Action1<ThemesModel>() {
-                         @Override
-                         public void call(ThemesModel themesModel) {
-                             mThemesModel = themesModel;
-                         }
-                     });
+                .onErrorReturn(new Func1<Throwable, ThemesModel>() {
+                    @Override
+                    public ThemesModel call(Throwable throwable) {
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<ThemesModel>() {
+                    @Override
+                    public void call(ThemesModel themesModel) {
+                        mThemesModel = themesModel;
+                    }
+                });
     }
 
     private void showLatestNews(Bundle savedInstanceState) {
@@ -187,8 +179,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             if (mLatestNewsFragment == null) {
                 mLatestNewsFragment = LatestNewsFragment.newInstance();
                 fm.beginTransaction()
-                  .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
-                  .commit();
+                        .add(R.id.content_main, mLatestNewsFragment, mLatestNewsFragment.getClass().getName())
+                        .commit();
             }
 
         }
@@ -202,31 +194,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         switch (i) {
             case 0:
                 if (null == mLatestNewsFragment) {
-                    mToolbar.setTitle("读点日报");
+                    binding.content.toolbar.setTitle("读点日报");
                     mLatestNewsFragment = LatestNewsFragment.newInstance();
                     ft.add(R.id.content_main, mLatestNewsFragment);
                 } else {
-                    mToolbar.setTitle("读点日报");
+                    binding.content.toolbar.setTitle("读点日报");
                     ft.show(mLatestNewsFragment);
                 }
                 break;
             case 1:
                 if (null == mColumnFragment) {
-                    mToolbar.setTitle("专栏");
+                    binding.content.toolbar.setTitle("专栏");
                     mColumnFragment = ColumnFragment.newInstance(mThemesModel);
                     ft.add(R.id.content_main, mColumnFragment);
                 } else {
-                    mToolbar.setTitle("专栏");
+                    binding.content.toolbar.setTitle("专栏");
                     ft.show(mColumnFragment);
                 }
                 break;
             case 2:
                 if (null == mFavoriteFragment) {
-                    mToolbar.setTitle("收藏");
+                    binding.content.toolbar.setTitle("收藏");
                     mFavoriteFragment = FavoriteFragment.newInstance();
                     ft.add(R.id.content_main, mFavoriteFragment);
                 } else {
-                    mToolbar.setTitle("收藏");
+                    binding.content.toolbar.setTitle("收藏");
                     // 主动刷新数据
                     mFavoriteFragment.updateFavoriteItem();
                     ft.show(mFavoriteFragment);
@@ -234,28 +226,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case 3:
                 if (null == mSettingsFragment) {
-                    mToolbar.setTitle("设置");
+                    binding.content.toolbar.setTitle("设置");
                     mSettingsFragment = SettingsFragment.newInstance();
                     ft.add(R.id.content_main, mSettingsFragment);
                 } else {
-                    mToolbar.setTitle("设置");
+                    binding.content.toolbar.setTitle("设置");
                     ft.show(mSettingsFragment);
-                }
-                break;
-            case 4:
-                if (null == mAboutFragment) {
-                    mToolbar.setTitle("关于");
-                    mAboutFragment = AboutFragment.newInstance();
-                    ft.add(R.id.content_main, mAboutFragment);
-                } else {
-                    mToolbar.setTitle("关于");
-                    ft.show(mAboutFragment);
                 }
                 break;
         }
         ft.commit();
         // close drawer
-        mDrawerLayout.closeDrawers();
+        binding.drawerLayout.closeDrawers();
     }
 
     /**
@@ -276,28 +258,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (null != mSettingsFragment) {
             ft.hide(mSettingsFragment);
         }
-        if (null != mAboutFragment) {
-            ft.hide(mAboutFragment);
-        }
     }
 
     /**
      * 夜间模式切换
      */
     private void changeDayNightModel() {
-        beforeChangeMode();
-        if (!Variable.isNight) {
+
+        if (!Constants.isNight) {
+            binding.navView.getMenu().findItem(R.id.nav_daynight).setTitle("白天");
+            binding.drawerLayout.closeDrawer(Gravity.LEFT);
+            beforeChangeMode();
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            Variable.isNight = true;
+            Constants.isNight = true;
         } else {
+            binding.navView.getMenu().findItem(R.id.nav_daynight).setTitle("夜间");
+            binding.drawerLayout.closeDrawer(Gravity.LEFT);
+            beforeChangeMode();
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            Variable.isNight = false;
+            Constants.isNight = false;
         }
     }
 
     private void beforeChangeMode() {
         Bitmap bitmap = ScreenShotUtils.captureScreen(this);
-        bitmap = zoomBitmap(bitmap, bitmap.getWidth() / 5, bitmap.getHeight() / 5);
+        bitmap = zoomBitmap(bitmap, bitmap.getWidth() / 10, bitmap.getHeight() / 10);
         Intent intent = new Intent(this, TransitionActivity.class);
         intent.putExtra(TransitionActivity.IMAGE_NAME, bitmap);
         startActivity(intent);
@@ -310,7 +295,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void exitBy2Click() {
         if (!isExit) {
             isExit = true;
-            Snackbar.make(mContentMain, "再按一次退出程序", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(binding.content.contentLayout.contentMain, "再按一次退出程序", Snackbar.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
