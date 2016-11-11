@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -49,6 +50,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private DomainService domainService;
     private int index = 0;
     private boolean isExit = false;
+    private SharedPreferences mSharedPreferences;
 
     /**
      * 缩小图片规格
@@ -98,8 +100,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         SharedPreferences.Editor editor = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE).edit();
         if (hideImage) {
             editor.putBoolean(Constants.HIDE_IMAGE, false).apply();
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图").setIcon(R.drawable.ic_filter_none_grey_700_24dp);
+            Snackbar.make(binding.content.contentLayout.contentMain, "有图模式设置成功！", Snackbar.LENGTH_SHORT).show();
         } else {
             editor.putBoolean(Constants.HIDE_IMAGE, true).apply();
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("有图").setIcon(R.drawable.ic_filter_grey_700_24dp);
+            Snackbar.make(binding.content.contentLayout.contentMain, "无图模式设置成功！", Snackbar.LENGTH_SHORT).show();
         }
         binding.drawerLayout.closeDrawer(Gravity.LEFT);
     }
@@ -136,13 +142,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         binding.navView.setNavigationItemSelectedListener(this);
         domainService = DomainService.getInstance(this);
+        mSharedPreferences = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
         getThemes();
+        setNavMenu();
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    /**
+     * 显示是否有图片
+     */
+    private void setNavMenu() {
+        if (mSharedPreferences.getBoolean(Constants.HIDE_IMAGE, false)) {
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图")
+                    .setIcon(R.drawable.ic_filter_none_grey_700_24dp);
+        } else {
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("有图")
+                    .setIcon(R.drawable.ic_filter_grey_700_24dp);
+        }
     }
 
     @Override
@@ -264,19 +280,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      * 夜间模式切换
      */
     private void changeDayNightModel() {
-
-        if (!Constants.isNight) {
-            binding.navView.getMenu().findItem(R.id.nav_daynight).setTitle("白天");
-            binding.drawerLayout.closeDrawer(Gravity.LEFT);
-            beforeChangeMode();
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            Constants.isNight = true;
-        } else {
-            binding.navView.getMenu().findItem(R.id.nav_daynight).setTitle("夜间");
+        if (mSharedPreferences.getBoolean(Constants.IS_NIGHT, false)) {
+            mSharedPreferences.edit().putBoolean(Constants.IS_NIGHT, false).apply();
             binding.drawerLayout.closeDrawer(Gravity.LEFT);
             beforeChangeMode();
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            Constants.isNight = false;
+        } else {
+            mSharedPreferences.edit().putBoolean(Constants.IS_NIGHT, true).apply();
+            binding.drawerLayout.closeDrawer(Gravity.LEFT);
+            beforeChangeMode();
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
     }
 

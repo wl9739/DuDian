@@ -8,7 +8,7 @@
             android:title="首页"/>
         <item
             android:id="@+id/nav_column"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_column"
             android:title="专栏"/>
         <item
             android:id="@+id/nav_favorite"
@@ -22,10 +22,10 @@
             <item
                 android:id="@+id/nav_daynight"
                 android:icon="@drawable/ic_menu_daynight"
-                android:title="夜间"/>
+                android:title="白天"/>
             <item
                 android:id="@+id/nav_pic"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_menu_img"
                 android:title="无图"/>
 
         </menu>

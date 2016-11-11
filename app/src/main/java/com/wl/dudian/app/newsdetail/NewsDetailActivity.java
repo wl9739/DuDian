@@ -36,9 +36,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     private static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
 
     private StoriesBean mStoriesBean;
-
     private NewsDetailContract.Presenter presenter;
-
     private NewsDetailActivityBinding binding;
 
     /**
@@ -77,6 +75,11 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     }
 
     @Override
+    public void showImageSource(String image_source) {
+        binding.picName.setText(image_source);
+    }
+
+    @Override
     public void setPresenter(NewsDetailContract.Presenter presenter) {
         this.presenter = BusinessUtil.checkNotNull(presenter);
     }
@@ -105,6 +108,9 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
+        binding.setHandler(new Handler());
+
+        // android  5.0 以上设置全屏模式
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -113,9 +119,10 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
-        new NewsDetailPresenter(this, this);
-
+        // 获取新闻对象
         mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
+
+        // 判断是否需要显示 headerview
         boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
         if (isNoHeader) {
             ViewGroup.LayoutParams params = binding.appBarLayout.getLayoutParams();
@@ -140,34 +147,10 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             }
         });
 
-        binding.favoriteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
-                binding.menuBtn.toggle();
-                // 保存到数据库
-                presenter.favorite();
-                Snackbar.make(binding.coordinatorLayout, "保存成功", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        binding.discussBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.menuBtn.toggle();
-                new DiscussView(NewsDetailActivity.this, mStoriesBean.getId());
-            }
-        });
-
-        binding.shareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.menuBtn.toggle();
-                share(mStoriesBean);
-            }
-        });
-
         initWebView();
+
+        // 初始化 presenter
+        new NewsDetailPresenter(this, this);
         presenter.loadData(String.valueOf(mStoriesBean.getId()));
     }
 
@@ -185,7 +168,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         // 开启Application Cache功能
         binding.webview.getSettings().setAppCacheEnabled(true);
 
-
         binding.webview.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -196,5 +178,28 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
         boolean hideImage = sp.getBoolean(Constants.HIDE_IMAGE, false);
         binding.webview.getSettings().setBlockNetworkImage(hideImage);
+    }
+
+    /**
+     * 事件点击处理
+     */
+    public class Handler {
+        public void onShareBtnClick(View view) {
+            binding.menuBtn.toggle();
+            share(mStoriesBean);
+        }
+
+        public void onFavoritBtnClick(View view) {
+            binding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
+            binding.menuBtn.toggle();
+            // 保存到数据库
+            presenter.favorite();
+            Snackbar.make(view, "保存成功", Snackbar.LENGTH_SHORT).show();
+        }
+
+        public void onDiscussBtnClick(View view) {
+            binding.menuBtn.toggle();
+            new DiscussView(NewsDetailActivity.this, mStoriesBean.getId());
+        }
     }
 }

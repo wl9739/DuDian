@@ -7,6 +7,7 @@ package com.wl.dudian.framework;
 public class Constants {
 
     public static final String HIDE_IMAGE = "HIDE_IMAGE";
+    public static final String IS_NIGHT = "IS_NIGHT";
     public static final String SP_NAME = "SP_NAME";
     public static Boolean isRefresh = false;
 

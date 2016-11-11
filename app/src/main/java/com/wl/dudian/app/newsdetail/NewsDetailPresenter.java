@@ -1,6 +1,7 @@
 package com.wl.dudian.app.newsdetail;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.wl.dudian.app.model.NewsDetails;
@@ -71,6 +72,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                 if (null == newsDetails) {
                     return;
                 }
+                newsDetailView.showImageSource(newsDetails.getImage_source());
                 updateRead(newsDetails.getId());
                 NewsDetailPresenter.this.newsDetails = newsDetails;
                 if (null == newsDetails.getBody()) {
@@ -125,7 +127,8 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
      * @param newsDetails 新闻实体类
      */
     private void setNormalWebviewInfo(NewsDetails newsDetails) {
-        if (Constants.isNight) {
+        SharedPreferences sp = context.getSharedPreferences(Constants.SP_NAME, Context.MODE_PRIVATE);
+        if (sp.getBoolean(Constants.IS_NIGHT, false)) {
             String js = "<script src=\"file:///android_asset/js/night.js\"></script>";
             String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news.css\" type=\"text/css\">";
             String html = "<html><head>" + css + "</head><body>" + newsDetails.getBody() + "</body>" + js + "</html>";

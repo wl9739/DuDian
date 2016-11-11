@@ -91,7 +91,7 @@ public class DiskRepository {
                 if (mImageFile.exists()) {
                     return BitmapFactory.decodeFile(mImageFile.getAbsolutePath());
                 } else {
-                    return BitmapFactory.decodeResource(context.getResources(), R.drawable.dayu);
+                    return BitmapFactory.decodeResource(context.getResources(), R.drawable.defaultbackground);
                 }
             }
         });

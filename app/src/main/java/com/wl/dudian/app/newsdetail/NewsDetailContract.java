@@ -21,6 +21,8 @@ public interface NewsDetailContract {
         void showHeaderImage(String imageUrl);
 
         void showWebView(boolean isShowNight);
+
+        void showImageSource(String image_source);
     }
 
     interface Presenter extends BasePresenter {
