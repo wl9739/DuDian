@@ -22,7 +22,7 @@ public interface NewsDetailContract {
 
         void showWebView(boolean isShowNight);
 
-        void showImageSource(String image_source);
+        void showNewsStatus(String image_source, boolean favorite);
     }
 
     interface Presenter extends BasePresenter {

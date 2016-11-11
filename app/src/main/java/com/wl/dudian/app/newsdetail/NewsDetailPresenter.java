@@ -72,7 +72,8 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
                 if (null == newsDetails) {
                     return;
                 }
-                newsDetailView.showImageSource(newsDetails.getImage_source());
+                newsDetailView.showNewsStatus(newsDetails.getImage_source(),
+                        domainService.isFavorite(newsDetails.getId()));
                 updateRead(newsDetails.getId());
                 NewsDetailPresenter.this.newsDetails = newsDetails;
                 if (null == newsDetails.getBody()) {

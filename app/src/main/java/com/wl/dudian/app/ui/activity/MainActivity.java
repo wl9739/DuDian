@@ -153,11 +153,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      */
     private void setNavMenu() {
         if (mSharedPreferences.getBoolean(Constants.HIDE_IMAGE, false)) {
-            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图")
-                    .setIcon(R.drawable.ic_filter_none_grey_700_24dp);
-        } else {
             binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("有图")
                     .setIcon(R.drawable.ic_filter_grey_700_24dp);
+        } else {
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图")
+                    .setIcon(R.drawable.ic_filter_none_grey_700_24dp);
         }
     }
 

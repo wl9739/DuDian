@@ -19,13 +19,13 @@ import com.wl.dudian.framework.BusinessUtil;
  */
 public class SplashActivity extends BaseActivity implements SplashContract.View {
 
-    private SplashActivityBinding binding;
+    private SplashActivityBinding mBinding;
 
-    private SplashContract.Presenter presenter;
+    private SplashContract.Presenter mPresenter;
 
     @Override
     public void showStartImage(Bitmap bitmap) {
-        binding.image.setImageBitmap(bitmap);
+        mBinding.image.setImageBitmap(bitmap);
     }
 
     @Override
@@ -37,13 +37,13 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
     @Override
     public void setPresenter(SplashContract.Presenter presenter) {
-        this.presenter = BusinessUtil.checkNotNull(presenter);
+        this.mPresenter = BusinessUtil.checkNotNull(presenter);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        presenter.unLanchSubscription();
+        mPresenter.unLanchSubscription();
     }
 
     @Override
@@ -51,24 +51,24 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // init presenter
+        // init mPresenter
         new SplashPresenter(this, this);
         // init databinding
-        binding = DataBindingUtil.setContentView(this, R.layout.splash_activity);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.splash_activity);
         // require startImage.
-        presenter.getStartImage();
+        mPresenter.getStartImage();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.subscribe();
+        mPresenter.subscribe();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        presenter.unsubscribe();
+        mPresenter.unsubscribe();
     }
 
 }

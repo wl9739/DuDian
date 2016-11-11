@@ -43,7 +43,7 @@ public class BusinessUtil {
      * @param imageView
      */
     public static void loadImage(Context context, String imageUrl, ImageView imageView) {
-        if (TextUtils.isEmpty(imageUrl)) {
+        if (TextUtils.isEmpty(imageUrl) || context == null) {
             return;
         }
         Glide.with(context)

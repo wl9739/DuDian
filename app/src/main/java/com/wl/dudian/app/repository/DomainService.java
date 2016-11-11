@@ -31,8 +31,8 @@ public class DomainService {
 
     private static DomainService INSTANCE = null;
     private final String TAG = "Domainservice";
-    private final DiskRepository diskRepository;
-    private final NetWorkRepository netWorkRepository;
+    private final DiskRepository mDiskRepository;
+    private final NetWorkRepository mNetWorkRepository;
 
     public static DomainService getInstance(Context context) {
         if (INSTANCE == null) {
@@ -43,8 +43,8 @@ public class DomainService {
     }
 
     private DomainService(Context context) {
-        diskRepository = new DiskRepository(context);
-        netWorkRepository = new NetWorkRepository();
+        mDiskRepository = new DiskRepository(context);
+        mNetWorkRepository = new NetWorkRepository();
     }
 
     /**
@@ -54,7 +54,7 @@ public class DomainService {
      */
     public Observable<Bitmap> getStartImage() {
         getAndSaveImageFromNet();
-        return diskRepository.getStartImage();
+        return mDiskRepository.getStartImage();
     }
 
     /**
@@ -64,7 +64,7 @@ public class DomainService {
      * @return
      */
     public Observable<NewsDetails> getNewsDetailFromDb(final String newsId) {
-        final NewsDetails newsDetails = diskRepository.getNewsDetail(newsId);
+        final NewsDetails newsDetails = mDiskRepository.getNewsDetail(newsId);
         return Observable.create(new Observable.OnSubscribe<NewsDetails>() {
             @Override
             public void call(Subscriber<? super NewsDetails> subscriber) {
@@ -84,11 +84,11 @@ public class DomainService {
      * @return
      */
     public Observable<NewsDetails> getNewsDetailsFromNet(final String newsId) {
-        return netWorkRepository.getNewsDetails(newsId)
+        return mNetWorkRepository.getNewsDetails(newsId)
                 .doOnNext(new Action1<NewsDetails>() {
                     @Override
                     public void call(NewsDetails newsDetails) {
-                        diskRepository.saveNewsDetail(newsDetails);
+                        mDiskRepository.saveNewsDetail(newsDetails);
                     }
                 }).onErrorReturn(new Func1<Throwable, NewsDetails>() {
                     @Override
@@ -104,7 +104,7 @@ public class DomainService {
      * @param newsDetails
      */
     public void saveToFavoriteDb(NewsDetails newsDetails) {
-        diskRepository.saveFavorite(newsDetails);
+        mDiskRepository.saveFavorite(newsDetails);
     }
 
     /**
@@ -115,10 +115,10 @@ public class DomainService {
      */
     public Observable<BeforeNews> getBeforeNewsFromNet(String date) {
 
-        return netWorkRepository.getBeforeNews(date).doOnNext(new Action1<BeforeNews>() {
+        return mNetWorkRepository.getBeforeNews(date).doOnNext(new Action1<BeforeNews>() {
             @Override
             public void call(BeforeNews beforeNews) {
-                diskRepository.saveBeforeNews(beforeNews);
+                mDiskRepository.saveBeforeNews(beforeNews);
             }
         }).onErrorReturn(new Func1<Throwable, BeforeNews>() {
             @Override
@@ -133,7 +133,7 @@ public class DomainService {
      * @return
      */
     public Observable<BeforeNews> getBeforeNewsFromDB(final String date) {
-        final BeforeNews beforeNews = diskRepository.getBeforeNews(date);
+        final BeforeNews beforeNews = mDiskRepository.getBeforeNews(date);
         return Observable.create(new Observable.OnSubscribe<BeforeNews>() {
             @Override
             public void call(Subscriber<? super BeforeNews> subscriber) {
@@ -147,7 +147,7 @@ public class DomainService {
     }
 
     public Observable<LatestNews> getLatestNews() {
-        return netWorkRepository.getLatestNews()
+        return mNetWorkRepository.getLatestNews()
                 .onErrorReturn(new Func1<Throwable, LatestNews>() {
                     @Override
                     public LatestNews call(Throwable throwable) {
@@ -158,49 +158,49 @@ public class DomainService {
     }
 
     public void updateRead(int id) {
-        diskRepository.updateRead(id);
+        mDiskRepository.updateRead(id);
     }
 
     public Observable<LatestNews> getLatestNewsFromDB() {
-        return diskRepository.getLatestNewsFromDB()
+        return mDiskRepository.getLatestNewsFromDB()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ThemesModel> getTheme() {
-        return netWorkRepository.getThemesModel()
+        return mNetWorkRepository.getThemesModel()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<ThemeDetailModel> getThemeDetail(String id) {
-        return netWorkRepository.getThemeDetail(id)
+        return mNetWorkRepository.getThemeDetail(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public List<StoriesBean> getFavoriteNews() {
-        return diskRepository.getFavoriteNews();
+        return mDiskRepository.getFavoriteNews();
     }
 
     public void saveLatestNews(LatestNews latestNews) {
-        diskRepository.saveLatestNews(latestNews);
+        mDiskRepository.saveLatestNews(latestNews);
     }
 
     public Observable<DiscussDataModel> getDiscussLong(String id) {
-        return netWorkRepository.getDiscussLong(id)
+        return mNetWorkRepository.getDiscussLong(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<DiscussDataModel> getDiscussShort(String id) {
-        return netWorkRepository.getDiscussShort(id)
+        return mNetWorkRepository.getDiscussShort(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<DiscussExtraModel> getDiscussExtra(String id) {
-        return netWorkRepository.getdiscussExtra(id)
+        return mNetWorkRepository.getdiscussExtra(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
@@ -210,7 +210,7 @@ public class DomainService {
      * 下载并保存图片
      */
     private void getAndSaveImageFromNet() {
-        netWorkRepository.getStartImage()
+        mNetWorkRepository.getStartImage()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .onErrorReturn(new Func1<Throwable, StartImage>() {
@@ -229,8 +229,12 @@ public class DomainService {
                     @Override
                     public void call(StartImage startImage) {
                         Log.d("000000", "call: getAndSaveImageFromNet() " + Thread.currentThread());
-                        diskRepository.saveStartImage(startImage);
+                        mDiskRepository.saveStartImage(startImage);
                     }
                 });
+    }
+
+    public boolean isFavorite(int id) {
+        return mDiskRepository.checkIsFavorite(id);
     }
 }

@@ -28,20 +28,20 @@ class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     private static final String TAG = "LatestNews";
     private LatestNewsContract.View view;
-    private DomainService domainService;
-    private Subscription beforeNewsSubscription;
-    private String currentData;
+    private DomainService mDomainService;
+    private Subscription mBeforeNewsSubscription;
+    private String mCurrentData;
 
-    private List<StoriesBean> storiesBeanList = new ArrayList<>();
+    private List<StoriesBean> mStoriesBeen = new ArrayList<>();
 
     LatestNewsPresenter(Context context, LatestNewsContract.View view) {
         this.view = view;
-        domainService = DomainService.getInstance(context);
+        mDomainService = DomainService.getInstance(context);
     }
 
     @Override
     public void loadLatestNews() {
-        domainService.getLatestNewsFromDB()
+        mDomainService.getLatestNewsFromDB()
                      .onErrorReturn(new Func1<Throwable, LatestNews>() {
                          @Override
                          public LatestNews call(Throwable throwable) {
@@ -53,11 +53,11 @@ class LatestNewsPresenter implements LatestNewsContract.Presenter {
                          @Override
                          public void call(LatestNews latestNews) {
                              if (latestNews != null) {
-                                 currentData = latestNews.getDate();
+                                 mCurrentData = latestNews.getDate();
                                  view.stopRefresh();
-                                 storiesBeanList.clear();
-                                 storiesBeanList.addAll(latestNews.getStories());
-                                 view.showLatestNews(storiesBeanList);
+                                 mStoriesBeen.clear();
+                                 mStoriesBeen.addAll(latestNews.getStories());
+                                 view.showLatestNews(mStoriesBeen);
                                  view.showHeaderView(latestNews.getTop_stories());
                              }
                          }
@@ -68,27 +68,27 @@ class LatestNewsPresenter implements LatestNewsContract.Presenter {
     @Override
     public void loadMoreNews() {
         Observable<BeforeNews> beforeNewsObservable = Observable.concat(
-                domainService.getBeforeNewsFromDB(DateUtil.getLastDay(currentData)),
-                domainService.getBeforeNewsFromNet(currentData))
+                mDomainService.getBeforeNewsFromDB(DateUtil.getLastDay(mCurrentData)),
+                mDomainService.getBeforeNewsFromNet(mCurrentData))
                                                                 .first()
                                                                 .subscribeOn(Schedulers.io())
                                                                 .observeOn(AndroidSchedulers.mainThread());
-        beforeNewsSubscription = beforeNewsObservable.subscribe(new Action1<BeforeNews>() {
+        mBeforeNewsSubscription = beforeNewsObservable.subscribe(new Action1<BeforeNews>() {
             @Override
             public void call(BeforeNews beforeNews) {
                 if (beforeNews == null) {
                     return;
                 }
-                currentData = beforeNews.getDate();
-                storiesBeanList.addAll(beforeNews.getStories());
-                view.loadBeforNews(storiesBeanList, currentData);
+                mCurrentData = beforeNews.getDate();
+                mStoriesBeen.addAll(beforeNews.getStories());
+                view.loadBeforNews(mStoriesBeen, mCurrentData);
             }
         });
     }
 
     @Override
     public void updateRead(StoriesBean storiesBean) {
-        domainService.updateRead(storiesBean.getId());
+        mDomainService.updateRead(storiesBean.getId());
     }
 
     @Override
@@ -98,6 +98,6 @@ class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
     @Override
     public void unsubscribe() {
-        BusinessUtil.unsubscribe(beforeNewsSubscription);
+        BusinessUtil.unsubscribe(mBeforeNewsSubscription);
     }
 }

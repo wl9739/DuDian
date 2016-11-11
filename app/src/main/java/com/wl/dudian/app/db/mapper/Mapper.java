@@ -57,7 +57,7 @@ public class Mapper {
     }
 
     public static void saveLatestNewsDB(Realm realm, LatestNews latestNews,
-            RealmQuery<StoriesBeanDB> storiesBeanResult) {
+                                        RealmResults<StoriesBeanDB> storiesBeanResult) {
         LatestNewsDB latestNewsDB = realm.createObject(LatestNewsDB.class);
         latestNewsDB.setDate(latestNews.getDate());
         RealmList<StoriesBeanDB> storiesBeanDBRealmList = new RealmList<>();
@@ -74,7 +74,7 @@ public class Mapper {
         }
         latestNewsDB.setTop_stories(topStoriesBeanDBRealmList);
         for (int i = 0; i < latestNews.getStories().size(); i++) {
-            if (storiesBeanResult.equalTo("id", latestNews.getStories().get(i).getId()).findAll().size() == 0) {
+//            if (storiesBeanResult.equalTo("id", latestNews.getStories().get(i).getId()).findAll().size() == 0) {
                 StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
                 storiesBeanDB.setGa_prefix(latestNews.getStories().get(i).getGa_prefix());
                 storiesBeanDB.setId(latestNews.getStories().get(i).getId());
@@ -82,7 +82,7 @@ public class Mapper {
                 storiesBeanDB.setType(latestNews.getStories().get(i).getType());
                 storiesBeanDB.setImages(latestNews.getStories().get(i).getImages().get(0));
                 storiesBeanDBRealmList.add(storiesBeanDB);
-            }
+//            }
         }
         latestNewsDB.setStories(storiesBeanDBRealmList);
     }

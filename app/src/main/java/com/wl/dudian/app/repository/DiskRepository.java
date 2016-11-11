@@ -64,16 +64,16 @@ public class DiskRepository {
      */
     public void saveStartImage(final StartImage startImage) {
         Glide.with(context)
-             .load(startImage.getCreatives().get(0).getUrl())
-             .asBitmap()
-             .into(new SimpleTarget<Bitmap>() {
-                       @Override
-                       public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                           saveAsFile(resource);
-                       }
-                   }
+                .load(startImage.getCreatives().get(0).getUrl())
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                          @Override
+                          public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                              saveAsFile(resource);
+                          }
+                      }
 
-             );
+                );
     }
 
     /**
@@ -218,7 +218,7 @@ public class DiskRepository {
             realm = Realm.getDefaultInstance();
             final RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
             final RealmResults<LatestNewsDB> latestNewsResult = realm.where(LatestNewsDB.class).findAll();
-            final RealmQuery<StoriesBeanDB> storiesBeanResult = realm.where(StoriesBeanDB.class);
+            final RealmResults<StoriesBeanDB> storiesBeanResult = realm.where(StoriesBeanDB.class).findAll();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -291,7 +291,7 @@ public class DiskRepository {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<BeforeNewsDB> query = realm.where(BeforeNewsDB.class)
-                                                    .equalTo("date", date).findAll();
+                    .equalTo("date", date).findAll();
             if (query.size() < 1) {
                 return null;
             }
@@ -404,5 +404,12 @@ public class DiskRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkIsFavorite(int id) {
+        Realm realm;
+        realm = Realm.getDefaultInstance();
+        RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class).equalTo("id", id).equalTo("isFavorite", true).findAll();
+        return results.size() > 0;
     }
 }

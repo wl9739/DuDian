@@ -36,8 +36,9 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     private static final String ARGU_IS_NOHEADER = "ARGU_IS_NOHEADER";
 
     private StoriesBean mStoriesBean;
-    private NewsDetailContract.Presenter presenter;
-    private NewsDetailActivityBinding binding;
+    private NewsDetailContract.Presenter mPresenter;
+    private NewsDetailActivityBinding mBinding;
+    private boolean isFavorite;
 
     /**
      * launch
@@ -66,39 +67,47 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
 
     @Override
     public void showHeaderImage(String imageUrl) {
-        BusinessUtil.loadImage(this, imageUrl, binding.headerImage);
+        BusinessUtil.loadImage(this, imageUrl, mBinding.headerImage);
     }
 
     @Override
     public void showWebView(boolean isShowNight) {
-        binding.webview.setVisibility(isShowNight ? View.VISIBLE : View.GONE);
+        mBinding.webview.setVisibility(isShowNight ? View.VISIBLE : View.GONE);
     }
 
     @Override
-    public void showImageSource(String image_source) {
-        binding.picName.setText(image_source);
+    public void showNewsStatus(String image_source, boolean favorite) {
+        mBinding.picName.setText(image_source);
+        isFavorite = favorite;
+        if (favorite) {
+            mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
+            mBinding.favoriteBtn.setTitle("已收藏");
+        } else {
+            mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_border_white_24dp);
+            mBinding.favoriteBtn.setTitle("收藏");
+        }
     }
 
     @Override
     public void setPresenter(NewsDetailContract.Presenter presenter) {
-        this.presenter = BusinessUtil.checkNotNull(presenter);
+        this.mPresenter = BusinessUtil.checkNotNull(presenter);
     }
 
     @Override
     public void showNormalData(String newsDetails) {
-        binding.webview.loadDataWithBaseURL("x-data://base", newsDetails, "text/html", "UTF-8", null);
+        mBinding.webview.loadDataWithBaseURL("x-data://base", newsDetails, "text/html", "UTF-8", null);
     }
 
     @Override
     public void showNobodyData(String shareUrl) {
-        binding.webview.loadUrl(shareUrl);
-        binding.webview.setVisibility(View.VISIBLE);
+        mBinding.webview.loadUrl(shareUrl);
+        mBinding.webview.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onBackPressed() {
-        if (binding.menuBtn.isExpanded()) {
-            binding.menuBtn.toggle();
+        if (mBinding.menuBtn.isExpanded()) {
+            mBinding.menuBtn.toggle();
             return;
         }
         super.onBackPressed();
@@ -107,8 +116,8 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
-        binding.setHandler(new Handler());
+        mBinding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
+        mBinding.setHandler(new Handler());
 
         // android  5.0 以上设置全屏模式
         if (Build.VERSION.SDK_INT >= 21) {
@@ -125,22 +134,22 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         // 判断是否需要显示 headerview
         boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
         if (isNoHeader) {
-            ViewGroup.LayoutParams params = binding.appBarLayout.getLayoutParams();
+            ViewGroup.LayoutParams params = mBinding.appBarLayout.getLayoutParams();
             params.height = 0;
-            binding.appBarLayout.setLayoutParams(params);
+            mBinding.appBarLayout.setLayoutParams(params);
         } else {
-            binding.appBarLayout.setVisibility(View.VISIBLE);
+            mBinding.appBarLayout.setVisibility(View.VISIBLE);
         }
         if (null == mStoriesBean) {
             return;
         }
 
-        binding.collapsingtoolbarlayout.setTitle(" ");
-        binding.titleTv.setText(mStoriesBean.getTitle());
-        binding.toolbar.setTitleTextColor(0x333333);
-        setSupportActionBar(binding.toolbar);
+        mBinding.collapsingtoolbarlayout.setTitle(" ");
+        mBinding.titleTv.setText(mStoriesBean.getTitle());
+        mBinding.toolbar.setTitleTextColor(0x333333);
+        setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mBinding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -149,26 +158,26 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
 
         initWebView();
 
-        // 初始化 presenter
+        // 初始化 mPresenter
         new NewsDetailPresenter(this, this);
-        presenter.loadData(String.valueOf(mStoriesBean.getId()));
+        mPresenter.loadData(String.valueOf(mStoriesBean.getId()));
     }
 
     /**
      * 初始化WebView页面
      */
     private void initWebView() {
-        binding.webview.setVisibility(View.INVISIBLE);
-        binding.webview.getSettings().setJavaScriptEnabled(true);
-        binding.webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        mBinding.webview.setVisibility(View.INVISIBLE);
+        mBinding.webview.getSettings().setJavaScriptEnabled(true);
+        mBinding.webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         // 开启DOM storage API 功能
-        binding.webview.getSettings().setDomStorageEnabled(true);
+        mBinding.webview.getSettings().setDomStorageEnabled(true);
         // 开启database storage API功能
-        binding.webview.getSettings().setDatabaseEnabled(true);
+        mBinding.webview.getSettings().setDatabaseEnabled(true);
         // 开启Application Cache功能
-        binding.webview.getSettings().setAppCacheEnabled(true);
+        mBinding.webview.getSettings().setAppCacheEnabled(true);
 
-        binding.webview.setWebViewClient(new WebViewClient() {
+        mBinding.webview.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
@@ -177,7 +186,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
 
         SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
         boolean hideImage = sp.getBoolean(Constants.HIDE_IMAGE, false);
-        binding.webview.getSettings().setBlockNetworkImage(hideImage);
+        mBinding.webview.getSettings().setBlockNetworkImage(hideImage);
     }
 
     /**
@@ -185,20 +194,26 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
      */
     public class Handler {
         public void onShareBtnClick(View view) {
-            binding.menuBtn.toggle();
+            mBinding.menuBtn.toggle();
             share(mStoriesBean);
         }
 
         public void onFavoritBtnClick(View view) {
-            binding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
-            binding.menuBtn.toggle();
-            // 保存到数据库
-            presenter.favorite();
-            Snackbar.make(view, "保存成功", Snackbar.LENGTH_SHORT).show();
+            mBinding.menuBtn.toggle();
+            if (isFavorite) {
+                Snackbar.make(view, "已收藏", Snackbar.LENGTH_SHORT).show();
+            } else {
+                mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
+                mBinding.favoriteBtn.setTitle("已收藏");
+                // 保存到数据库
+                mPresenter.favorite();
+                isFavorite = true;
+                Snackbar.make(view, "保存成功", Snackbar.LENGTH_SHORT).show();
+            }
         }
 
         public void onDiscussBtnClick(View view) {
-            binding.menuBtn.toggle();
+            mBinding.menuBtn.toggle();
             new DiscussView(NewsDetailActivity.this, mStoriesBean.getId());
         }
     }

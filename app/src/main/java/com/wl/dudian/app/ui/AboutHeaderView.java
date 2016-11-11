@@ -52,10 +52,6 @@ public class AboutHeaderView extends View implements Runnable {
         canvas.drawBitmap(mBackGound, positionX, positionY, mPaint);
     }
 
-    public void startAnim() {
-
-    }
-
     @Override
     public void run() {
         while (true) {

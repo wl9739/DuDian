@@ -60,7 +60,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
      */
     private View mHeaderView;
 
-    private LatestNewsContract.Presenter presenter;
+    private LatestNewsContract.Presenter mPresenter;
     private int datePosition = 1;
 
     public static LatestNewsFragment newInstance() {
@@ -70,7 +70,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new LatestNewsPresenter(getContext(), this);
+        mPresenter = new LatestNewsPresenter(getContext(), this);
     }
 
     @Nullable
@@ -109,26 +109,24 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         mBinding.latestNewsSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.loadMoreNews();
+                mPresenter.loadMoreNews();
             }
         });
 
         mBinding.latestNewsFragmentRecyclerview.setAdapter(mItemAdapter);
-
-        new LatestNewsPresenter(getContext(), this);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        presenter.loadLatestNews();
+        mPresenter.loadLatestNews();
 
         mItemAdapter.setOnLatestNewsItemClickListener(
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
                     public void onItemClick(View view, StoriesBean storiesBean) {
-                        presenter.updateRead(storiesBean);
+                        mPresenter.updateRead(storiesBean);
                         NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
                 });
@@ -136,7 +134,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         mBinding.latestNewsSr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.loadLatestNews();
+                mPresenter.loadLatestNews();
             }
         });
 
@@ -151,7 +149,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                         @Override
                         public void run() {
                             datePosition = lastVisibleItem + 1;
-                            presenter.loadMoreNews();
+                            mPresenter.loadMoreNews();
                         }
                     });
                 }
@@ -177,7 +175,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
 
     @Override
     public void setPresenter(LatestNewsContract.Presenter presenter) {
-        this.presenter = BusinessUtil.checkNotNull(presenter);
+        this.mPresenter = BusinessUtil.checkNotNull(presenter);
     }
 
     @Override
