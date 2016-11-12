@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,7 +23,7 @@ import com.wl.dudian.app.latestnews.LatestNewsFragment;
 import com.wl.dudian.app.model.ThemesModel;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.app.ui.fragment.ColumnFragment;
-import com.wl.dudian.app.ui.fragment.FavoriteFragment;
+import com.wl.dudian.app.favorite.FavoriteFragment;
 import com.wl.dudian.app.ui.fragment.SettingsFragment;
 import com.wl.dudian.databinding.ActivityMainBinding;
 import com.wl.dudian.framework.Constants;

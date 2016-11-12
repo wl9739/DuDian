@@ -1,11 +1,10 @@
-package com.wl.dudian.app.ui.fragment;
+package com.wl.dudian.app.favorite;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.databinding.FavoriteFragmentBinding;
 
 import java.util.ArrayList;

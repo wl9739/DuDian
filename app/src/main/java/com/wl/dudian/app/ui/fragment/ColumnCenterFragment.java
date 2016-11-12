@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.wl.dudian.app.model.ThemeDetailModel;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.repository.DomainService;
 import com.wl.dudian.databinding.ColumncenterfragmentBinding;
-import com.wl.dudian.databinding.ColumnfragmentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
