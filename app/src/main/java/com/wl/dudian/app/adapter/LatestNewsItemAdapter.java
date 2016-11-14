@@ -37,7 +37,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private View mHeaderView;
 
     private HashMap<Integer, String> datePositions = new HashMap<>();
-    private long timestampMillis;
 
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
         mStoriesBeen = new ArrayList<>();
@@ -94,14 +93,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            if (position < mStoriesBeen.size()) {
-                ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-                // 如果有Header
-                if (mHeaderView != null) {
-                    showContent((ItemViewHolder) holder, position, itemViewHolder);
-                } else {
-                    showContentWithoutHeader((ItemViewHolder) holder, position, itemViewHolder);
-                }
+            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            // 如果有Header
+            if (mHeaderView != null) {
+                showContent((ItemViewHolder) holder, position, itemViewHolder);
+            } else {
+                showContentWithoutHeader((ItemViewHolder) holder, position, itemViewHolder);
             }
         }
     }
@@ -121,10 +118,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return mStoriesBeen.size() + 1;
         }
         return mStoriesBeen.size();
-    }
-
-    public long getTimestampMillis() {
-        return timestampMillis;
     }
 
     public void changeDateTitle(int i, String dateTitle) {
@@ -190,13 +183,13 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         void onItemClick(View view, StoriesBean storiesBean);
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    private class ItemViewHolder extends RecyclerView.ViewHolder {
 
         TextView dateTv;
         TextView titleTv;
         ImageView picImageView;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
             dateTv = (TextView) itemView.findViewById(R.id.latest_news_detail_date_tv);
             titleTv = (TextView) itemView.findViewById(R.id.latest_news_fragment_title);
@@ -204,9 +197,9 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        public HeaderViewHolder(View view) {
+        HeaderViewHolder(View view) {
             super(view);
         }
     }
