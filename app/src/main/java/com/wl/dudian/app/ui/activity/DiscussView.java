@@ -14,6 +14,7 @@ import com.wl.dudian.app.model.CommentsBean;
 import com.wl.dudian.app.model.DiscussDataModel;
 import com.wl.dudian.app.model.DiscussExtraModel;
 import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.databinding.DiscussViewBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +32,16 @@ public class DiscussView {
     private int mId;
     private BottomSheetDialog mBottomSheetDialog;
 
-    private TextView mShortTv;
-    private TextView mLongTv;
-    private TextView mProvalTv;
-
     private DiscussAdapter mAdapter;
     private List<CommentsBean> mCommentsBeenList = new ArrayList<>();
+    private DiscussViewBinding mBinding;
 
-    private DomainService domainService;
+    private DomainService mDomainService;
 
     public DiscussView(Context context, int id) {
         mContext = context;
         mId = id;
-        domainService = DomainService.getInstance(context);
+        mDomainService = DomainService.getInstance(context);
 
         init(mContext);
         loadDiscussData(id, true);
@@ -51,13 +49,12 @@ public class DiscussView {
     }
 
     private void loadExtraData(int id) {
-        domainService.getDiscussExtra("" + id)
+        mDomainService.getDiscussExtra("" + id)
                      .subscribe(new Action1<DiscussExtraModel>() {
                          @Override
                          public void call(DiscussExtraModel discussExtraModel) {
-                             mShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
-                             mLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
-                             mProvalTv.setText("" + discussExtraModel.getPopularity());
+                             mBinding.discussViewShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
+                             mBinding.discussViewLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
                          }
                      });
     }
@@ -65,9 +62,9 @@ public class DiscussView {
     private void loadDiscussData(int id, boolean isShortDiscuss) {
         Observable<DiscussDataModel> discussObservable;
         if (isShortDiscuss) {
-            discussObservable = domainService.getDiscussShort("" + id);
+            discussObservable = mDomainService.getDiscussShort("" + id);
         } else {
-            discussObservable = domainService.getDiscussLong("" + id);
+            discussObservable = mDomainService.getDiscussLong("" + id);
         }
         discussObservable.subscribe(new Action1<DiscussDataModel>() {
             @Override
@@ -85,7 +82,9 @@ public class DiscussView {
 
     private void createBottomSheetDialog(Context context) {
         mBottomSheetDialog = new BottomSheetDialog(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.discuss_view, null, false);
+        mBinding = DiscussViewBinding.inflate(LayoutInflater.from(context), null, false);
+        mBinding.setHandler(new Handler());
+        View view = mBinding.getRoot();
         mBottomSheetDialog.setContentView(view);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.discuss_view_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -95,25 +94,7 @@ public class DiscussView {
         mAdapter = new DiscussAdapter(mCommentsBeenList, mContext);
         recyclerView.setAdapter(mAdapter);
 
-        mLongTv = (TextView) view.findViewById(R.id.discuss_view_long_tv);
-        mShortTv = (TextView) view.findViewById(R.id.discuss_view_short_tv);
-        mProvalTv = (TextView) view.findViewById(R.id.discuss_view_prov_tv);
-
         loadExtraData(mId);
-
-        mLongTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setLongClick();
-            }
-        });
-
-        mShortTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setShortClick();
-            }
-        });
 
         if (mBottomSheetDialog.isShowing()) {
             mBottomSheetDialog.dismiss();
@@ -122,15 +103,17 @@ public class DiscussView {
         }
     }
 
-    private void setShortClick() {
-        mShortTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussShow));
-        mLongTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussHide));
-        loadDiscussData(mId, true);
-    }
+    public class Handler {
+        public void setShortClick(View view) {
+            ((TextView) view).setTextColor(mContext.getResources().getColor(R.color.textColorDiscussShow));
+            mBinding.discussViewLongTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussHide));
+            loadDiscussData(mId, true);
+        }
 
-    private void setLongClick() {
-        mShortTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussHide));
-        mLongTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussShow));
-        loadDiscussData(mId, false);
+        public void setLongClick(View view) {
+            mBinding.discussViewShortTv.setTextColor(mContext.getResources().getColor(R.color.textColorDiscussHide));
+            ((TextView) view).setTextColor(mContext.getResources().getColor(R.color.textColorDiscussShow));
+            loadDiscussData(mId, false);
+        }
     }
 }

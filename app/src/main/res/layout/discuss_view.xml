@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/discussBackground"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+<layout>
+    <data>
+        <variable
+            name="handler"
+            type="com.wl.dudian.app.ui.activity.DiscussView.Handler"/>
+    </data>
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:background="@color/discussBackground"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/discuss_view_short_tv"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/textColorDiscussShow"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/discuss_view_long_tv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textColorDiscussHide"
+            android:layout_marginBottom="12dp"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_weight="1"/>
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/discuss_view_prov_tv"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/discuss_view_short_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{handler.setShortClick}"
+                android:textColor="@color/textColorDiscussShow"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/discuss_view_long_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:onClick="@{handler.setLongClick}"
+                android:layout_weight="1"
+                android:textColor="@color/textColorDiscussHide"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@color/lineColor"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/discuss_view_recyclerview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/icon_love"
-            android:drawablePadding="8dp"
-            android:gravity="right"
-            android:text="0"/>
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:background="@color/lineColor"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/discuss_view_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
-</LinearLayout>
+</layout>

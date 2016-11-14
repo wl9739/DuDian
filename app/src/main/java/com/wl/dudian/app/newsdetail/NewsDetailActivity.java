@@ -40,13 +40,16 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     private NewsDetailActivityBinding mBinding;
     private boolean isFavorite;
 
+    public static void launch(Context activity, StoriesBean storiesBean) {
+        launch(activity, storiesBean, false);
+    }
     /**
      * launch
      */
-    public static void launch(Context activity, StoriesBean storiesBean) {
+    public static void launch(Context activity, StoriesBean storiesBean, boolean hideHeader) {
         Intent intent = new Intent(activity, NewsDetailActivity.class);
         intent.putExtra(ARGU_STORIES_BEAN, storiesBean);
-        if (storiesBean.getImages() == null || storiesBean.getImages().size() < 1) {
+        if (hideHeader || storiesBean.getImages().size() < 1) {
             intent.putExtra(ARGU_IS_NOHEADER, true);
         } else {
             intent.putExtra(ARGU_IS_NOHEADER, TextUtils.isEmpty(storiesBean.getImages().get(0)));
@@ -135,7 +138,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
         if (isNoHeader) {
             ViewGroup.LayoutParams params = mBinding.appBarLayout.getLayoutParams();
-            params.height = 0;
+            params.height = 60;
             mBinding.appBarLayout.setLayoutParams(params);
         } else {
             mBinding.appBarLayout.setVisibility(View.VISIBLE);

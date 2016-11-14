@@ -139,26 +139,18 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
         });
 
         mBinding.latestNewsFragmentRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mItemAdapter.getItemCount()) {
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            datePosition = lastVisibleItem + 1;
-                            mPresenter.loadMoreNews();
-                        }
-                    });
-                }
-            }
+            int lastPosition;
+            int itemCount;
+            int lastItemCount;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
+                itemCount = mLinearLayoutManager.getItemCount();
+                lastPosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+                if (lastItemCount != itemCount && lastPosition == itemCount - 1) {
+                    datePosition = lastPosition + 1;
+                    mPresenter.loadMoreNews();
+                }
             }
         });
     }

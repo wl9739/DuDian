@@ -34,7 +34,7 @@ public class ColumnCenterFragment extends BaseFragment {
     private LatestNewsItemAdapter mNewsItemAdapter;
     private List<StoriesBean> mStoriesBeanList;
     private String mColumnId;
-    private DomainService domainService;
+    private DomainService mDomainService;
     private ColumncenterfragmentBinding mBinding;
 
     public static ColumnCenterFragment newInstance(String id) {
@@ -57,7 +57,7 @@ public class ColumnCenterFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        domainService = DomainService.getInstance(getContext());
+        mDomainService = DomainService.getInstance(getContext());
         mColumnId = getArguments().getString(COLUMN_ID);
         if (null == mColumnId || TextUtils.isEmpty(mColumnId)) {
             return;
@@ -71,7 +71,7 @@ public class ColumnCenterFragment extends BaseFragment {
         mNewsItemAdapter.setOnLatestNewsItemClickListener(new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
             @Override
             public void onItemClick(View view, StoriesBean storiesBean) {
-                NewsDetailActivity.launch(getActivity(), storiesBean);
+                NewsDetailActivity.launch(getActivity(), storiesBean, true);
             }
         });
     }
@@ -82,7 +82,7 @@ public class ColumnCenterFragment extends BaseFragment {
      * @param columnId 主题ID
      */
     private void getThemeDetails(String columnId) {
-        domainService.getThemeDetail(columnId)
+        mDomainService.getThemeDetail(columnId)
                      .subscribe(new Action1<ThemeDetailModel>() {
                          @Override
                          public void call(ThemeDetailModel themeDetailModel) {
