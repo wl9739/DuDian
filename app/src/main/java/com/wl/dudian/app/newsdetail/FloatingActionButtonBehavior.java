@@ -57,14 +57,14 @@ public class FloatingActionButtonBehavior extends CoordinatorLayout.Behavior<Flo
                                int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
         // 向上滚动进入, 向下滚动隐藏
-        if (dyConsumed > 0 && !this.isAnimationOut && child.getVisibility() == View.VISIBLE) {
+        if (dyConsumed > 20 && !this.isAnimationOut && child.getVisibility() == View.VISIBLE) {
             // 如果是展开的就先收回去
             if (child.isExpanded()) {
                 child.collapse();
             }
             // animateOut()和animateIn()都是私有方法, 需要重新实现
             animateOut(child);
-        } else if (dyConsumed < 0 && child.getVisibility() != View.VISIBLE) {
+        } else if (dyConsumed < -20 && child.getVisibility() != View.VISIBLE) {
             animatæeIn(child);
         }
     }

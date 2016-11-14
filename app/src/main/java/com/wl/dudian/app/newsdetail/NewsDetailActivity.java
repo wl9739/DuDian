@@ -180,13 +180,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         // 开启Application Cache功能
         mBinding.webview.getSettings().setAppCacheEnabled(true);
 
-        mBinding.webview.setWebViewClient(new WebViewClient() {
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-        });
-
         SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
         boolean hideImage = sp.getBoolean(Constants.HIDE_IMAGE, false);
         mBinding.webview.getSettings().setBlockNetworkImage(hideImage);

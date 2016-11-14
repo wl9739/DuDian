@@ -61,9 +61,9 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
         Observable<NewsDetails> getNewsDetail = Observable.concat(
                 domainService.getNewsDetailFromDb(newsId),
                 domainService.getNewsDetailsFromNet(newsId))
-                                                          .first()
-                                                          .subscribeOn(Schedulers.io())
-                                                          .observeOn(AndroidSchedulers.mainThread());
+                .first()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
 
 
         dataSubscription = getNewsDetail.subscribe(new Action1<NewsDetails>() {
@@ -110,14 +110,15 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
      */
     private void setNoBodyInfo(NewsDetails newsDetails) {
         String imageUrl;
+        String shareUrl;
         if (!TextUtils.isEmpty(newsDetails.getImage())) {
             imageUrl = newsDetails.getImage();
             newsDetailView.showHeaderImage(imageUrl);
-        } else if (!TextUtils.isEmpty(newsDetails.getImages().get(0))) {
+        } else if (newsDetails.getImages() != null && !TextUtils.isEmpty(newsDetails.getImages().get(0))) {
             imageUrl = newsDetails.getImages().get(0);
             newsDetailView.showHeaderImage(imageUrl);
         }
-        String shareUrl = newsDetails.getShare_url();
+        shareUrl = newsDetails.getShare_url();
         newsDetailView.showNobodyData(shareUrl);
         newsDetailView.showWebView(true);
     }
@@ -169,7 +170,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
     private void showNightModel(final NewsDetails newsDetails) {
         newsDetailView.showHeaderImage(newsDetails.getImage());
         showDataSubscription = Observable
-                .timer(800, TimeUnit.MILLISECONDS)
+                .timer(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override

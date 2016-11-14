@@ -56,7 +56,7 @@ public class AboutHeaderView extends View implements Runnable {
     public void run() {
         while (true) {
             try {
-                if (positionX > -1000) {
+                if (positionX > -800) {
                     positionX -= 1;
                     positionY -= 0.1;
                     postInvalidate();
