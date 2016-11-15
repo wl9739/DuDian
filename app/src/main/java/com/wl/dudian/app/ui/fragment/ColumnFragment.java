@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.ColumnListAdapter;
-import com.wl.dudian.app.model.ThemesModel;
+import com.wl.dudian.framework.db.model.ThemesModel;
 import com.wl.dudian.databinding.ColumnfragmentBinding;
 
 /**

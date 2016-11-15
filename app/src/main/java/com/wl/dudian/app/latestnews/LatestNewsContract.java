@@ -2,8 +2,8 @@ package com.wl.dudian.app.latestnews;
 
 import com.wl.dudian.app.BasePresenter;
 import com.wl.dudian.app.BaseView;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
+import com.wl.dudian.framework.db.model.TopStoriesBean;
 
 import java.util.List;
 

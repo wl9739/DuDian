@@ -2,7 +2,6 @@ package com.wl.dudian.app.latestnews;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,8 +14,8 @@ import android.view.ViewGroup;
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
 import com.wl.dudian.app.adapter.LatestNewsItemAdapter;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
+import com.wl.dudian.framework.db.model.TopStoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.databinding.LatestNewsFragmentBinding;

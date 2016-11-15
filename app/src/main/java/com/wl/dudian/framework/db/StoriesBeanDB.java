@@ -1,20 +1,20 @@
-package com.wl.dudian.app.model;
+package com.wl.dudian.framework.db;
 
-import java.io.Serializable;
-import java.util.List;
-
+import io.realm.RealmObject;
 
 /**
- * Created by Qiushui on 16/6/21.
+ * @author Qiushui on 16/8/16.
  */
 
-public class StoriesBean implements Serializable {
+public class StoriesBeanDB extends RealmObject {
+
     private int type;
     private int id;
     private String ga_prefix;
     private String title;
+    private String images;
     private boolean read;
-    private List<String> images;
+    private boolean isFavorite;
 
     public int getType() {
         return type;
@@ -48,11 +48,11 @@ public class StoriesBean implements Serializable {
         this.title = title;
     }
 
-    public List<String> getImages() {
+    public String getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(String images) {
         this.images = images;
     }
 
@@ -62,5 +62,13 @@ public class StoriesBean implements Serializable {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

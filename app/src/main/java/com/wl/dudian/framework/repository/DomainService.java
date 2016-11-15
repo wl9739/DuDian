@@ -1,18 +1,18 @@
-package com.wl.dudian.app.repository;
+package com.wl.dudian.framework.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.DiscussDataModel;
-import com.wl.dudian.app.model.DiscussExtraModel;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.NewsDetails;
-import com.wl.dudian.app.model.StartImage;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.ThemeDetailModel;
-import com.wl.dudian.app.model.ThemesModel;
+import com.wl.dudian.framework.db.model.BeforeNews;
+import com.wl.dudian.framework.db.model.DiscussDataModel;
+import com.wl.dudian.framework.db.model.DiscussExtraModel;
+import com.wl.dudian.framework.db.model.LatestNews;
+import com.wl.dudian.framework.db.model.NewsDetails;
+import com.wl.dudian.framework.db.model.StartImage;
+import com.wl.dudian.framework.db.model.StoriesBean;
+import com.wl.dudian.framework.db.model.ThemeDetailModel;
+import com.wl.dudian.framework.db.model.ThemesModel;
 
 import java.util.List;
 

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.framework.db.model.LatestNews;
+import com.wl.dudian.framework.repository.DomainService;
 import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.concurrent.TimeUnit;

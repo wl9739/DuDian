@@ -1,4 +1,4 @@
-package com.wl.dudian.app.repository;
+package com.wl.dudian.framework.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,17 +9,17 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.wl.dudian.R;
-import com.wl.dudian.app.db.BeforeNewsDB;
-import com.wl.dudian.app.db.LatestNewsDB;
-import com.wl.dudian.app.db.NewsDetailDB;
-import com.wl.dudian.app.db.StoriesBeanDB;
-import com.wl.dudian.app.db.TopStoriesBeanDB;
-import com.wl.dudian.app.db.mapper.Mapper;
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.NewsDetails;
-import com.wl.dudian.app.model.StartImage;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.db.BeforeNewsDB;
+import com.wl.dudian.framework.db.LatestNewsDB;
+import com.wl.dudian.framework.db.NewsDetailDB;
+import com.wl.dudian.framework.db.StoriesBeanDB;
+import com.wl.dudian.framework.db.TopStoriesBeanDB;
+import com.wl.dudian.framework.db.mapper.Mapper;
+import com.wl.dudian.framework.db.model.BeforeNews;
+import com.wl.dudian.framework.db.model.LatestNews;
+import com.wl.dudian.framework.db.model.NewsDetails;
+import com.wl.dudian.framework.db.model.StartImage;
+import com.wl.dudian.framework.db.model.StoriesBean;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

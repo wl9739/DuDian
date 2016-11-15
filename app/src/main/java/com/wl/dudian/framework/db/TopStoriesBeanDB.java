@@ -1,11 +1,13 @@
-package com.wl.dudian.app.model;
+package com.wl.dudian.framework.db;
 
+import io.realm.RealmObject;
 
 /**
- * Created by Qiushui on 16/6/21.
+ * @author Qiushui on 16/8/16.
  */
 
-public class TopStoriesBean {
+public class TopStoriesBeanDB extends RealmObject {
+
     private String image;
     private int type;
     private int id;

@@ -18,8 +18,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
+import com.wl.dudian.framework.db.model.TopStoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 
 import java.util.ArrayList;

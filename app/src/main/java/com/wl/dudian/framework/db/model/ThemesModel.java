@@ -1,4 +1,4 @@
-package com.wl.dudian.app.model;
+package com.wl.dudian.framework.db.model;
 
 import java.io.Serializable;
 import java.util.List;

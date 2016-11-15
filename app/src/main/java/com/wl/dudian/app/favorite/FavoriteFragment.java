@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.adapter.FavoriteListAdapter;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
-import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.framework.repository.DomainService;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.databinding.FavoriteFragmentBinding;
 

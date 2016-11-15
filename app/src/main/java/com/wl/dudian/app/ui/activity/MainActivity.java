@@ -20,8 +20,8 @@ import android.view.View;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.latestnews.LatestNewsFragment;
-import com.wl.dudian.app.model.ThemesModel;
-import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.framework.db.model.ThemesModel;
+import com.wl.dudian.framework.repository.DomainService;
 import com.wl.dudian.app.ui.fragment.ColumnFragment;
 import com.wl.dudian.app.favorite.FavoriteFragment;
 import com.wl.dudian.app.ui.fragment.SettingsFragment;

@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.wl.dudian.app.adapter.FavoriteListAdapter;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
 
 import java.util.Collections;
 import java.util.List;

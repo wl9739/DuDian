@@ -3,10 +3,10 @@ package com.wl.dudian.app.latestnews;
 import android.content.Context;
 import android.util.Log;
 
-import com.wl.dudian.app.model.BeforeNews;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.framework.db.model.BeforeNews;
+import com.wl.dudian.framework.db.model.LatestNews;
+import com.wl.dudian.framework.db.model.StoriesBean;
+import com.wl.dudian.framework.repository.DomainService;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.DateUtil;
 

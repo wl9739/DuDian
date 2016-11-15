@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.wl.dudian.app.model.NewsDetails;
-import com.wl.dudian.app.repository.DomainService;
+import com.wl.dudian.framework.db.model.NewsDetails;
+import com.wl.dudian.framework.repository.DomainService;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.Constants;
 

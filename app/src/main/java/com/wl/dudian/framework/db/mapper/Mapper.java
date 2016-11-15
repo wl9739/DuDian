@@ -1,11 +1,11 @@
-package com.wl.dudian.app.db.mapper;
+package com.wl.dudian.framework.db.mapper;
 
-import com.wl.dudian.app.db.LatestNewsDB;
-import com.wl.dudian.app.db.StoriesBeanDB;
-import com.wl.dudian.app.db.TopStoriesBeanDB;
-import com.wl.dudian.app.model.LatestNews;
-import com.wl.dudian.app.model.StoriesBean;
-import com.wl.dudian.app.model.TopStoriesBean;
+import com.wl.dudian.framework.db.LatestNewsDB;
+import com.wl.dudian.framework.db.StoriesBeanDB;
+import com.wl.dudian.framework.db.TopStoriesBeanDB;
+import com.wl.dudian.framework.db.model.LatestNews;
+import com.wl.dudian.framework.db.model.StoriesBean;
+import com.wl.dudian.framework.db.model.TopStoriesBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**

@@ -2,7 +2,7 @@ package com.wl.dudian.app.newsdetail;
 
 import com.wl.dudian.app.BasePresenter;
 import com.wl.dudian.app.BaseView;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
 
 /**
  * Created by Qiushui on 16/8/8.

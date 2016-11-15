@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.StoriesBean;
+import com.wl.dudian.framework.db.model.StoriesBean;
 import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.DiscussView;
 import com.wl.dudian.databinding.NewsDetailActivityBinding;

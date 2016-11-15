@@ -1,4 +1,4 @@
-package com.wl.dudian.app.db;
+package com.wl.dudian.framework.db;
 
 import io.realm.RealmObject;
 

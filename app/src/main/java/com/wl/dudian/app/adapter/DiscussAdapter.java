@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wl.dudian.R;
-import com.wl.dudian.app.model.CommentsBean;
+import com.wl.dudian.framework.db.model.CommentsBean;
 import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.DateUtil;
 
