@@ -81,9 +81,14 @@ public class FavoriteFragment extends BaseFragment {
                 return false;
             }
         });
+        mAdapter.setOnFavoriteItemClickListener(new FavoriteListAdapter.OnFavoriteItemClickListener() {
+            @Override
+            public void onItemClick(View view, StoriesBean storiesBean) {
+                NewsDetailActivity.launch(getActivity(), storiesBean);
+            }
+        });
 
         SimpleItemTouchHelperCallback callback = new SimpleItemTouchHelperCallback(mAdapter, mStoriesBeanList);
-
         callback.setOnItemTouchCountListener(new SimpleItemTouchHelperCallback.OnItemTouchCountListener() {
             @Override
             public void onItemTouchStart() {
@@ -104,13 +109,6 @@ public class FavoriteFragment extends BaseFragment {
         });
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(mBinding.favoriteFragmentRecyclerview);
-
-        mAdapter.setOnFavoriteItemClickListener(new FavoriteListAdapter.OnFavoriteItemClickListener() {
-            @Override
-            public void onItemClick(View view, StoriesBean storiesBean) {
-                NewsDetailActivity.launch(getActivity(), storiesBean);
-            }
-        });
     }
 
     private void deleteItem() {

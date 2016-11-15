@@ -6,7 +6,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import com.wl.dudian.app.adapter.FavoriteListAdapter;
 import com.wl.dudian.app.model.StoriesBean;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,13 +13,9 @@ import java.util.List;
  * Created by Qiushui on 2016/11/15.
  */
 
-public class SimpleItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
+class SimpleItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
 
-    private final FavoriteListAdapter mAdapter;
-    private List<StoriesBean> mData;
-    private int sCount = 0;
-
-    public interface OnItemTouchCountListener {
+    interface OnItemTouchCountListener {
         void onItemTouchStart();
 
         void onItemDetouch();
@@ -28,23 +23,24 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.SimpleCallbac
         void onItemIndexChanged(int finalPosition);
     }
 
+    private final FavoriteListAdapter mAdapter;
+    private List<StoriesBean> mData;
+    private int sCount = 0;
+
     private OnItemTouchCountListener mOnItemTouchCountListener;
 
-    public void setOnItemTouchCountListener(OnItemTouchCountListener onItemTouchCountListener) {
+    void setOnItemTouchCountListener(OnItemTouchCountListener onItemTouchCountListener) {
         mOnItemTouchCountListener = onItemTouchCountListener;
     }
 
-    public SimpleItemTouchHelperCallback(FavoriteListAdapter adapter, List<StoriesBean> data) {
+    SimpleItemTouchHelperCallback(FavoriteListAdapter adapter, List<StoriesBean> data) {
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
-        mData = new ArrayList<>();
-        mData.addAll(data);
-
+        mData = data;
         mAdapter = adapter;
     }
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-
         int fromPosition = viewHolder.getAdapterPosition();
         int toPosition = target.getAdapterPosition();
         if (fromPosition < toPosition) {
@@ -75,7 +71,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.SimpleCallbac
             sCount++;
         }
     }
-
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {

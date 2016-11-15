@@ -13,8 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.model.StoriesBean;
@@ -83,10 +81,10 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         mBinding.picName.setText(image_source);
         isFavorite = favorite;
         if (favorite) {
-            mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
+            mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white);
             mBinding.favoriteBtn.setTitle("已收藏");
         } else {
-            mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_border_white_24dp);
+            mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_border_white);
             mBinding.favoriteBtn.setTitle("收藏");
         }
     }
@@ -199,7 +197,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
             if (isFavorite) {
                 Snackbar.make(view, "已收藏", Snackbar.LENGTH_SHORT).show();
             } else {
-                mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white_24dp);
+                mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white);
                 mBinding.favoriteBtn.setTitle("已收藏");
                 // 保存到数据库
                 mPresenter.favorite();

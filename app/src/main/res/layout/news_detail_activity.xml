@@ -120,7 +120,7 @@
                 android:onClick="@{handler.onShareBtnClick}"
                 fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                fab:fab_icon="@drawable/ic_share_white_24dp"
+                fab:fab_icon="@drawable/ic_share"
                 fab:fab_size="mini"
                 fab:fab_title="分享"/>
 
@@ -131,7 +131,7 @@
                 android:onClick="@{handler.onFavoritBtnClick}"
                 fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                fab:fab_icon="@drawable/ic_bookmark_border_white_24dp"
+                fab:fab_icon="@drawable/ic_bookmark_border_white"
                 fab:fab_size="mini"
                 fab:fab_title="收藏"/>
 
@@ -142,7 +142,7 @@
                 android:onClick="@{handler.onDiscussBtnClick}"
                 fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                fab:fab_icon="@drawable/ic_insert_comment_white_24dp"
+                fab:fab_icon="@drawable/ic_insert_comment"
                 fab:fab_size="mini"
                 fab:fab_title="评论"/>
 

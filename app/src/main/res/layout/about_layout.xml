@@ -22,7 +22,7 @@
                     android:layout_height="280dp"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:src="@drawable/avatar"
+                    android:src="@drawable/ic_avatar"
                     android:layout_marginTop="208dp"
                     android:layout_marginLeft="48dp"
                     android:layout_width="72dp"

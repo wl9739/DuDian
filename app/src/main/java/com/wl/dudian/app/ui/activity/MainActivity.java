@@ -99,11 +99,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         SharedPreferences.Editor editor = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE).edit();
         if (hideImage) {
             editor.putBoolean(Constants.HIDE_IMAGE, false).apply();
-            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图").setIcon(R.drawable.ic_filter_none_grey_700_24dp);
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图").setIcon(R.drawable.ic_filter_none_grey);
             Snackbar.make(binding.content.contentLayout.contentMain, "有图模式设置成功！", Snackbar.LENGTH_SHORT).show();
         } else {
             editor.putBoolean(Constants.HIDE_IMAGE, true).apply();
-            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("有图").setIcon(R.drawable.ic_filter_grey_700_24dp);
+            binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("有图").setIcon(R.drawable.ic_filter_grey);
             Snackbar.make(binding.content.contentLayout.contentMain, "无图模式设置成功！", Snackbar.LENGTH_SHORT).show();
         }
         binding.drawerLayout.closeDrawer(Gravity.LEFT);
@@ -153,10 +153,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void setNavMenu() {
         if (mSharedPreferences.getBoolean(Constants.HIDE_IMAGE, false)) {
             binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("有图")
-                    .setIcon(R.drawable.ic_filter_grey_700_24dp);
+                    .setIcon(R.drawable.ic_filter_grey);
         } else {
             binding.navView.getMenu().findItem(R.id.nav_pic).setTitle("无图")
-                    .setIcon(R.drawable.ic_filter_none_grey_700_24dp);
+                    .setIcon(R.drawable.ic_filter_none_grey);
         }
     }
 

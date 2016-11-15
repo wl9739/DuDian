@@ -1,13 +1,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <item name="ic_menu_camera" type="drawable">@android:drawable/ic_menu_camera</item>
     <item name="ic_menu_gallery" type="drawable">@android:drawable/ic_menu_gallery</item>
-    <item name="ic_menu_column" type="drawable">@drawable/ic_assessment_grey_700_24dp</item>
-    <item name="ic_menu_img" type="drawable">@drawable/ic_filter_grey_700_24dp</item>
+    <item name="ic_menu_column" type="drawable">@drawable/ic_assessment_grey</item>
+    <item name="ic_menu_img" type="drawable">@drawable/ic_filter_grey</item>
     <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
 
-    <item name="ic_menu_home" type="drawable">@drawable/ic_home_grey_700_24dp</item>
-    <item name="ic_menu_love" type="drawable">@drawable/ic_favorite_grey_700_24dp</item>
-    <item name="ic_menu_daynight" type="drawable">@drawable/ic_brightness_4_grey600_24dp</item>
+    <item name="ic_menu_home" type="drawable">@drawable/ic_home</item>
+    <item name="ic_menu_love" type="drawable">@drawable/ic_favorite_grey</item>
+    <item name="ic_menu_daynight" type="drawable">@drawable/ic_brightness_grey</item>
 
 </resources>

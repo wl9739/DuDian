@@ -37,7 +37,7 @@ public class AboutHeaderView extends View implements Runnable {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mClipPath = new Path();
 
-        mBackGound = BitmapFactory.decodeResource(getResources(), R.drawable.dayu_back);
+        mBackGound = BitmapFactory.decodeResource(getResources(), R.drawable.ic_dayu);
     }
 
     @Override
