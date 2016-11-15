@@ -11,7 +11,7 @@ import java.util.List;
  * @author Qiushui on 16/8/16.
  */
 
-public interface LatestNewsContract {
+interface LatestNewsContract {
 
     interface View extends BaseView<Presenter> {
 

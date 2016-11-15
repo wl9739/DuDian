@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
  * Created by Qiushui on 16/8/8.
  */
 
-public class SplashPresenter implements SplashContract.Presenter {
+class SplashPresenter implements SplashContract.Presenter {
 
     public static final String TAG = "SplashPresenter";
 
@@ -33,7 +33,7 @@ public class SplashPresenter implements SplashContract.Presenter {
 
     private Subscription startImageSubscription;
 
-    public SplashPresenter(Context context, SplashContract.View splashView) {
+    SplashPresenter(Context context, SplashContract.View splashView) {
         domainService = DomainService.getInstance(context);
         this.splashView = splashView;
 

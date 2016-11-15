@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * RecyclerView 拖拽帮助类
+ *
  * Created by Qiushui on 2016/11/15.
  */
 

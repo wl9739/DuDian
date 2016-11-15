@@ -18,12 +18,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.wl.dudian.R;
+import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.framework.db.model.StoriesBean;
 import com.wl.dudian.framework.db.model.TopStoriesBean;
-import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,11 +44,6 @@ public class BannerView extends FrameLayout {
      * viewpager
      */
     private ViewPager mViewPager;
-
-    /**
-     * viewpager指示器
-     */
-    private CirclePageIndicator mIndicator;
 
     /**
      * context
@@ -91,14 +86,11 @@ public class BannerView extends FrameLayout {
 
     /**
      * 将TopStoriesBean转化为StoriesBean
-     *
-     * @param topStoriesBean
-     * @return
      */
     private static StoriesBean topStoriesBeanToStoriesBean(TopStoriesBean topStoriesBean) {
         StoriesBean storiesBean = new StoriesBean();
         storiesBean.setId(topStoriesBean.getId());
-        storiesBean.setImages(Arrays.asList(topStoriesBean.getImage()));
+        storiesBean.setImages(Collections.singletonList(topStoriesBean.getImage()));
         storiesBean.setTitle(topStoriesBean.getTitle());
         storiesBean.setType(topStoriesBean.getType());
         storiesBean.setGa_prefix(topStoriesBean.getGa_prefix());
@@ -123,8 +115,6 @@ public class BannerView extends FrameLayout {
 
     /**
      * 添加轮播显示的图片
-     *
-     * @param images
      */
     public void setImages(List<TopStoriesBean> images) {
         mImageSize = images.size();
@@ -135,10 +125,10 @@ public class BannerView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
-        mIndicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
+        CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
         mViewPager.setAdapter(mAdapter);
-        mIndicator.setViewPager(mViewPager);
-        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        indicator.setViewPager(mViewPager);
+        indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -196,21 +186,16 @@ public class BannerView extends FrameLayout {
         private OnBannerItemClickListener mOnBannerItemClickListener;
         private List<TopStoriesBean> mTopStoriesBeanList;
 
-        public BannerViewPagerAdapter() {
+        BannerViewPagerAdapter() {
             mTopStoriesBeanList = new ArrayList<>();
         }
 
-        /**
-         * set点击事件
-         *
-         * @param onBannerItemClickListener
-         */
-        public void setOnBannerItemClickListener(
+        void setOnBannerItemClickListener(
                 BannerViewPagerAdapter.OnBannerItemClickListener onBannerItemClickListener) {
             mOnBannerItemClickListener = onBannerItemClickListener;
         }
 
-        public void setImages(List<TopStoriesBean> images) {
+        void setImages(List<TopStoriesBean> images) {
             mTopStoriesBeanList.clear();
             mTopStoriesBeanList = images;
             notifyDataSetChanged();
@@ -256,7 +241,7 @@ public class BannerView extends FrameLayout {
         /**
          * 点击事件接口
          */
-        public interface OnBannerItemClickListener {
+        interface OnBannerItemClickListener {
             void onBannerItemClick(StoriesBean storiesBean);
         }
     }

@@ -30,7 +30,6 @@ public class DiscussView {
 
     private Context mContext;
     private int mId;
-    private BottomSheetDialog mBottomSheetDialog;
 
     private DiscussAdapter mAdapter;
     private List<CommentsBean> mCommentsBeenList = new ArrayList<>();
@@ -50,13 +49,13 @@ public class DiscussView {
 
     private void loadExtraData(int id) {
         mDomainService.getDiscussExtra("" + id)
-                     .subscribe(new Action1<DiscussExtraModel>() {
-                         @Override
-                         public void call(DiscussExtraModel discussExtraModel) {
-                             mBinding.discussViewShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
-                             mBinding.discussViewLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
-                         }
-                     });
+                .subscribe(new Action1<DiscussExtraModel>() {
+                    @Override
+                    public void call(DiscussExtraModel discussExtraModel) {
+                        mBinding.discussViewShortTv.setText("短评论数 (" + discussExtraModel.getShort_comments() + ")");
+                        mBinding.discussViewLongTv.setText("长评论数 (" + discussExtraModel.getLong_comments() + ")");
+                    }
+                });
     }
 
     private void loadDiscussData(int id, boolean isShortDiscuss) {
@@ -81,11 +80,11 @@ public class DiscussView {
     }
 
     private void createBottomSheetDialog(Context context) {
-        mBottomSheetDialog = new BottomSheetDialog(context);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         mBinding = DiscussViewBinding.inflate(LayoutInflater.from(context), null, false);
         mBinding.setHandler(new Handler());
         View view = mBinding.getRoot();
-        mBottomSheetDialog.setContentView(view);
+        bottomSheetDialog.setContentView(view);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.discuss_view_recyclerview);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -96,10 +95,10 @@ public class DiscussView {
 
         loadExtraData(mId);
 
-        if (mBottomSheetDialog.isShowing()) {
-            mBottomSheetDialog.dismiss();
+        if (bottomSheetDialog.isShowing()) {
+            bottomSheetDialog.dismiss();
         } else {
-            mBottomSheetDialog.show();
+            bottomSheetDialog.show();
         }
     }
 

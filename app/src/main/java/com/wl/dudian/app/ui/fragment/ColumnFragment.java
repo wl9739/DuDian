@@ -20,10 +20,7 @@ import com.wl.dudian.databinding.ColumnfragmentBinding;
 public class ColumnFragment extends BaseFragment {
 
     private static final String THEMES_MODEL = "THEMES_MODEL";
-
     private ColumnfragmentBinding mBinding;
-
-    private ColumnListAdapter mColumnListAdapter;
 
     public static ColumnFragment newInstance(ThemesModel themesModel) {
         ColumnFragment fragment = new ColumnFragment();
@@ -36,7 +33,7 @@ public class ColumnFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.columnfragment, container, false);
         return mBinding.getRoot();
     }
@@ -48,9 +45,9 @@ public class ColumnFragment extends BaseFragment {
         if (null == model) {
             return;
         }
-        mColumnListAdapter = new ColumnListAdapter(getChildFragmentManager(), model.getOthers());
+        ColumnListAdapter columnListAdapter = new ColumnListAdapter(getChildFragmentManager(), model.getOthers());
         if (null != mBinding.columnfragmentVp) {
-            mBinding.columnfragmentVp.setAdapter(mColumnListAdapter);
+            mBinding.columnfragmentVp.setAdapter(columnListAdapter);
         }
         mBinding.columnfragmentTablayout.setupWithViewPager(mBinding.columnfragmentVp);
     }

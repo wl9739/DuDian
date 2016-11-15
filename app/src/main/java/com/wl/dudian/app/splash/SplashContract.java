@@ -11,7 +11,7 @@ import com.wl.dudian.app.BaseView;
  * Created by Qiushui on 16/8/8.
  */
 
-public interface SplashContract {
+interface SplashContract {
 
     interface View extends BaseView<Presenter> {
 

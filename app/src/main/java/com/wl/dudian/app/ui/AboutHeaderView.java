@@ -13,7 +13,8 @@ import com.wl.dudian.R;
 import com.wl.dudian.framework.Util;
 
 /**
- * Created by wanglin on 2016/11/7.
+ * 关于界面
+ * Created by Qiushui on 2016/11/7.
  */
 
 public class AboutHeaderView extends View implements Runnable {

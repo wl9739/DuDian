@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.wl.dudian.R;
 import com.wl.dudian.databinding.TextActivityBinding;
 
 
 /**
+ * 过渡页面
  * Created by Qiushui on 16/6/24.
  */
 

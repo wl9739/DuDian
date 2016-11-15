@@ -17,7 +17,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
  * Created by Qiushui on 2016/11/11.
  */
 
-public class FloatingActionButtonBehavior extends CoordinatorLayout.Behavior<FloatingActionsMenu> {
+class FloatingActionButtonBehavior extends CoordinatorLayout.Behavior<FloatingActionsMenu> {
 
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private boolean isAnimationOut = false;

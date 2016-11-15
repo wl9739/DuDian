@@ -1,5 +1,6 @@
 package com.wl.dudian.app.newsdetail;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -167,6 +168,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     /**
      * 初始化WebView页面
      */
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
         mBinding.webview.setVisibility(View.INVISIBLE);
         mBinding.webview.getSettings().setJavaScriptEnabled(true);

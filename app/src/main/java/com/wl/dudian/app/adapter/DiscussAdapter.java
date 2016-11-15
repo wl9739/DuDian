@@ -53,7 +53,7 @@ public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mCommentsBean.size();
     }
 
-    static class DiscussViewHolder extends RecyclerView.ViewHolder {
+    private static class DiscussViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profileImg;
         TextView likeTv;
@@ -61,7 +61,7 @@ public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView contentTv;
         TextView timeTv;
 
-        public DiscussViewHolder(View itemView) {
+        DiscussViewHolder(View itemView) {
             super(itemView);
 
             profileImg = (CircleImageView) itemView.findViewById(R.id.id_comment_iv_avatar);

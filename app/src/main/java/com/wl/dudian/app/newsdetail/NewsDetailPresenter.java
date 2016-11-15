@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
  * Created by Qiushui on 16/8/8.
  */
 
-public class NewsDetailPresenter implements NewsDetailContract.Presenter {
+class NewsDetailPresenter implements NewsDetailContract.Presenter {
 
     private final DomainService domainService;
 
@@ -36,14 +36,13 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter {
 
     private NewsDetails newsDetails;
 
-    public NewsDetailPresenter(Context context, NewsDetailContract.View newsDetailView) {
+    NewsDetailPresenter(Context context, NewsDetailContract.View newsDetailView) {
         this.context = context;
         this.newsDetailView = newsDetailView;
         domainService = DomainService.getInstance(context);
 
         newsDetailView.setPresenter(this);
     }
-
 
     @Override
     public void subscribe() {

@@ -7,7 +7,8 @@ import android.support.annotation.Nullable;
 import com.wl.dudian.R;
 
 /**
- * Created by wanglin on 2016/11/7.
+ * 关于界面
+ * Created by Qiushui on 2016/11/7.
  */
 
 public class AboutActivity extends BaseActivity {

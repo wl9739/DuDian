@@ -8,7 +8,7 @@ import com.wl.dudian.framework.db.model.StoriesBean;
  * Created by Qiushui on 16/8/8.
  */
 
-public interface NewsDetailContract {
+interface NewsDetailContract {
 
     interface View extends BaseView<Presenter> {
 

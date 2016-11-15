@@ -1,5 +1,6 @@
 package com.wl.dudian.app.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
@@ -53,8 +54,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     /**
      * 缩小图片规格
-     *
-     * @return
      */
     public static Bitmap zoomBitmap(Bitmap bitmap, int width, int height) {
         int w = bitmap.getWidth();
@@ -93,6 +92,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return false;
     }
 
+    @SuppressLint("RtlHardcoded")
     private void switchImage() {
         SharedPreferences sp = getSharedPreferences(Constants.SP_NAME, MODE_PRIVATE);
         boolean hideImage = sp.getBoolean(Constants.HIDE_IMAGE, false);
@@ -109,6 +109,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         binding.drawerLayout.closeDrawer(Gravity.LEFT);
     }
 
+    @SuppressLint("RtlHardcoded")
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -278,6 +279,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     /**
      * 夜间模式切换
      */
+    @SuppressLint("RtlHardcoded")
     private void changeDayNightModel() {
         if (mSharedPreferences.getBoolean(Constants.IS_NIGHT, false)) {
             mSharedPreferences.edit().putBoolean(Constants.IS_NIGHT, false).apply();

@@ -33,7 +33,6 @@ public class ColumnCenterFragment extends BaseFragment {
 
     private LatestNewsItemAdapter mNewsItemAdapter;
     private List<StoriesBean> mStoriesBeanList;
-    private String mColumnId;
     private DomainService mDomainService;
     private ColumncenterfragmentBinding mBinding;
 
@@ -58,11 +57,11 @@ public class ColumnCenterFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mDomainService = DomainService.getInstance(getContext());
-        mColumnId = getArguments().getString(COLUMN_ID);
-        if (null == mColumnId || TextUtils.isEmpty(mColumnId)) {
+        String columnId = getArguments().getString(COLUMN_ID);
+        if (null == columnId || TextUtils.isEmpty(columnId)) {
             return;
         }
-        getThemeDetails(mColumnId);
+        getThemeDetails(columnId);
         mStoriesBeanList = new ArrayList<>();
         mNewsItemAdapter = new LatestNewsItemAdapter(mStoriesBeanList, getActivity());
         mBinding.columncenterfragmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
