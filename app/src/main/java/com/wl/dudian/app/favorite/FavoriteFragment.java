@@ -37,6 +37,7 @@ public class FavoriteFragment extends BaseFragment {
     private boolean delete;
     private boolean beginRecord;
     private int mPosition;
+    private boolean itemPositionChanged;
 
     public static FavoriteFragment newInstance() {
         return new FavoriteFragment();
@@ -88,6 +89,13 @@ public class FavoriteFragment extends BaseFragment {
             }
         });
 
+        mAdapter.setOnFavoriteItemTouchListener(new FavoriteListAdapter.OnFavoriteItemTouchListener() {
+            @Override
+            public void onItemTouch(int position) {
+                mPosition = position;
+            }
+        });
+
         SimpleItemTouchHelperCallback callback = new SimpleItemTouchHelperCallback(mAdapter, mStoriesBeanList);
         callback.setOnItemTouchCountListener(new SimpleItemTouchHelperCallback.OnItemTouchCountListener() {
             @Override
@@ -104,6 +112,7 @@ public class FavoriteFragment extends BaseFragment {
 
             @Override
             public void onItemIndexChanged(int position) {
+                itemPositionChanged = true;
                 mPosition = position;
             }
         });
