@@ -31,8 +31,6 @@ interface NewsDetailContract {
 
         void favorite();
 
-        void share();
-
         void updateRead(int id);
     }
 }

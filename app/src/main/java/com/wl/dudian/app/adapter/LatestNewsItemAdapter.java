@@ -39,8 +39,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private HashMap<Integer, String> datePositions = new HashMap<>();
 
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
-        mStoriesBeen = new ArrayList<>();
-        mStoriesBeen.addAll(storiesBean);
+        mStoriesBeen = storiesBean;
         mContext = context;
     }
 
@@ -58,7 +57,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     /**
      * 设置HeaderView
      *
-     * @param headerView
      */
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
@@ -128,9 +126,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     /**
      * 显示加载的内容, 在有Headerview的情况下。
      *
-     * @param holder
-     * @param position
-     * @param itemViewHolder
      */
     private void showContent(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
         if (datePositions.containsKey(position)) {
@@ -159,9 +154,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     /**
      * 显示加载的内容, 在没有headerview的情况下
      *
-     * @param holder
-     * @param position
-     * @param itemViewHolder
      */
     private void showContentWithoutHeader(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
         if (mStoriesBeen.get(position).isRead()) {

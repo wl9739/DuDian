@@ -93,11 +93,6 @@ class NewsDetailPresenter implements NewsDetailContract.Presenter {
     }
 
     @Override
-    public void share() {
-
-    }
-
-    @Override
     public void updateRead(final int id) {
 //        domainService.updateRead(id);
     }

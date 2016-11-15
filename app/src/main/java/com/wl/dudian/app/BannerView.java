@@ -38,8 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BannerView extends FrameLayout {
 
-    private static final String TAG = BannerView.class.getSimpleName();
-
     /**
      * viewpager
      */
@@ -73,7 +71,6 @@ public class BannerView extends FrameLayout {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Log.d(TAG, "handleMessage: currentItem " + mCurrentItem);
             mViewPager.setCurrentItem(mCurrentItem);
         }
     };

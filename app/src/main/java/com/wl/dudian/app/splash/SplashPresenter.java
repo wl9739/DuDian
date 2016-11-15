@@ -2,11 +2,10 @@ package com.wl.dudian.app.splash;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
+import com.wl.dudian.framework.BusinessUtil;
 import com.wl.dudian.framework.db.model.LatestNews;
 import com.wl.dudian.framework.repository.DomainService;
-import com.wl.dudian.framework.BusinessUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,12 +24,8 @@ import rx.schedulers.Schedulers;
 
 class SplashPresenter implements SplashContract.Presenter {
 
-    public static final String TAG = "SplashPresenter";
-
     private final SplashContract.View splashView;
-
     private final DomainService domainService;
-
     private Subscription startImageSubscription;
 
     SplashPresenter(Context context, SplashContract.View splashView) {
@@ -88,7 +83,7 @@ class SplashPresenter implements SplashContract.Presenter {
                      }, new Action1<Throwable>() {
                          @Override
                          public void call(Throwable throwable) {
-                             Log.d(TAG, "call: " + throwable.getMessage());
+                             throwable.printStackTrace();
                          }
                      });
     }

@@ -118,33 +118,10 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setWindows();
         mBinding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
         mBinding.setHandler(new Handler());
-
-        // android  5.0 以上设置全屏模式
-        if (Build.VERSION.SDK_INT >= 21) {
-            View decorView = getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(option);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-
-        // 获取新闻对象
-        mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
-
-        // 判断是否需要显示 headerview
-        boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
-        if (isNoHeader) {
-            ViewGroup.LayoutParams params = mBinding.appBarLayout.getLayoutParams();
-            params.height = 60;
-            mBinding.appBarLayout.setLayoutParams(params);
-        } else {
-            mBinding.appBarLayout.setVisibility(View.VISIBLE);
-        }
-        if (null == mStoriesBean) {
-            return;
-        }
+        initData();
 
         mBinding.collapsingtoolbarlayout.setTitle(" ");
         mBinding.titleTv.setText(mStoriesBean.getTitle());
@@ -163,6 +140,32 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         // 初始化 mPresenter
         new NewsDetailPresenter(this, this);
         mPresenter.loadData(String.valueOf(mStoriesBean.getId()));
+    }
+
+    private void initData() {
+        // 获取新闻对象
+        mStoriesBean = (StoriesBean) getIntent().getSerializableExtra(ARGU_STORIES_BEAN);
+        // 判断是否需要显示 headerview
+        boolean isNoHeader = getIntent().getBooleanExtra(ARGU_IS_NOHEADER, false);
+        if (isNoHeader) {
+            ViewGroup.LayoutParams params = mBinding.appBarLayout.getLayoutParams();
+            params.height = 60;
+            mBinding.appBarLayout.setLayoutParams(params);
+            mBinding.favoriteBtn.setVisibility(View.GONE);
+        } else {
+            mBinding.appBarLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setWindows() {
+        // android  5.0 以上设置全屏模式
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
     }
 
     /**

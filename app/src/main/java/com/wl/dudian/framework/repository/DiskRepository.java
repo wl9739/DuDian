@@ -52,7 +52,7 @@ public class DiskRepository {
      */
     private File mImageFile;
 
-    public DiskRepository(Context context) {
+    DiskRepository(Context context) {
         this.context = context;
     }
 
@@ -61,7 +61,7 @@ public class DiskRepository {
      *
      * @param startImage startimage
      */
-    public void saveStartImage(final StartImage startImage) {
+    void saveStartImage(final StartImage startImage) {
         Glide.with(context)
                 .load(startImage.getCreatives().get(0).getUrl())
                 .asBitmap()
@@ -81,7 +81,7 @@ public class DiskRepository {
      * @return
      */
     @RxLogObservable
-    public Observable<Bitmap> getStartImage() {
+    Observable<Bitmap> getStartImage() {
         return Observable.fromCallable(new Callable<Bitmap>() {
             @Override
             public Bitmap call() throws Exception {
@@ -102,7 +102,7 @@ public class DiskRepository {
      * @param newsId 新闻详情ID
      * @return
      */
-    public NewsDetails getNewsDetail(String newsId) {
+    NewsDetails getNewsDetail(String newsId) {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<NewsDetailDB> query;
         NewsDetails newsDetails = null;
@@ -134,7 +134,7 @@ public class DiskRepository {
      *
      * @param newsDetails
      */
-    public void saveNewsDetail(final NewsDetails newsDetails) {
+    void saveNewsDetail(final NewsDetails newsDetails) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -187,7 +187,7 @@ public class DiskRepository {
         });
     }
 
-    public Observable<LatestNews> getLatestNewsFromDB() {
+    Observable<LatestNews> getLatestNewsFromDB() {
         return Observable.fromCallable(new Callable<LatestNews>() {
             @Override
             public LatestNews call() throws Exception {
@@ -211,7 +211,7 @@ public class DiskRepository {
         });
     }
 
-    public void saveLatestNews(final LatestNews latestNews) {
+    void saveLatestNews(final LatestNews latestNews) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -242,7 +242,7 @@ public class DiskRepository {
      *
      * @param beforeNews
      */
-    public void saveBeforeNews(final BeforeNews beforeNews) {
+    void saveBeforeNews(final BeforeNews beforeNews) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -284,7 +284,7 @@ public class DiskRepository {
      * @param date 新闻日期
      * @return
      */
-    public BeforeNews getBeforeNews(String date) {
+    BeforeNews getBeforeNews(String date) {
         Realm realm = null;
         BeforeNews beforeNews;
         try {
@@ -316,7 +316,7 @@ public class DiskRepository {
         }
     }
 
-    public void updateRead(final int id) {
+    void updateRead(final int id) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -342,7 +342,7 @@ public class DiskRepository {
      *
      * @param newsDetails
      */
-    public void saveFavorite(final NewsDetails newsDetails) {
+    void saveFavorite(final NewsDetails newsDetails) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -351,7 +351,7 @@ public class DiskRepository {
                 public void execute(Realm realm) {
                     RealmResults<StoriesBeanDB> query =
                             realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
-                    if (query.size() < 0) {
+                    if (query.size() < 1) {
                         return;
                     }
                     query.get(0).setFavorite(true);
@@ -369,7 +369,7 @@ public class DiskRepository {
      *
      * @return
      */
-    public List<StoriesBean> getFavoriteNews() {
+    List<StoriesBean> getFavoriteNews() {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -391,7 +391,7 @@ public class DiskRepository {
      *
      * @param id 新闻 id
      */
-    public void deleteFavoriteItem(int id) {
+    void deleteFavoriteItem(int id) {
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class)
                 .equalTo("isFavorite", true)
@@ -424,7 +424,7 @@ public class DiskRepository {
         }
     }
 
-    public boolean checkIsFavorite(int id) {
+    boolean checkIsFavorite(int id) {
         Realm realm;
         realm = Realm.getDefaultInstance();
         RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class).equalTo("id", id).equalTo("isFavorite", true).findAll();
