@@ -87,8 +87,7 @@ public class ColumnCenterFragment extends BaseFragment {
                          public void call(ThemeDetailModel themeDetailModel) {
                              mStoriesBeanList.clear();
                              mStoriesBeanList.addAll(themeDetailModel.getStories());
-                             mNewsItemAdapter.setRefresh(mStoriesBeanList);
-
+                             mNewsItemAdapter.notifyDataSetChanged();
                          }
                      });
     }
