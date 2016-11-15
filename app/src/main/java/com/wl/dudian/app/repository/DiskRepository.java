@@ -387,6 +387,25 @@ public class DiskRepository {
     }
 
     /**
+     * 删除指定 id 的新闻
+     *
+     * @param id 新闻 id
+     */
+    public void deleteFavoriteItem(int id) {
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class)
+                .equalTo("isFavorite", true)
+                .equalTo("id", id)
+                .findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteAllFromRealm();
+            }
+        });
+    }
+
+    /**
      * 将下载的图片保存到文件里
      *
      * @param bitmap 下载的图片Bitmap

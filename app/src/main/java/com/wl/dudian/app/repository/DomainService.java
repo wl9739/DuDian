@@ -237,4 +237,8 @@ public class DomainService {
     public boolean isFavorite(int id) {
         return mDiskRepository.checkIsFavorite(id);
     }
+
+    public void deleteFavorite(int id) {
+        mDiskRepository.deleteFavoriteItem(id);
+    }
 }

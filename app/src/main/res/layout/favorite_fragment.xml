@@ -8,6 +8,14 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/favorite_fragment_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
+
+        <com.wl.dudian.app.favorite.GarbageImageView
+            android:id="@+id/imageview"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:src="@drawable/ic_garbage"/>
     </RelativeLayout>
 </layout>
