@@ -45,7 +45,7 @@ public class DiscussAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.nameTv.setText(mCommentsBean.get(position).getAuthor());
         viewHolder.timeTv.setText(DateUtil.getDate(mCommentsBean.get(position).getTime() * 1000L));
         viewHolder.contentTv.setText(mCommentsBean.get(position).getContent());
-        BusinessUtil.loadImage(mContext, mCommentsBean.get(position).getAvatar(), viewHolder.profileImg);
+        BusinessUtil.loadImage(mContext.getApplicationContext(), mCommentsBean.get(position).getAvatar(), viewHolder.profileImg);
     }
 
     @Override

@@ -69,7 +69,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
 
     @Override
     public void showHeaderImage(String imageUrl) {
-        BusinessUtil.loadImage(this, imageUrl, mBinding.headerImage);
+        BusinessUtil.loadImage(getApplicationContext(), imageUrl, mBinding.headerImage);
     }
 
     @Override
@@ -118,7 +118,6 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setWindows();
         mBinding = DataBindingUtil.setContentView(this, R.layout.news_detail_activity);
         mBinding.setHandler(new Handler());
         initData();
@@ -155,11 +154,12 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
         } else {
             mBinding.appBarLayout.setVisibility(View.VISIBLE);
         }
+        setWindows(isNoHeader);
     }
 
-    private void setWindows() {
+    private void setWindows(boolean isNoHeader) {
         // android  5.0 以上设置全屏模式
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21 && !isNoHeader) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;

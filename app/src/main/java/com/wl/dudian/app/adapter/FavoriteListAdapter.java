@@ -59,7 +59,7 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
     @Override
     public void onBindViewHolder(FavoriteListAdapter.ItemViewHolder holder, int position) {
         holder.titleTv.setText(mSource.get(position).getTitle());
-        BusinessUtil.loadImage(mContext, mSource.get(position).getImages().get(0), holder.picImageView);
+        BusinessUtil.loadImage(mContext.getApplicationContext(), mSource.get(position).getImages().get(0), holder.picImageView);
         holder.itemView.setTag(mSource.get(position));
     }
 

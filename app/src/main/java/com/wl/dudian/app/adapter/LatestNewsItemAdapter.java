@@ -56,7 +56,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     /**
      * 设置HeaderView
-     *
      */
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
@@ -125,7 +124,6 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     /**
      * 显示加载的内容, 在有Headerview的情况下。
-     *
      */
     private void showContent(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
         if (datePositions.containsKey(position)) {
@@ -147,13 +145,12 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
         }
         itemViewHolder.itemView.setTag(mStoriesBeen.get(position - 1));
-        BusinessUtil.loadImage(mContext, mStoriesBeen.get(position - 1).getImages().get(0),
+        BusinessUtil.loadImage(mContext.getApplicationContext(), mStoriesBeen.get(position - 1).getImages().get(0),
                 holder.picImageView);
     }
 
     /**
      * 显示加载的内容, 在没有headerview的情况下
-     *
      */
     private void showContentWithoutHeader(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
         if (mStoriesBeen.get(position).isRead()) {
@@ -163,12 +160,18 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         itemViewHolder.titleTv.setText(mStoriesBeen.get(position).getTitle());
         itemViewHolder.itemView.setTag(mStoriesBeen.get(position));
-        // 如果mei
+        // 如果没有 image
         if (null == mStoriesBeen.get(position) || null == mStoriesBeen.get(position).getImages()) {
+            holder.picImageView.setVisibility(View.GONE);
             return;
         }
-        BusinessUtil.loadImage(mContext, mStoriesBeen.get(position).getImages().get(0),
-                holder.picImageView);
+
+        String imageUrl = mStoriesBeen.get(position).getImages().get(0);
+        if (TextUtils.isEmpty(imageUrl)) {
+            holder.picImageView.setVisibility(View.GONE);
+        } else {
+            BusinessUtil.loadImage(mContext.getApplicationContext(), imageUrl, holder.picImageView);
+        }
     }
 
     public interface OnLatestNewsItemClickListener {
