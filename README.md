@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/wl9739/DuDian/blob/master/LICENSE.md)
 
-使用知乎日报的数据写的一个客户端，采用 Matrial Design 设计的自己使用的
+使用知乎日报的数据写的一个客户端，采用 Matrial Design 设计。
 
 使用到的开源框架：
 
