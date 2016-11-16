@@ -1,8 +1,10 @@
 package com.wl.dudian.app.adapter;
 
 import android.content.Context;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,9 @@ import com.wl.dudian.framework.DateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Qiushui on 16/6/21.
@@ -36,7 +40,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      */
     private View mHeaderView;
 
-    private HashMap<Integer, String> datePositions = new HashMap<>();
+    private HashMap<Integer, String> mDatePositions = new HashMap<>();
+    private Set<Integer> mReadPosition = new HashSet<>();
 
     public LatestNewsItemAdapter(List<StoriesBean> storiesBean, Context context) {
         mStoriesBeen = storiesBean;
@@ -118,7 +123,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void changeDateTitle(int i, String dateTitle) {
-        datePositions.put(i, dateTitle);
+        mDatePositions.put(i, dateTitle);
         notifyItemChanged(i);
     }
 
@@ -126,8 +131,8 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * 显示加载的内容, 在有Headerview的情况下。
      */
     private void showContent(ItemViewHolder holder, int position, ItemViewHolder itemViewHolder) {
-        if (datePositions.containsKey(position)) {
-            String date = datePositions.get(position);
+        if (mDatePositions.containsKey(position)) {
+            String date = mDatePositions.get(position);
             if (TextUtils.isDigitsOnly(date)) {
                 itemViewHolder.dateTv.setText(DateUtil.getFullDateFormart(date));
             } else {
@@ -139,7 +144,7 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         // position数需要-1, 因为0是HeaderView
         itemViewHolder.titleTv.setText(mStoriesBeen.get(position - 1).getTitle());
-        if (mStoriesBeen.get(position - 1).isRead()) {
+        if (mStoriesBeen.get(position - 1).isRead() || mReadPosition.contains(position - 1)) {
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorSecond));
         } else {
             itemViewHolder.titleTv.setTextColor(mContext.getResources().getColor(R.color.textColorPrimary));
@@ -172,6 +177,10 @@ public class LatestNewsItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else {
             BusinessUtil.loadImage(mContext.getApplicationContext(), imageUrl, holder.picImageView);
         }
+    }
+
+    public void setRead(int index) {
+        mReadPosition.add(index);
     }
 
     public interface OnLatestNewsItemClickListener {

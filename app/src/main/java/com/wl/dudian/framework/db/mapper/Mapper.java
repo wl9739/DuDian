@@ -14,6 +14,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  *
@@ -29,24 +30,27 @@ public class Mapper {
         latestNews.setDate(query.get(0).getDate());
         List<StoriesBean> storiesBeanList = new ArrayList<>();
         List<TopStoriesBean> topStoriesBeenList = new ArrayList<>();
-        for (int i = 0; i < query.get(0).getStories().size(); i++) {
+        RealmResults<StoriesBeanDB> storiesBeanDBs = query.get(0).getStories().sort("ga_prefix", Sort.DESCENDING);
+        for (int i = 0; i <storiesBeanDBs.size(); i++) {
+            StoriesBeanDB storiesBeanDB = storiesBeanDBs.get(i);
             StoriesBean storiesBean = new StoriesBean();
-            storiesBean.setTitle(query.get(0).getStories().get(i).getTitle());
-            storiesBean.setId(query.get(0).getStories().get(i).getId());
-            storiesBean.setImages(Collections.singletonList(query.get(0).getStories().get(i).getImages()));
-            storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
-            storiesBean.setType(query.get(0).getStories().get(i).getType());
-            storiesBean.setRead(query.get(0).getStories().get(i).isRead());
+            storiesBean.setTitle(storiesBeanDB.getTitle());
+            storiesBean.setId(storiesBeanDB.getId());
+            storiesBean.setImages(Collections.singletonList(storiesBeanDB.getImages()));
+            storiesBean.setGa_prefix(storiesBeanDB.getGa_prefix());
+            storiesBean.setType(storiesBeanDB.getType());
+            storiesBean.setRead(storiesBeanDB.isRead());
             storiesBeanList.add(storiesBean);
 
         }
         for (int i = 0; i < query.get(0).getTop_stories().size(); i++) {
+            TopStoriesBeanDB topStoriesBeanDB = query.get(0).getTop_stories().get(i);
             TopStoriesBean topStoriesBean = new TopStoriesBean();
-            topStoriesBean.setType(query.get(0).getTop_stories().get(i).getType());
-            topStoriesBean.setGa_prefix(query.get(0).getTop_stories().get(i).getGa_prefix());
-            topStoriesBean.setId(query.get(0).getTop_stories().get(i).getId());
-            topStoriesBean.setImage(query.get(0).getTop_stories().get(i).getImage());
-            topStoriesBean.setTitle(query.get(0).getTop_stories().get(i).getTitle());
+            topStoriesBean.setType(topStoriesBeanDB.getType());
+            topStoriesBean.setGa_prefix(topStoriesBeanDB.getGa_prefix());
+            topStoriesBean.setId(topStoriesBeanDB.getId());
+            topStoriesBean.setImage(topStoriesBeanDB.getImage());
+            topStoriesBean.setTitle(topStoriesBeanDB.getTitle());
             topStoriesBeenList.add(topStoriesBean);
         }
         latestNews.setStories(storiesBeanList);
@@ -55,35 +59,59 @@ public class Mapper {
         return latestNews;
     }
 
-    public static void saveLatestNewsDB(Realm realm, LatestNews latestNews,
-                                        RealmResults<StoriesBeanDB> storiesBeanResult) {
-        LatestNewsDB latestNewsDB = realm.createObject(LatestNewsDB.class);
-        latestNewsDB.setDate(latestNews.getDate());
+    public static void saveLatestNews(Realm realm, RealmResults<LatestNewsDB> latestNewsDBResults, LatestNews latestNews, RealmResults<TopStoriesBeanDB> topStoriesBeanDBResults) {
         RealmList<StoriesBeanDB> storiesBeanDBRealmList = new RealmList<>();
         RealmList<TopStoriesBeanDB> topStoriesBeanDBRealmList = new RealmList<>();
+        if (latestNewsDBResults.size() != 0) {
+            int latestStorySize = latestNews.getStories().size();
+            int latestStoryDBSize = latestNewsDBResults.get(0).getStories().size();
+            for (int i = 0; i < latestStorySize - latestStoryDBSize; i++) {
+                StoriesBean storiesBean = latestNews.getStories().get(i);
+                StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
+                storiesBeanDB.setId(storiesBean.getId());
+                storiesBeanDB.setFavorite(false);
+                storiesBeanDB.setImages(storiesBean.getImages().get(0));
+                storiesBeanDB.setRead(false);
+                storiesBeanDB.setGa_prefix(storiesBean.getGa_prefix());
+                storiesBeanDB.setTitle(storiesBean.getTitle());
+                storiesBeanDB.setType(storiesBean.getType());
+                storiesBeanDBRealmList.add(storiesBeanDB);
+            }
 
+            RealmResults<StoriesBeanDB> storiesBeanDB = realm.where(StoriesBeanDB.class).findAll();
+            storiesBeanDBRealmList.addAll(storiesBeanDB.subList(latestStorySize - latestStoryDBSize, latestStorySize));
+        } else {
+            for (int i = 0; i < latestNews.getStories().size(); i++) {
+                StoriesBean storiesBean = latestNews.getStories().get(i);
+                StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
+                storiesBeanDB.setId(storiesBean.getId());
+                storiesBeanDB.setFavorite(false);
+                storiesBeanDB.setImages(storiesBean.getImages().get(0));
+                storiesBeanDB.setRead(false);
+                storiesBeanDB.setGa_prefix(storiesBean.getGa_prefix());
+                storiesBeanDB.setTitle(storiesBean.getTitle());
+                storiesBeanDB.setType(storiesBean.getType());
+                storiesBeanDBRealmList.add(storiesBeanDB);
+            }
+        }
+
+        topStoriesBeanDBResults.deleteAllFromRealm();
         for (int i = 0; i < latestNews.getTop_stories().size(); i++) {
+            TopStoriesBean topStoriesBean = latestNews.getTop_stories().get(i);
             TopStoriesBeanDB topStoriesBeanDB = realm.createObject(TopStoriesBeanDB.class);
-            topStoriesBeanDB.setType(latestNews.getTop_stories().get(i).getType());
-            topStoriesBeanDB.setTitle(latestNews.getTop_stories().get(i).getTitle());
-            topStoriesBeanDB.setId(latestNews.getTop_stories().get(i).getId());
-            topStoriesBeanDB.setGa_prefix(latestNews.getTop_stories().get(i).getGa_prefix());
-            topStoriesBeanDB.setImage(latestNews.getTop_stories().get(i).getImage());
+            topStoriesBeanDB.setType(topStoriesBean.getType());
+            topStoriesBeanDB.setTitle(topStoriesBean.getTitle());
+            topStoriesBeanDB.setId(topStoriesBean.getId());
+            topStoriesBeanDB.setGa_prefix(topStoriesBean.getGa_prefix());
+            topStoriesBeanDB.setImage(topStoriesBean.getImage());
             topStoriesBeanDBRealmList.add(topStoriesBeanDB);
         }
-        latestNewsDB.setTop_stories(topStoriesBeanDBRealmList);
-        for (int i = 0; i < latestNews.getStories().size(); i++) {
-//            if (storiesBeanResult.equalTo("id", latestNews.getStories().get(i).getId()).findAll().size() == 0) {
-                StoriesBeanDB storiesBeanDB = realm.createObject(StoriesBeanDB.class);
-                storiesBeanDB.setGa_prefix(latestNews.getStories().get(i).getGa_prefix());
-                storiesBeanDB.setId(latestNews.getStories().get(i).getId());
-                storiesBeanDB.setTitle(latestNews.getStories().get(i).getTitle());
-                storiesBeanDB.setType(latestNews.getStories().get(i).getType());
-                storiesBeanDB.setImages(latestNews.getStories().get(i).getImages().get(0));
-                storiesBeanDBRealmList.add(storiesBeanDB);
-//            }
-        }
+
+        latestNewsDBResults.deleteAllFromRealm();
+        LatestNewsDB latestNewsDB = realm.createObject(LatestNewsDB.class);
+        latestNewsDB.setDate(latestNews.getDate());
         latestNewsDB.setStories(storiesBeanDBRealmList);
+        latestNewsDB.setTop_stories(topStoriesBeanDBRealmList);
     }
 
     public static List<StoriesBean> getStoriesBean(RealmResults<StoriesBeanDB> query) {

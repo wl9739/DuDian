@@ -22,7 +22,7 @@
                     android:layout_height="280dp"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:src="@drawable/ic_avatar"
+                    android:src="@mipmap/icon"
                     android:layout_marginTop="208dp"
                     android:layout_marginLeft="48dp"
                     android:layout_width="72dp"
@@ -30,6 +30,14 @@
 
                 <TextView
                     android:text="作者： 湫水"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="220dp"
+                    android:layout_marginRight="36dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="版本：v1.0.0"
                     android:layout_gravity="right"
                     android:layout_marginTop="260dp"
                     android:layout_marginRight="36dp"

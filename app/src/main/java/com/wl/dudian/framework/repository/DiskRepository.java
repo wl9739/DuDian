@@ -25,7 +25,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -34,13 +34,13 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import rx.Observable;
-import rx.schedulers.Timestamped;
 
 /**
+ * 本地文件操作
  * Created by Qiushui on 16/8/3.
  */
 
-public class DiskRepository {
+class DiskRepository {
 
     /**
      * 启动图片文件路径
@@ -77,8 +77,6 @@ public class DiskRepository {
 
     /**
      * 获取启动页图片
-     *
-     * @return
      */
     @RxLogObservable
     Observable<Bitmap> getStartImage() {
@@ -100,7 +98,6 @@ public class DiskRepository {
      * 获取新闻详情
      *
      * @param newsId 新闻详情ID
-     * @return
      */
     NewsDetails getNewsDetail(String newsId) {
         Realm realm = Realm.getDefaultInstance();
@@ -131,8 +128,6 @@ public class DiskRepository {
 
     /**
      * 将下载的新闻详情保存到数据库中
-     *
-     * @param newsDetails
      */
     void saveNewsDetail(final NewsDetails newsDetails) {
         Realm realm = null;
@@ -159,34 +154,6 @@ public class DiskRepository {
         }
     }
 
-    /**
-     * 获取在本地保存的最新新闻
-     *
-     * @return
-     */
-    public Observable<Timestamped<LatestNews>> getLatestNews() {
-        return Observable.fromCallable(new Callable<Timestamped<LatestNews>>() {
-            @Override
-            public Timestamped<LatestNews> call() throws Exception {
-                Realm realm = Realm.getDefaultInstance();
-                RealmResults<LatestNewsDB> result;
-                LatestNews latestNews;
-                try {
-                    result = realm.where(LatestNewsDB.class).findAll();
-                    if (result.size() < 1) {
-                        return null;
-                    }
-                    latestNews = Mapper.getLatestNews(result);
-                    return new Timestamped<>(result.get(0).getTime(), latestNews);
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
-                }
-            }
-        });
-    }
-
     Observable<LatestNews> getLatestNewsFromDB() {
         return Observable.fromCallable(new Callable<LatestNews>() {
             @Override
@@ -211,25 +178,21 @@ public class DiskRepository {
         });
     }
 
+    /**
+     * 保存最近新闻内容
+     */
     void saveLatestNews(final LatestNews latestNews) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            final RealmResults<TopStoriesBeanDB> topResult = realm.where(TopStoriesBeanDB.class).findAll();
-            final RealmResults<LatestNewsDB> latestNewsResult = realm.where(LatestNewsDB.class).findAll();
-            final RealmResults<StoriesBeanDB> storiesBeanResult = realm.where(StoriesBeanDB.class).findAll();
+            final RealmResults<LatestNewsDB> latestNewsDBResults = realm.where(LatestNewsDB.class).findAll();
+            final RealmResults<TopStoriesBeanDB> topStoriesBeanDBResults = realm.where(TopStoriesBeanDB.class).findAll();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    // delete first
-                    topResult.deleteAllFromRealm();
-                    latestNewsResult.deleteAllFromRealm();
+                    Mapper.saveLatestNews(realm, latestNewsDBResults, latestNews, topStoriesBeanDBResults);
                 }
             });
-            realm.beginTransaction();
-            // save
-            Mapper.saveLatestNewsDB(realm, latestNews, storiesBeanResult);
-            realm.commitTransaction();
         } finally {
             if (realm != null) {
                 realm.close();
@@ -237,10 +200,9 @@ public class DiskRepository {
         }
     }
 
+
     /**
      * 保存往日新闻
-     *
-     * @param beforeNews
      */
     void saveBeforeNews(final BeforeNews beforeNews) {
         Realm realm = null;
@@ -282,7 +244,6 @@ public class DiskRepository {
      * 获取本地保存的往日新闻。
      *
      * @param date 新闻日期
-     * @return
      */
     BeforeNews getBeforeNews(String date) {
         Realm realm = null;
@@ -301,7 +262,7 @@ public class DiskRepository {
                 StoriesBean storiesBean = new StoriesBean();
                 storiesBean.setType(query.get(0).getStories().get(i).getType());
                 storiesBean.setGa_prefix(query.get(0).getStories().get(i).getGa_prefix());
-                storiesBean.setImages(Arrays.asList(query.get(0).getStories().get(i).getImages()));
+                storiesBean.setImages(Collections.singletonList(query.get(0).getStories().get(i).getImages()));
                 storiesBean.setId(query.get(0).getStories().get(i).getId());
                 storiesBean.setTitle(query.get(0).getStories().get(i).getTitle());
                 storiesBean.setRead(query.get(0).getStories().get(i).isRead());
@@ -324,10 +285,15 @@ public class DiskRepository {
                 @Override
                 public void execute(Realm realm) {
                     RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("id", id).findAll();
-                    if (query.size() < 1) {
-                        return;
+                    if (query.size() >= 1) {
+                        for (int i = 0; i < query.size(); i++) {
+                            if (i == 0) {
+                                query.get(0).setRead(true);
+                            } else {
+                                query.deleteFromRealm(i);
+                            }
+                        }
                     }
-                    query.get(0).setRead(true);
                 }
             });
         } finally {
@@ -339,8 +305,6 @@ public class DiskRepository {
 
     /**
      * 保存收藏的新闻
-     *
-     * @param newsDetails
      */
     boolean saveFavorite(final NewsDetails newsDetails) {
         Realm realm = null;
@@ -353,8 +317,9 @@ public class DiskRepository {
                             realm.where(StoriesBeanDB.class).equalTo("id", newsDetails.getId()).findAll();
                     if (query.size() < 1) {
                         return;
+                    } else {
+                        query.get(0).setFavorite(true);
                     }
-                    query.get(0).setFavorite(true);
                 }
             });
         } finally {
@@ -367,8 +332,6 @@ public class DiskRepository {
 
     /**
      * 获取收藏的新闻
-     *
-     * @return
      */
     List<StoriesBean> getFavoriteNews() {
         Realm realm = null;
@@ -428,7 +391,8 @@ public class DiskRepository {
     boolean checkIsFavorite(int id) {
         Realm realm;
         realm = Realm.getDefaultInstance();
-        RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class).equalTo("id", id).equalTo("isFavorite", true).findAll();
+        RealmResults<StoriesBeanDB> results = realm.where(StoriesBeanDB.class).equalTo("id", id)
+                .equalTo("isFavorite", true).findAll();
         return results.size() > 0;
     }
 }

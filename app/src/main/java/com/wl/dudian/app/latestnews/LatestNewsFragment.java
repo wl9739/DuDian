@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.wl.dudian.R;
 import com.wl.dudian.app.BannerView;
@@ -75,7 +77,7 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
 
         mBinding = DataBindingUtil.inflate(inflater, R.layout.latest_news_fragment, container, false);
 
@@ -125,6 +127,11 @@ public class LatestNewsFragment extends BaseFragment implements LatestNewsContra
                 new LatestNewsItemAdapter.OnLatestNewsItemClickListener() {
                     @Override
                     public void onItemClick(View view, StoriesBean storiesBean) {
+                        int index = mStoriesBeanList.indexOf(storiesBean);
+                        ((TextView)mLinearLayoutManager.findViewByPosition(index + 1)
+                                .findViewById(R.id.latest_news_fragment_title))
+                                .setTextColor(getResources().getColor(R.color.textColorSecond));
+                        mItemAdapter.setRead(index);
                         mPresenter.updateRead(storiesBean);
                         NewsDetailActivity.launch(getActivity(), storiesBean);
                     }
