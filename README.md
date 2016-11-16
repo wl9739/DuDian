@@ -1,4 +1,4 @@
-![icon](https://github.com/wl9739/DuDian/blob/master/app/src/main/res/mipmap-hdpi/icon_dudian.png)
+![icon](https://github.com/wl9739/DuDian/blob/master/app/src/main/res/mipmap-hdpi/icon.png)
 
 # 读点
 
