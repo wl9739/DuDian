@@ -26,7 +26,6 @@ import rx.schedulers.Schedulers;
 
 class LatestNewsPresenter implements LatestNewsContract.Presenter {
 
-    private static final String TAG = "LatestNews";
     private LatestNewsContract.View view;
     private DomainService mDomainService;
     private Subscription mBeforeNewsSubscription;
@@ -45,7 +44,6 @@ class LatestNewsPresenter implements LatestNewsContract.Presenter {
                      .onErrorReturn(new Func1<Throwable, LatestNews>() {
                          @Override
                          public LatestNews call(Throwable throwable) {
-                             Log.d(TAG, "call: " + throwable.getMessage());
                              return null;
                          }
                      })

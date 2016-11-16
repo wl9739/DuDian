@@ -338,7 +338,7 @@ class DiskRepository {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<StoriesBeanDB> query = realm.where(StoriesBeanDB.class).equalTo("isFavorite", true).findAll();
-            query = query.sort("id", Sort.DESCENDING);
+            query = query.sort("ga_prefix", Sort.DESCENDING);
             if (query.size() < 1) {
                 return null;
             }
