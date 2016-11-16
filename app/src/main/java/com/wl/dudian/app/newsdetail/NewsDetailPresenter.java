@@ -85,11 +85,11 @@ class NewsDetailPresenter implements NewsDetailContract.Presenter {
     }
 
     @Override
-    public void favorite() {
+    public boolean favorite() {
         if (newsDetails == null) {
-            throw new IllegalStateException("NewsDetail must not be null!");
+            return false;
         }
-        domainService.saveToFavoriteDb(newsDetails);
+        return domainService.saveToFavoriteDb(newsDetails);
     }
 
     @Override

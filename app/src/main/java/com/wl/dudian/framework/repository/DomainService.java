@@ -103,8 +103,8 @@ public class DomainService {
      *
      * @param newsDetails
      */
-    public void saveToFavoriteDb(NewsDetails newsDetails) {
-        mDiskRepository.saveFavorite(newsDetails);
+    public boolean saveToFavoriteDb(NewsDetails newsDetails) {
+        return mDiskRepository.saveFavorite(newsDetails);
     }
 
     /**

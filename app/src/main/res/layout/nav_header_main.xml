@@ -12,7 +12,7 @@
               android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
-        android:text="读点日报"
+        android:text="读点"
         android:textColor="@color/text"
         android:textSize="24sp"
         android:layout_width="wrap_content"

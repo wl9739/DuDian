@@ -42,6 +42,7 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
     public static void launch(Context activity, StoriesBean storiesBean) {
         launch(activity, storiesBean, false);
     }
+
     /**
      * launch
      */
@@ -205,9 +206,10 @@ public class NewsDetailActivity extends BaseActivity implements NewsDetailContra
                 mBinding.favoriteBtn.setIcon(R.drawable.ic_bookmark_white);
                 mBinding.favoriteBtn.setTitle("已收藏");
                 // 保存到数据库
-                mPresenter.favorite();
-                isFavorite = true;
-                Snackbar.make(view, "保存成功", Snackbar.LENGTH_SHORT).show();
+                if (mPresenter.favorite()) {
+                    isFavorite = true;
+                    Snackbar.make(view, "保存成功", Snackbar.LENGTH_SHORT).show();
+                }
             }
         }
 

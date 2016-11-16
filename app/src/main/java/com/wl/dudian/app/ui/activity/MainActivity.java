@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         binding.content.contentLayout.contentMainWifilogoImg.setVisibility(View.GONE);
         showLatestNews(savedInstanceState);
 
-        binding.content.toolbar.setTitle("读点日报");
+        binding.content.toolbar.setTitle("读点");
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, binding.drawerLayout, binding.content.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -210,11 +210,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         switch (i) {
             case 0:
                 if (null == mLatestNewsFragment) {
-                    binding.content.toolbar.setTitle("读点日报");
+                    binding.content.toolbar.setTitle("读点");
                     mLatestNewsFragment = LatestNewsFragment.newInstance();
                     ft.add(R.id.content_main, mLatestNewsFragment);
                 } else {
-                    binding.content.toolbar.setTitle("读点日报");
+                    binding.content.toolbar.setTitle("读点");
                     ft.show(mLatestNewsFragment);
                 }
                 break;

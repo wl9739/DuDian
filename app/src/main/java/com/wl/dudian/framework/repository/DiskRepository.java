@@ -342,7 +342,7 @@ public class DiskRepository {
      *
      * @param newsDetails
      */
-    void saveFavorite(final NewsDetails newsDetails) {
+    boolean saveFavorite(final NewsDetails newsDetails) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -362,6 +362,7 @@ public class DiskRepository {
                 realm.close();
             }
         }
+        return true;
     }
 
     /**

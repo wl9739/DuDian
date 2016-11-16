@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * RecyclerView 拖拽帮助类
- *
+ * <p>
  * Created by Qiushui on 2016/11/15.
  */
 
@@ -43,19 +43,24 @@ class SimpleItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        int fromPosition = viewHolder.getAdapterPosition();
-        int toPosition = target.getAdapterPosition();
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(mData, i, i + 1);
+        try {
+
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+            if (fromPosition < toPosition) {
+                for (int i = fromPosition; i < toPosition; i++) {
+                    Collections.swap(mData, i, i + 1);
+                }
+            } else {
+                for (int i = fromPosition; i > toPosition; i--) {
+                    Collections.swap(mData, i, i - 1);
+                }
             }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(mData, i, i - 1);
-            }
+            mAdapter.notifyItemMoved(fromPosition, toPosition);
+            mOnItemTouchCountListener.onItemIndexChanged(toPosition);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mAdapter.notifyItemMoved(fromPosition, toPosition);
-        mOnItemTouchCountListener.onItemIndexChanged(toPosition);
         return true;
     }
 

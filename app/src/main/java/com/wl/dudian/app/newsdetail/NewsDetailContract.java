@@ -29,7 +29,7 @@ interface NewsDetailContract {
 
         void loadData(String newsId);
 
-        void favorite();
+        boolean favorite();
 
         void updateRead(int id);
     }
