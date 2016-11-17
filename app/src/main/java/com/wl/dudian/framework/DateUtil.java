@@ -84,4 +84,13 @@ public class DateUtil {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         return simpleDateFormat.format(date);
     }
+
+    public static boolean isFirstAfter(String dateStr1, String dateStr2) {
+        if (TextUtils.isDigitsOnly(dateStr1) && TextUtils.isDigitsOnly(dateStr2) && dateStr1.length() == 8 && dateStr2.length() == 8) {
+            Date date1 = new Date(Integer.parseInt(dateStr1.substring(0, 4)), Integer.parseInt(dateStr1.substring(4, 6)), Integer.parseInt(dateStr1.substring(6, 8)));
+            Date date2 = new Date(Integer.parseInt(dateStr2.substring(0, 4)), Integer.parseInt(dateStr2.substring(4, 6)), Integer.parseInt(dateStr2.substring(6, 8)));
+            return date1.after(date2);
+        }
+        return false;
+    }
 }
