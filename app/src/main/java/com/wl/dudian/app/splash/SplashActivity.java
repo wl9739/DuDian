@@ -11,7 +11,7 @@ import com.wl.dudian.R;
 import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.MainActivity;
 import com.wl.dudian.databinding.SplashActivityBinding;
-import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
 
 /**
  * @author Qiushui

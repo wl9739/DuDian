@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.wl.dudian.framework.db.model.NewsDetails;
 import com.wl.dudian.framework.repository.DomainService;
-import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
 import com.wl.dudian.framework.Constants;
 
 import java.util.concurrent.TimeUnit;

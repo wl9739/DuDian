@@ -1,14 +1,13 @@
 package com.wl.dudian.app.latestnews;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.wl.dudian.framework.db.model.BeforeNews;
 import com.wl.dudian.framework.db.model.LatestNews;
 import com.wl.dudian.framework.db.model.StoriesBean;
 import com.wl.dudian.framework.repository.DomainService;
-import com.wl.dudian.framework.BusinessUtil;
-import com.wl.dudian.framework.DateUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
+import com.wl.dudian.framework.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;

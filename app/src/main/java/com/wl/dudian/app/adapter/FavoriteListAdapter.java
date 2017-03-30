@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.wl.dudian.R;
 import com.wl.dudian.framework.db.model.StoriesBean;
-import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
 
 import java.util.List;
 

@@ -1,10 +1,8 @@
 package com.wl.dudian.app.adapter;
 
 import android.content.Context;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +11,9 @@ import android.widget.TextView;
 
 import com.wl.dudian.R;
 import com.wl.dudian.framework.db.model.StoriesBean;
-import com.wl.dudian.framework.BusinessUtil;
-import com.wl.dudian.framework.DateUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
+import com.wl.dudian.framework.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

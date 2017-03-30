@@ -1,77 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
 
-    <android.support.design.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:elevation="0dp">
 
-        <android.support.design.widget.AppBarLayout
-            android:elevation="0dp"
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.wl.dudian.app.ui.AboutHeaderView
+                android:id="@+id/header_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="280dp" />
 
-                <com.wl.dudian.app.ui.AboutHeaderView
-                    android:id="@+id/header_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="280dp"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginLeft="48dp"
+                android:layout_marginTop="208dp"
+                android:src="@mipmap/icon" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:src="@mipmap/icon"
-                    android:layout_marginTop="208dp"
-                    android:layout_marginLeft="48dp"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="36dp"
+                android:layout_marginTop="220dp"
+                android:text="作者： 湫水" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="36dp"
+                android:layout_marginTop="260dp"
+                android:text="版本：v1.0.0" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
 
                 <TextView
-                    android:text="作者： 湫水"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="220dp"
-                    android:layout_marginRight="36dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:text="本项目已经开源，欢迎 star。" />
 
                 <TextView
-                    android:text="版本：v1.0.0"
-                    android:layout_gravity="right"
-                    android:layout_marginTop="260dp"
-                    android:layout_marginRight="36dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-
-                <LinearLayout
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:text="GitHub    ： https://github.com/wl9739/DuDian" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:text="本项目已经开源，欢迎 star。"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    android:text="联系方式 ： wl9739@gmail.com" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:text="GitHub    ： https://github.com/wl9739/DuDian"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:text="联系方式 ： wl9739@gmail.com"/>
-
-                </LinearLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
-    </android.support.design.widget.CoordinatorLayout>
-</layout>
+            </LinearLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+</android.support.design.widget.CoordinatorLayout>

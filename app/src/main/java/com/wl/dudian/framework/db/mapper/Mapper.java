@@ -1,8 +1,6 @@
 package com.wl.dudian.framework.db.mapper;
 
-import android.icu.text.LocaleDisplayNames;
-
-import com.wl.dudian.framework.DateUtil;
+import com.wl.dudian.framework.util.DateUtil;
 import com.wl.dudian.framework.db.LatestNewsDB;
 import com.wl.dudian.framework.db.StoriesBeanDB;
 import com.wl.dudian.framework.db.TopStoriesBeanDB;

@@ -3,7 +3,7 @@ package com.wl.dudian.app.splash;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
 import com.wl.dudian.framework.db.model.LatestNews;
 import com.wl.dudian.framework.repository.DomainService;
 

@@ -6,20 +6,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.media.Image;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.wl.dudian.R;
-import com.wl.dudian.framework.Util;
+import com.wl.dudian.framework.util.Util;
 
 /**
  * 关于界面
  * Created by Qiushui on 2016/11/7.
  */
 
-public class AboutHeaderView extends ImageView implements Runnable {
+public class AboutHeaderView extends ImageView {
 
     private Path mClipPath;
     private Paint mPaint;
@@ -55,22 +53,22 @@ public class AboutHeaderView extends ImageView implements Runnable {
         canvas.drawBitmap(mBackGound, positionX, positionY, mPaint);
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                if (positionX > -800) {
-                    positionX -= 1;
-                    positionY -= 0.1;
-                    postInvalidate();
-                } else {
-                    positionX = 0;
-                    positionY = 0;
-                }
-                Thread.sleep(30);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    @Override
+//    public void run() {
+//        while (true) {
+//            try {
+//                if (positionX > -800) {
+//                    positionX -= 1;
+//                    positionY -= 0.1;
+//                    postInvalidate();
+//                } else {
+//                    positionX = 0;
+//                    positionY = 0;
+//                }
+//                Thread.sleep(30);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

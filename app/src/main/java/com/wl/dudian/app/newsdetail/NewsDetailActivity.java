@@ -20,7 +20,7 @@ import com.wl.dudian.framework.db.model.StoriesBean;
 import com.wl.dudian.app.ui.activity.BaseActivity;
 import com.wl.dudian.app.ui.activity.DiscussView;
 import com.wl.dudian.databinding.NewsDetailActivityBinding;
-import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
 import com.wl.dudian.framework.Constants;
 
 /**

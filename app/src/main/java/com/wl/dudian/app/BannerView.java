@@ -6,7 +6,6 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +21,7 @@ import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.framework.db.model.StoriesBean;
 import com.wl.dudian.framework.db.model.TopStoriesBean;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,20 +60,29 @@ public class BannerView extends FrameLayout {
     /**
      * 计数器,当前显示的位置
      */
-    private volatile int mCurrentItem = 0;
+    private int mCurrentItem = 0;
 
     private SlideShowTask slideShowTask;
 
     /**
      * 处理消息
      */
-    private Handler mHandler = new Handler() {
+    static class MyHandler extends Handler {
+        WeakReference<BannerView> bannerViewWeakReference;
+
+        MyHandler(BannerView bannerView) {
+            bannerViewWeakReference = new WeakReference<>(bannerView);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            mViewPager.setCurrentItem(mCurrentItem);
+
+            bannerViewWeakReference.get().mViewPager.setCurrentItem(bannerViewWeakReference.get().mCurrentItem);
         }
-    };
+    }
+
+    private MyHandler handler;
 
     /**
      * 轮播图片的数量
@@ -106,7 +115,6 @@ public class BannerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         mContext = context;
         mAdapter = new BannerViewPagerAdapter();
-        slideShowTask = new SlideShowTask();
         LayoutInflater.from(mContext).inflate(R.layout.banner_view, this, true);
     }
 
@@ -121,6 +129,10 @@ public class BannerView extends FrameLayout {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
+        handler = new MyHandler(this);
+        slideShowTask = new SlideShowTask(this);
+
         mViewPager = (ViewPager) findViewById(R.id.banner_view_viewpager);
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.banner_view_indicator);
         mViewPager.setAdapter(mAdapter);
@@ -246,15 +258,19 @@ public class BannerView extends FrameLayout {
     /**
      * 定时任务
      */
-    private class SlideShowTask implements Runnable {
+    private static class SlideShowTask implements Runnable {
+
+        private WeakReference<BannerView> bannerViewWeakReference;
+
+        SlideShowTask(BannerView bannerView) {
+            bannerViewWeakReference = new WeakReference<>(bannerView);
+        }
 
         @Override
         public void run() {
-            synchronized (BannerView.class) {
-                if (!isMoving)
-                    mCurrentItem = (mCurrentItem + 1) % mImageSize;
-                mHandler.obtainMessage().sendToTarget();
-            }
+            if (!bannerViewWeakReference.get().isMoving)
+                bannerViewWeakReference.get().mCurrentItem = (bannerViewWeakReference.get().mCurrentItem + 1) % bannerViewWeakReference.get().mImageSize;
+            bannerViewWeakReference.get().handler.obtainMessage().sendToTarget();
         }
     }
 }

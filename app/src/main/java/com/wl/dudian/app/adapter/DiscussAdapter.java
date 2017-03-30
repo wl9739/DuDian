@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.wl.dudian.R;
 import com.wl.dudian.framework.db.model.CommentsBean;
-import com.wl.dudian.framework.BusinessUtil;
-import com.wl.dudian.framework.DateUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
+import com.wl.dudian.framework.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;

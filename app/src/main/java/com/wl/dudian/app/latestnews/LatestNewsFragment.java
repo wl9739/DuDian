@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wl.dudian.R;
@@ -21,7 +20,7 @@ import com.wl.dudian.framework.db.model.TopStoriesBean;
 import com.wl.dudian.app.newsdetail.NewsDetailActivity;
 import com.wl.dudian.app.ui.fragment.BaseFragment;
 import com.wl.dudian.databinding.LatestNewsFragmentBinding;
-import com.wl.dudian.framework.BusinessUtil;
+import com.wl.dudian.framework.util.BusinessUtil;
 
 import java.util.ArrayList;
 import java.util.List;

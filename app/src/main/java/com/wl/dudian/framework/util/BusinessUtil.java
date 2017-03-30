@@ -1,6 +1,5 @@
-package com.wl.dudian.framework;
+package com.wl.dudian.framework.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

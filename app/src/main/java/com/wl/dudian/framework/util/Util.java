@@ -1,4 +1,4 @@
-package com.wl.dudian.framework;
+package com.wl.dudian.framework.util;
 
 import android.content.Context;
 import android.content.res.Resources;
