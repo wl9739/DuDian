@@ -62,6 +62,9 @@ class DiskRepository {
      * @param startImage startimage
      */
     void saveStartImage(final StartImage startImage) {
+        if (startImage == null || startImage.getCreatives() == null || startImage.getCreatives().size() < 1) {
+            return;
+        }
         Glide.with(context)
                 .load(startImage.getCreatives().get(0).getUrl())
                 .asBitmap()
